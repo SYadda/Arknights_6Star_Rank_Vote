@@ -21,7 +21,7 @@
 
 本程序使用Python Flask后端，JavaScript前端编写，界面如下图所示：
 
-<img src="backend_resource/frontend_working_fine.png" width="50%">
+<img src="backend_resource/frontend_working_fine.png" width="100%">
 
 ### 计分规则
 
