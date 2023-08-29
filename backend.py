@@ -1,5 +1,5 @@
-import random
-from flask import Flask, render_template, request, jsonify
+import random, os
+from flask import Flask, render_template, request, jsonify, send_from_directory
 from flask_cors import CORS, cross_origin
 app = Flask(__name__)
 CORS(app)
@@ -51,10 +51,10 @@ def view_final_order():
 def page():
     return render_template('/page.html')
 
-@app.route('/6StarRank.ico', methods=['GET'])
+@app.route('/favicon.ico', methods=['GET'])
 @cross_origin()
 def ico():
-    return render_template('/page.html')
+    return send_from_directory(os.path.join(app.root_path, 'templates'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=9876, debug=True)
