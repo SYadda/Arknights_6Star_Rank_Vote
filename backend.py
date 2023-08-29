@@ -49,7 +49,7 @@ def view_final_order():
 @app.route('/page', methods=['GET'])
 @cross_origin()
 def page():
-    return render_template('/page.html')
+    return render_template('page.html')
 
 @app.route('/favicon.ico', methods=['GET'])
 @cross_origin()
@@ -57,4 +57,4 @@ def ico():
     return send_from_directory(os.path.join(app.root_path, 'templates'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=9876, debug=True)
+    app.run(host='0.0.0.0', port=9876)
