@@ -9,7 +9,7 @@
 
 <img src="templates\frontend.png" width="100%">
 
-## 在本地电脑上部署：
+## 在本地电脑上部署
 
 1.clone 本项目
 
