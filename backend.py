@@ -22,18 +22,19 @@ def new_compare():
 @app.route('/save_score', methods=['POST']) 
 @cross_origin()
 def save_score():
-    with open('list/win_score.pickle', 'rb') as f:
-        lst_win_score = pickle.load(f)
-    with open('list/lose_score.pickle', 'rb') as f:
-        lst_lose_score = pickle.load(f)
-    
-    lst_win_score[dict_name[request.args.get('win_name')]] += 1
-    lst_lose_score[dict_name[request.args.get('lose_name')]] += 1
+    if verify():
+        with open('list/win_score.pickle', 'rb') as f:
+            lst_win_score = pickle.load(f)
+        with open('list/lose_score.pickle', 'rb') as f:
+            lst_lose_score = pickle.load(f)
+        
+        lst_win_score[dict_name[request.args.get('win_name')]] += 1
+        lst_lose_score[dict_name[request.args.get('lose_name')]] += 1
 
-    with open('list/win_score.pickle', 'wb') as f:
-        pickle.dump(lst_win_score, f)
-    with open('list/lose_score.pickle', 'wb') as f:
-        pickle.dump(lst_lose_score, f)
+        with open('list/win_score.pickle', 'wb') as f:
+            pickle.dump(lst_win_score, f)
+        with open('list/lose_score.pickle', 'wb') as f:
+            pickle.dump(lst_lose_score, f)
 
     return 'success'
 
@@ -53,15 +54,62 @@ def view_final_order():
     final_name, final_score = zip(*sorted(dict_score.items(), key=lambda _: -_[1]))
     return jsonify({'name': final_name, 'score': final_score, 'count': '已收集数据 ' + str(sum(lst_win_score)) + ' 条'})
 
+
 @app.route('/page', methods=['GET'])
 @cross_origin()
 def page():
     return render_template('page.html')
 
+
 @app.route('/favicon.ico', methods=['GET'])
 @cross_origin()
 def ico():
     return send_from_directory(os.path.join(app.root_path, 'templates'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
+def get_client_ip():
+    try:
+        real_ip = request.META['HTTP_X_FORWARDED_FOR']
+        client_ip = real_ip.split(",")[0]
+    except:
+        try:
+            client_ip = request.META['REMOTE_ADDR']
+        except:
+            client_ip = request.remote_addr
+    return client_ip
+
+
+def verify():
+    client_ip = get_client_ip()
+    with open('ip/ip_ban.pickle', 'rb') as f:
+        ip_ban = pickle.load(f)
+    if client_ip in ip_ban:
+        return False
+
+    with open('ip/ip_dict.pickle', 'rb') as f:
+        ip_dict = pickle.load(f)
+    if not client_ip in ip_dict:
+        ip_dict[client_ip] = [0] * len(lst_name)
+    
+    win_index = dict_name[request.args.get('win_name')]
+    lose_index = dict_name[request.args.get('lose_name')]
+    ip_dict[client_ip][win_index] += 1
+    ip_dict[client_ip][lose_index] -= 1
+
+    if ip_dict[client_ip][win_index] == 7 or ip_dict[client_ip][lose_index] == -7:
+        del ip_dict[client_ip]
+        ip_ban.add(client_ip)
+
+        with open('ip/ip_dict.pickle', 'wb') as f:
+            pickle.dump(ip_dict, f)
+        with open('ip/ip_ban.pickle', 'wb') as f:
+            pickle.dump(ip_ban, f)
+        return False
+    else:
+        with open('ip/ip_dict.pickle', 'wb') as f:
+            pickle.dump(ip_dict, f)
+        return True
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=9876)
