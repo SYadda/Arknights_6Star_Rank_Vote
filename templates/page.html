@@ -29,6 +29,9 @@
 
                         <h4 id="toupiao_success" align="center" style="font-size: 20px; color: orangered;">&nbsp;</h4>
 
+                        <input type="button" value="跳过，换一组" onclick="new_compare()"
+                            style="margin: 0 auto; font-size: 20px;">&nbsp;&nbsp;&nbsp;&nbsp;
+
                         <input type="button" value="查看投票结果" onclick="view_final_order()"
                             style="margin: 0 auto; font-size: 20px;">
                     </div>
@@ -37,16 +40,20 @@
             </tr>
         </table>
 
-        <h2 align="center">V0.1.0 内测版</h2>
+        <h2 align="center">V1.0.0 公测版</h2>
         <h2 align="center">规则：每次投票，得票+1分，未得票-1分，最后统计所有投票得分。</h2>
-        <h2 align="center" style="color: red;">警告：数据量过少（低于1000条）时，结果可能谬误甚多，毫无参考价值。</h2>
+        <h2 align="center" style="color: red;">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
+        <h2 align="center" style="color: red;">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
+        <h2 align="center">鸣谢：本投票两两比较的灵感来源于nga，制作过程中得到了PTRS，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
+        <h3 align="center">本项目已开源至GitHub仓库：https://github.com/SYadda/Arknights_6Star_Rank_Vote</h2>
         <h2 id="已收集数据量" align="center">&nbsp;</h2>
 
             <table id="final_order_table" style="display: none; margin: 0 auto;">
                 <thead>
                     <tr>
                         <th>杯型</th>
-                        <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp干员代号&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                        <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp排名&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
+                        <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp干员代号&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
                         <th>得分</th>
                     </tr>
                 </thead>
@@ -194,8 +201,8 @@
                     document.getElementById("已收集数据量").innerText = obj.count;
 
                     const star6_staff_amount = obj.name.length;
-                    const cup_rank = [star6_staff_amount * 0.1, star6_staff_amount * 0.2, star6_staff_amount * 0.3, star6_staff_amount * 0.4, star6_staff_amount * 0.5, star6_staff_amount * 0.6, star6_staff_amount * 0.7]
-                    const cup_size = ['十翅桶', '超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯'] // 共分10档，但中杯不再区分上中下
+                    const cup_rank = [star6_staff_amount * 0.11, star6_staff_amount * 0.22, star6_staff_amount * 0.33, star6_staff_amount * 0.44, star6_staff_amount * 0.55, star6_staff_amount * 0.67]
+                    const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯'] // 共分9档，但中杯不再区分上中下
 
                     var table = document.getElementById("final_order_table")
                     table.style.display = "inline";
@@ -209,10 +216,8 @@
                         if (this_rank < cup_rank[2]) { this_size = cup_size[2]; } else
                         if (this_rank < cup_rank[3]) { this_size = cup_size[3]; } else
                         if (this_rank < cup_rank[4]) { this_size = cup_size[4]; } else
-                        if (this_rank < cup_rank[5]) { this_size = cup_size[5]; } else
-                        if (this_rank < cup_rank[6]) { this_size = cup_size[6]; } else { this_size = cup_size[7]; }
-
-                        htmlStr += "<tr><td>" + this_size + "</td><td>" + obj.name[i] + "</td><td>" + obj.score[i] + "</td></tr>";
+                        if (this_rank < cup_rank[5]) { this_size = cup_size[5]; } else { this_size = cup_size[6]; } 
+                        htmlStr += "<tr><td>" + this_size + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.score[i] + "</td></tr>";
                     }
                     document.getElementById("final_order_tbody").innerHTML = htmlStr;
                 }
