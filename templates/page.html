@@ -14,64 +14,68 @@
 </head>
 
 <body onload="new_compare();">
-    <div style="text-align: center;">
-        <table class="compare" style="margin: 0 auto;">
-            <tr>
+    <div class="bg">
+        <div class="w">
+            <div class="com">
+                <table class="compare">
+                    <tr>
 
-                <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
-                <td><br><br><br><img id="left_png"></td>
+                        <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
+                        <td><br><br><br><img id="left_png"></td>
 
-                <!-- 比较核心区域 -->
-                <td>
-                    <!-- 标题 -->
-                    <h1>明日方舟六星</h1>
-                    <h1>强度投票箱</h1>
-                    <h4>by: 董杭杭</h4>
-                    <div class="compare_block">
+                        <!-- 比较核心区域 -->
+                        <td>
+                            <!-- 标题 -->
+                            <h1>明日方舟六星</h1>
+                            <h1>强度投票箱</h1>
+                            <h4>by: 董杭杭</h4>
+                            <div class="compare_block">
 
-                        <!-- 为干员投票按钮 -->
-                        <div class="vote">
-                            <input class="vote_button" type="button" value="👈👍" onclick="save_score_left()">
-                            <input class="vote_button" type="button" value="👉👍" onclick="save_score_right()">
-                        </div>
+                                <!-- 为干员投票按钮 -->
+                                <div class="vote">
+                                    <input class="vote_button" type="button" value="👈👍" onclick="save_score_left()">
+                                    <input class="vote_button" type="button" value="👉👍" onclick="save_score_right()">
+                                </div>
 
-                        <!-- 部分辅助功能 -->
-                        <div class="function">
-                            <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
-                            <input class="result" type="button" value="查看投票结果" onclick="view_final_order()">
-                        </div>
+                                <!-- 部分辅助功能 -->
+                                <div class="function">
+                                    <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
+                                    <input class="result" type="button" value="查看投票结果" onclick="view_final_order()">
+                                </div>
 
-                </td>
+                        </td>
 
-                <!-- 右侧干员图片 -->
-                <td><br><br><br><img id="right_png"></td>
+                        <!-- 右侧干员图片 -->
+                        <td><br><br><br><img id="right_png"></td>
 
-            </tr>
-        </table>
-
+                    </tr>
+                </table>
+            </div>
+        </div>
         <!-- footer部分 -->
         <div class="footer">
-            <h2>V1.0.0 公测版</h2>
-            <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有投票得分。</h2>
-            <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
-            <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
-            <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
-            <h3>本项目已开源至GitHub仓库：https://github.com/SYadda/Arknights_6Star_Rank_Vote</h2>
+            <div class="w">
+                <h2>V1.0.0 公测版</h2>
+                <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有投票得分。</h2>
+                <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
+                <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
+                <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
+                <h3>本项目已开源至GitHub仓库：https://github.com/SYadda/Arknights_6Star_Rank_Vote</h2>
 
-                <!-- 不可见数据部分,在获取数据后展示 -->
-                <h2 id="已收集数据量">&nbsp;</h2>
-                <table id="final_order_table" style="display: none; margin: 0 auto;">
-                    <thead>
-                        <tr>
-                            <th>杯型</th>
-                            <th>排名</th>
-                            <th>干员代号</th>
-                            <th>得分</th>
-                        </tr>
-                    </thead>
-                    <tbody id="final_order_tbody"></tbody>
-                </table>
-
+                    <!-- 不可见数据部分,在获取数据后展示 -->
+                    <h2 id="已收集数据量">&nbsp;</h2>
+                    <table id="final_order_table" style="display: none; margin: 0 auto;">
+                        <thead>
+                            <tr>
+                                <th>杯型</th>
+                                <th>排名</th>
+                                <th>干员代号</th>
+                                <th>得分</th>
+                            </tr>
+                        </thead>
+                        <tbody id="final_order_tbody"></tbody>
+                    </table>
+            </div>
         </div>
 
 
