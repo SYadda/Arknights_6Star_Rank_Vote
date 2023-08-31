@@ -1,0 +1,97 @@
+/*
+这里是对本页面样式的主要更改部分
+****
+包括之前你写在标签内的所有style=""部分
+****
+如有任何对页面设计的更改都会在此处进行修改
+如果有看不懂的代码可以尝试联系王小黑 @名为王小黑!
+*/
+
+
+/* 页面红色文字的修改 */
+.red_text {
+    color: red;
+}
+
+/* 干员图片大小设置 */
+.compare tr td img {
+    width: 100%;
+}
+
+/* 干员比较部分标题文字样式设置 */
+.compare tr td h1 {
+    text-align: center;
+    font-size: 32px;
+    margin: 11px 0;
+}
+
+/* 干员比较部分作者文字样式设置 */
+.compare tr td h4 {
+    text-align: center;
+    font-size: 16px;
+    margin: 11px 0;
+}
+
+/* 干员比较核心盒子 */
+.compare_block {
+    margin: 0px;
+    text-align: center;
+}
+
+/* 干员比较核心中的所有按钮 */
+.compare_block input {
+    padding: 1px 6px;
+    border: 1px solid #000;
+}
+
+.compare_block input:hover {
+    background-color: #ccc;
+}
+
+/* 比较核心中投票按钮设计 */
+.compare_block .vote_button {
+    width: 70px;
+    margin: 0px 25px;
+    font-size: 40px;
+    white-space: normal;
+}
+
+/* 比较核心中其他功能按钮设计 */
+.compare_block .function {
+    margin-top: 30px;
+}
+
+/* 比较核心中跳过按钮设计 */
+.compare_block .skip {
+    margin: 0 10px;
+    font-size: 20px;
+}
+
+/* 比较核心中查看结果按钮设计 */
+.compare_block .result {
+    margin: 0 10px;
+    font-size: 20px;
+}
+
+/* 下方规则等文字设计 */
+.footer h2 {
+    margin: 20px 0;
+    text-align: center;
+    font-size: 24px;
+}
+
+.footer h3 {
+    text-align: center;
+    font-size: 19px;
+}
+
+/* 投票结果表格头部分设计 */
+.footer table thead tr th {
+    padding: 0 10px;
+    font-size: 16px;
+}
+
+.footer table thead tr th:nth-child(2),
+.footer table thead tr th:nth-child(3) {
+    padding: 0 30px;
+}
