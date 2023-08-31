@@ -81,6 +81,12 @@ body {
     white-space: normal;
 }
 
+.compare_block #toupiao_success {
+    text-align: center;
+    font-size: 20px;
+    color: orangered;
+}
+
 /* 比较核心中其他功能按钮设计 */
 .compare_block .function {
     margin-top: 30px;
@@ -99,6 +105,8 @@ body {
 }
 
 /* 下方规则等文字设计 */
+
+
 .footer h2 {
     margin: 20px 0;
     text-align: center;

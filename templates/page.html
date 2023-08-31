@@ -19,9 +19,8 @@
             <div class="com">
                 <table class="compare">
                     <tr>
-
                         <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
-                        <td><br><br><br><img id="left_png"></td>
+                        <td><img id="left_png"></td>
 
                         <!-- 比较核心区域 -->
                         <td>
@@ -37,7 +36,7 @@
                                     <input class="vote_button" type="button" value="👉👍" onclick="save_score_right()">
                                 </div>
 
-                                <h4 id="toupiao_success" align="center" style="font-size: 20px; color: orangered;">&nbsp;</h4>
+                                <h4 id="toupiao_success">&nbsp;</h4>
 
                                 <!-- 部分辅助功能 -->
                                 <div class="function">
@@ -48,12 +47,13 @@
                         </td>
 
                         <!-- 右侧干员图片 -->
-                        <td><br><br><br><img id="right_png"></td>
+                        <td><img id="right_png"></td>
 
                     </tr>
                 </table>
             </div>
         </div>
+
         <!-- footer部分 -->
         <div class="footer">
             <div class="w">
@@ -78,6 +78,7 @@
                         <tbody id="final_order_tbody"></tbody>
                     </table>
             </div>
+
         </div>
 
 
@@ -189,6 +190,8 @@
                     document.getElementById("right_png").src = dic_pic_url[right_name];
                 }
             }
+            // document.getElementById("left_png").src = dic_pic_url['能天使'];
+            // document.getElementById("right_png").src = dic_pic_url['推进之王'];
         }
 
 
