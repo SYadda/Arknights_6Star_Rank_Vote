@@ -29,6 +29,11 @@ body {
 }
 
 /* 比较模块 */
+.com {
+    float: left;
+}
+
+
 .compare {
     margin: 10px auto 0;
     padding: 8px;
@@ -99,6 +104,12 @@ body {
 }
 
 /* 下方规则等文字设计 */
+.footer {
+    float: right;
+    width: 500px;
+}
+
+
 .footer h2 {
     margin: 20px 0;
     text-align: center;
