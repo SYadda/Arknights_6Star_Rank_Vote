@@ -36,7 +36,7 @@
                                     <input class="vote_button" type="button" value="👉👍" onclick="save_score_right()">
                                 </div>
 
-                                <h4 id="toupiao_success" align="center" style="font-size: 20px; color: orangered;">&nbsp;</h4>
+                                <h4 id="toupiao_success">&nbsp;</h4>
 
                                 <!-- 部分辅助功能 -->
                                 <div class="function">
@@ -52,9 +52,11 @@
                     </tr>
                 </table>
             </div>
+        </div>
 
-            <!-- footer部分 -->
-            <div class="footer">
+        <!-- footer部分 -->
+        <div class="footer">
+            <div class="w">
                 <h2>V1.0.0 公测版</h2>
                 <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有投票得分。</h2>
                 <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
@@ -76,6 +78,7 @@
                         <tbody id="final_order_tbody"></tbody>
                     </table>
             </div>
+
         </div>
 
 
@@ -173,22 +176,22 @@
         //http方法: GET
         //接口:new_compare
         function new_compare() {
-            // xhr = new XMLHttpRequest();
-            // xhr.open('GET', 'http://127.0.0.1:9876/new_compare', true);
-            // xhr.send();
+            xhr = new XMLHttpRequest();
+            xhr.open('GET', 'http://127.0.0.1:9876/new_compare', true);
+            xhr.send();
 
-            // xhr.onreadystatechange = function () {
-            //     if (xhr.readyState === 4 && xhr.status === 200) {
-            //         var name = xhr.responseText.split(' ');
-            //         left_name = name[0]
-            //         right_name = name[1]
-            //         code = name[2]
-            //         document.getElementById("left_png").src = dic_pic_url[left_name];
-            //         document.getElementById("right_png").src = dic_pic_url[right_name];
-            //     }  
-            // }
-            document.getElementById("left_png").src = dic_pic_url['能天使'];
-            document.getElementById("right_png").src = dic_pic_url['推进之王'];
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    var name = xhr.responseText.split(' ');
+                    left_name = name[0]
+                    right_name = name[1]
+                    code = name[2]
+                    document.getElementById("left_png").src = dic_pic_url[left_name];
+                    document.getElementById("right_png").src = dic_pic_url[right_name];
+                }
+            }
+            // document.getElementById("left_png").src = dic_pic_url['能天使'];
+            // document.getElementById("right_png").src = dic_pic_url['推进之王'];
         }
 
 
