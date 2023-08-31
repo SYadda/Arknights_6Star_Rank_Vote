@@ -5,60 +5,80 @@
     <link rel="icon" href="favicon.ico" type="image/x-icon">
     <meta charset="utf-8" />
     <title>六星干员强度投票箱</title>
+    <!-- 初始样式，用于初始化页面 -->
+    <link rel="stylesheet" href="css/base.css">
+    <!-- 页面样式 -->
+    <!-- 谁再教你行内样式设计页面就狠狠给它一拳 -->
+    <!-- css和html分离！ -->
+    <link rel="stylesheet" href="css/compare.css">
 </head>
 
 <body onload="new_compare();">
-    <div style="text-align: center;">
-        <table style="margin: 0 auto;">
-            <tr>
-                <td><br><br><br><img id="left_png" style="width: 100%;"></td>
-                <td>
-                    <h1 align="center">明日方舟六星</h1>
-                    <h1 align="center">强度投票箱</h1>
-                    <h4 align="center">by: 董杭杭</h4>
-                    <div style="text-align: center;">
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="button" value="👈
-👍" onclick="save_score_left()" style="margin: 0 auto; font-size: 40px;">
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <input type="button" value="👉
-👍" onclick="save_score_right()" style="margin: 0 auto; font-size: 40px;">
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-                        <br>
-
-                        <h4 id="toupiao_success" align="center" style="font-size: 20px; color: orangered;">&nbsp;</h4>
-
-                        <input type="button" value="跳过，换一组" onclick="new_compare()"
-                            style="margin: 0 auto; font-size: 20px;">&nbsp;&nbsp;&nbsp;&nbsp;
-
-                        <input type="button" value="查看投票结果" onclick="view_final_order()"
-                            style="margin: 0 auto; font-size: 20px;">
-                    </div>
-                </td>
-                <td><br><br><br><img id="right_png" style="width: 100%;"></td>
-            </tr>
-        </table>
-
-        <h2 align="center">V1.0.0 公测版</h2>
-        <h2 align="center">规则：每次投票，得票+1分，未得票-1分，最后统计所有投票得分。</h2>
-        <h2 align="center" style="color: red;">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
-        <h2 align="center" style="color: red;">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
-        <h2 align="center">鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
-        <h3 align="center">本项目已开源至GitHub仓库：https://github.com/SYadda/Arknights_6Star_Rank_Vote</h2>
-        <h2 id="已收集数据量" align="center">&nbsp;</h2>
-
-            <table id="final_order_table" style="display: none; margin: 0 auto;">
-                <thead>
+    <div class="bg">
+        <div class="w">
+            <div class="com">
+                <table class="compare">
                     <tr>
-                        <th>杯型</th>
-                        <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp排名&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-                        <th>&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp干员代号&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</th>
-                        <th>得分</th>
+
+                        <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
+                        <td><br><br><br><img id="left_png"></td>
+
+                        <!-- 比较核心区域 -->
+                        <td>
+                            <!-- 标题 -->
+                            <h1>明日方舟六星</h1>
+                            <h1>强度投票箱</h1>
+                            <h4>by: 董杭杭</h4>
+                            <div class="compare_block">
+
+                                <!-- 为干员投票按钮 -->
+                                <div class="vote">
+                                    <input class="vote_button" type="button" value="👈👍" onclick="save_score_left()">
+                                    <input class="vote_button" type="button" value="👉👍" onclick="save_score_right()">
+                                </div>
+
+                                <!-- 部分辅助功能 -->
+                                <div class="function">
+                                    <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
+                                    <input class="result" type="button" value="查看投票结果" onclick="view_final_order()">
+                                </div>
+
+                        </td>
+
+                        <!-- 右侧干员图片 -->
+                        <td><br><br><br><img id="right_png"></td>
+
                     </tr>
-                </thead>
-                <tbody id="final_order_tbody"></tbody>
-            </table>
+                </table>
+            </div>
+        </div>
+        <!-- footer部分 -->
+        <div class="footer">
+            <div class="w">
+                <h2>V1.0.0 公测版</h2>
+                <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有投票得分。</h2>
+                <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
+                <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
+                <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
+                <h3>本项目已开源至GitHub仓库：https://github.com/SYadda/Arknights_6Star_Rank_Vote</h2>
+
+                    <!-- 不可见数据部分,在获取数据后展示 -->
+                    <h2 id="已收集数据量">&nbsp;</h2>
+                    <table id="final_order_table" style="display: none; margin: 0 auto;">
+                        <thead>
+                            <tr>
+                                <th>杯型</th>
+                                <th>排名</th>
+                                <th>干员代号</th>
+                                <th>得分</th>
+                            </tr>
+                        </thead>
+                        <tbody id="final_order_tbody"></tbody>
+                    </table>
+            </div>
+        </div>
+
+
     </div>
 
 
@@ -149,6 +169,9 @@
             '能天使': 'https://prts.wiki/images/2/2e/半身像_能天使_1.png'
         }
 
+        //获取本次进行比较干员的头像
+        //http方法: GET
+        //接口:new_compare
         function new_compare() {
             xhr = new XMLHttpRequest();
             xhr.open('GET', 'http://127.0.0.1:9876/new_compare', true);
@@ -166,6 +189,11 @@
             }
         }
 
+
+        //上传本次比较结果
+        //http方法: POST
+        //接口: safescore
+        //供给参数:win_name, lose_name
         function save_score_left() {
             xhr = new XMLHttpRequest();
             xhr.open('POST', 'http://127.0.0.1:9876/save_score?win_name=' + left_name + '&lose_name=' + right_name + '&code=' + code, true);
@@ -192,6 +220,8 @@
             }
         }
 
+        //获取总比较结果
+        //http方法: GET
         function view_final_order() {
             xhr = new XMLHttpRequest();
             xhr.open('GET', 'http://127.0.0.1:9876/view_final_order', true);
@@ -214,12 +244,12 @@
                     for (let i = 0; i < star6_staff_amount; i++) {
                         var this_rank = i + 1;
 
-                        if (this_rank < cup_rank[0]) { this_size = cup_size[0]; } else 
-                        if (this_rank < cup_rank[1]) { this_size = cup_size[1]; } else
-                        if (this_rank < cup_rank[2]) { this_size = cup_size[2]; } else
-                        if (this_rank < cup_rank[3]) { this_size = cup_size[3]; } else
-                        if (this_rank < cup_rank[4]) { this_size = cup_size[4]; } else
-                        if (this_rank < cup_rank[5]) { this_size = cup_size[5]; } else { this_size = cup_size[6]; } 
+                        if (this_rank < cup_rank[0]) { this_size = cup_size[0]; } else
+                            if (this_rank < cup_rank[1]) { this_size = cup_size[1]; } else
+                                if (this_rank < cup_rank[2]) { this_size = cup_size[2]; } else
+                                    if (this_rank < cup_rank[3]) { this_size = cup_size[3]; } else
+                                        if (this_rank < cup_rank[4]) { this_size = cup_size[4]; } else
+                                            if (this_rank < cup_rank[5]) { this_size = cup_size[5]; } else { this_size = cup_size[6]; }
                         htmlStr += "<tr><td>" + this_size + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.score[i] + "</td></tr>";
                     }
                     document.getElementById("final_order_tbody").innerHTML = htmlStr;
