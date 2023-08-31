@@ -13,6 +13,7 @@
     color: red;
 }
 
+/* 主题样式 */
 body {
     background-color: #F6F6F6;
 }
@@ -21,11 +22,13 @@ body {
     text-align: center;
 }
 
+/* 版心 */
 .w {
     width: 1200px;
     margin: 0px auto;
 }
 
+/* 比较模块 */
 .compare {
     margin: 10px auto 0;
     padding: 8px;
