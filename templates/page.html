@@ -166,7 +166,7 @@
         /* 干员比较核心中的所有按钮 */
         .compare_block input {
             padding: 1px 6px;
-            border: 1px solid #000;
+            border: 1px solid transparent;
             border-radius: 4px;
             transition: all 0.3s ease;
         }
@@ -201,9 +201,18 @@
         }
 
         /* 比较核心中查看结果按钮设计 */
-        .compare_block .result {
+        .compare_block .result,
+        .compare_block .close {
             margin: 0 10px;
             font-size: 20px;
+        }
+
+        .compare_block .result {
+            display: inline;
+        }
+
+        .compare_block .close {
+            display: none;
         }
 
         /* 下方规则等文字设计 */
@@ -244,6 +253,25 @@
         .final table thead tr th:nth-child(4) {
             padding: 0 35px;
         }
+
+        #topBtn {
+            display: none;
+            /* 默认情况下隐藏按钮 */
+            position: fixed;
+            bottom: 100px;
+            right: 100px;
+            background-color: #dddddd;
+            color: #000;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            padding: 10px 20px;
+            transition: all 0.5s ease;
+        }
+
+        #topBtn:hover {
+            background-color: #ccc;
+        }
     </style>
 </head>
 
@@ -274,7 +302,8 @@
                             <!-- 部分辅助功能 -->
                             <div class="function">
                                 <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
-                                <input class="result" type="button" value="查看投票结果" onclick="view_final_order()">
+                                <input class="result" type="button" value="查看投票结果" onclick="close_or_view()">
+                                <input class="close" type="button" value="关闭投票结果" onclick="close_or_view()">
                             </div>
 
                     </td>
@@ -317,7 +346,7 @@
 
     </div>
 
-
+    <button id="topBtn" onclick="scrollToTop()">回到顶部</button>
 
     <script type="text/javascript">
         var code = "000";
@@ -493,6 +522,46 @@
             }
         }
 
+        var flag = true;
+        function close_or_view() {
+            if (flag) {
+                flag = false;
+                view_final_order()
+                var close = document.getElementsByClassName('close');
+                var result = document.getElementsByClassName('result');
+                result[0].style.display = 'none';
+                close[0].style.display = 'inline';
+
+            }
+            else {
+                document.getElementById("已收集数据量").innerText = '';
+                var table = document.getElementById("final_order_table");
+                table.style.display = "none";
+                var close = document.getElementsByClassName('close');
+                var result = document.getElementsByClassName('result');
+                result[0].style.display = 'inline';
+                close[0].style.display = 'none';
+                flag = true;
+            }
+        }
+
+        // JavaScript 函数，用于滚动到页面顶部
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // 使用平滑滚动效果
+            });
+        }
+
+        // 当页面向下滚动一定距离时，显示回到顶部按钮
+        window.addEventListener('scroll', function () {
+            var topBtn = document.getElementById('topBtn');
+            if (document.documentElement.scrollTop > 200) { // 当滚动超过200像素时显示按钮
+                topBtn.style.display = 'block';
+            } else {
+                topBtn.style.display = 'none';
+            }
+        });
     </script>
 </body>
 
