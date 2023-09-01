@@ -465,22 +465,22 @@ body {
 
                     const star6_staff_amount = obj.name.length;
                     const serie = new geostats(obj.score);
-                    let cup_rank = serie.getClassJenks(3);
+                    let cup_rank = serie.getClassJenks2(3);
                     const cup_size = new Array(star6_staff_amount);
                     for (let i = 0; i < star6_staff_amount; i++) {
-                        if (obj.score[i] > cup_rank[2]) cup_size[i] = '超大杯';
-                        else if (obj.score[i] >= cup_rank[1]) cup_size[i] = '大杯';
-                        else cup_size[i] = '中杯';
+                        if (obj.score[i] > cup_rank[2]) { cup_size[i] = '超大杯'; }
+                        else if (obj.score[i] > cup_rank[1]) { cup_size[i] = '大杯'; }
+                        else { cup_size[i] = '中杯'; }
                     }
                     // 共分 9 档，但中杯不再区分上中下
-                    const cup_rank_index = [0, obj.score.indexOf(cup_rank[2]), obj.score.indexOf(cup_rank[1]) + 1];
+                    const cup_rank_index = [0, obj.score.indexOf(cup_rank[2]), obj.score.indexOf(cup_rank[1])];
                     for (let i = 1; i < cup_rank_index.length; i++) {
                         serie.setSerie(obj.score.slice(cup_rank_index[i - 1], cup_rank_index[i]));
-                        cup_rank = serie.getClassJenks(3);
+                        cup_rank = serie.getClassJenks2(3);
                         for (let j = cup_rank_index[i - 1]; j < cup_rank_index[i]; j++) {
-                            if (obj.score[j] > cup_rank[2]) cup_size[j] += '上';
-                            else if (obj.score[j] >= cup_rank[1]) cup_size[j] += '中';
-                            else cup_size[j] += '下';
+                            if (obj.score[j] > cup_rank[2]) { cup_size[j] += '上'; }
+                            else if (obj.score[j] > cup_rank[1]) { cup_size[j] += '中'; }
+                            else { cup_size[j] += '下'; }
                         }
                     }
 
