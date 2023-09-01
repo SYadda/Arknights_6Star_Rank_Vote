@@ -158,10 +158,13 @@ function view_final_order() {
             const class_num = 6;
 
             var mpn = palette('mpn65', class_num);
-            const palette_mpn = mpn.reverse();
+            // const palette_mpn = mpn.reverse();
+            const palette_mpn = ['6464ff', '64ffff', '64ff64', 'ffff64', 'ffe464', 'ff6464']
             const serie = new geostats(score_array);
             const cup_rank = serie.getClassJenks2(class_num);
-            const cup_size = new Array(star6_staff_amount);
+            // const cup_size = new Array(star6_staff_amount);
+            const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯', '中杯', '中杯']
+            const star6_staff_amount_div_9 = star6_staff_amount / 9;
             const cup_color = new Array(star6_staff_amount);
 
             /* 
@@ -182,13 +185,13 @@ function view_final_order() {
                     }
                 }
             }
-             */
+            */
 
             // 按照聚类划分梯度
             for (let i = 0; i < star6_staff_amount; i++) {
                 for (let j = 1; j < cup_rank.length; j++) {
                     if (score_array[i] <= cup_rank[j]) {
-                        cup_size[i] = 'T' + (class_num - j);
+                        // cup_size[i] = 'T' + (class_num - j);
                         cup_color[i] = palette_mpn[j - 1];
                         break;
                     }
@@ -202,7 +205,7 @@ function view_final_order() {
             for (let i = 0; i < star6_staff_amount; i++) {
                 var this_rank = i + 1;
 
-                htmlStr += "<tr style=\"background:#" + cup_color[i] + ";\"><td>" + cup_size[i] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + score_array[i] + "</td></tr>";
+                htmlStr += "<tr style=\"background:#" + cup_color[i] + ";\"><td>" + cup_size[parseInt(i / star6_staff_amount_div_9)] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + score_array[i] + "</td></tr>";
             }
             document.getElementById("final_order_tbody").innerHTML = htmlStr;
         }
