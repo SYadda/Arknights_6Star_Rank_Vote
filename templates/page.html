@@ -7,14 +7,14 @@
     <title>六星干员强度投票箱</title>
     <style>
         /*
-这里是一些前端网页的常用初始化样式,
-可以尽量保证网页在不同浏览器的显示效果一致,
-可以简单浏览一下涉及到的标签,
-以保证在后期继续开发的过程中
-提前了解对应标签初始状态的变化,
-但不建议在这里更改任何样式
-如有任何问题请联系王小黑 @名为王小黑!
-*/
+        这里是一些前端网页的常用初始化样式,
+        可以尽量保证网页在不同浏览器的显示效果一致,
+        可以简单浏览一下涉及到的标签,
+        以保证在后期继续开发的过程中
+        提前了解对应标签初始状态的变化,
+        但不建议在这里更改任何样式
+        如有任何问题请联系王小黑 @名为王小黑!
+        */
 
 
         /* 把我们所有标签的内外边距清零 */
@@ -48,7 +48,7 @@
         }
 
         a {
-            color: #666;
+            color: #000;
             text-decoration: none
         }
 
@@ -92,13 +92,13 @@
         }
 
         /*
-这里是对本页面样式的主要更改部分
-****
-包括之前你写在标签内的所有style=""部分
-****
-如有任何对页面设计的更改都会在此处进行修改
-如果有看不懂的代码可以尝试联系王小黑 @名为王小黑!
-*/
+        这里是对本页面样式的主要更改部分
+        ****
+        包括之前你写在标签内的所有style=""部分
+        ****
+        如有任何对页面设计的更改都会在此处进行修改
+        如果有看不懂的代码可以尝试联系王小黑 @名为王小黑!
+        */
 
 
         /* 页面红色文字的修改 */
@@ -122,16 +122,20 @@
         }
 
         /* 比较模块 */
-        .com {
-            float: left;
-        }
-
-        .compare {
+        .compare,
+        .footer {
             margin: 10px auto 0;
             padding: 8px;
             border-radius: 8px;
             background: rgba(250, 250, 250, 0.05);
             box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+
+        .compare:hover,
+        .footer:hover {
+            box-shadow: 0 3px 5px 5px rgba(0, 0, 0, 0.2);
         }
 
         /* 干员图片大小设置 */
@@ -143,7 +147,7 @@
         .compare tr td h1 {
             text-align: center;
             font-size: 32px;
-            margin: 11px 0;
+            margin: 0 0 11px;
         }
 
         /* 干员比较部分作者文字样式设置 */
@@ -164,6 +168,7 @@
             padding: 1px 6px;
             border: 1px solid #000;
             border-radius: 4px;
+            transition: all 0.3s ease;
         }
 
         .compare_block input:hover {
@@ -203,12 +208,12 @@
 
         /* 下方规则等文字设计 */
         .footer {
-            float: right;
-            width: 500px;
+            width: 696px;
+            margin-bottom: 10px;
         }
 
         .footer h2 {
-            margin: 20px 0;
+            margin: 0 0 20px;
             text-align: center;
             font-size: 24px;
         }
@@ -218,87 +223,95 @@
             font-size: 19px;
         }
 
+        .footer a {
+            display: inline-block;
+            text-align: center;
+            font-size: 19px;
+            font-weight: 700;
+        }
+
         /* 投票结果表格头部分设计 */
-        .footer table thead tr th {
+        .final table thead tr th {
             padding: 0 10px;
             font-size: 16px;
         }
 
-        .footer table thead tr th:nth-child(2),
-        .footer table thead tr th:nth-child(3) {
+        .final table thead tr th:nth-child(2),
+        .final table thead tr th:nth-child(3) {
             padding: 0 30px;
+        }
+
+        .final table thead tr th:nth-child(4) {
+            padding: 0 35px;
         }
     </style>
 </head>
 
 <body onload="new_compare();">
     <div class="bg">
-        <div class="w">
-            <div class="com">
-                <table class="compare">
-                    <tr>
-                        <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
-                        <td><img id="left_png"></td>
+        <div class="com">
+            <table class="compare">
+                <tr>
+                    <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
+                    <td><img id="left_png"></td>
 
-                        <!-- 比较核心区域 -->
-                        <td>
-                            <!-- 标题 -->
-                            <h1>明日方舟六星</h1>
-                            <h1>强度投票箱</h1>
-                            <h4>by: 董杭杭</h4>
-                            <div class="compare_block">
+                    <!-- 比较核心区域 -->
+                    <td>
+                        <!-- 标题 -->
+                        <h1>明日方舟六星</h1>
+                        <h1>强度投票箱</h1>
+                        <h4>by: 董杭杭</h4>
+                        <div class="compare_block">
 
-                                <!-- 为干员投票按钮 -->
-                                <div class="vote">
-                                    <input class="vote_button" type="button" value="👈👍" onclick="save_score_left()">
-                                    <input class="vote_button" type="button" value="👉👍" onclick="save_score_right()">
-                                </div>
+                            <!-- 为干员投票按钮 -->
+                            <div class="vote">
+                                <input class="vote_button" type="button" value="👈👍" onclick="save_score_left()">
+                                <input class="vote_button" type="button" value="👉👍" onclick="save_score_right()">
+                            </div>
 
-                                <h4 id="toupiao_success">&nbsp;</h4>
+                            <h4 id="toupiao_success">&nbsp;</h4>
 
-                                <!-- 部分辅助功能 -->
-                                <div class="function">
-                                    <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
-                                    <input class="result" type="button" value="查看投票结果" onclick="view_final_order()">
-                                </div>
+                            <!-- 部分辅助功能 -->
+                            <div class="function">
+                                <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
+                                <input class="result" type="button" value="查看投票结果" onclick="view_final_order()">
+                            </div>
 
-                        </td>
+                    </td>
 
-                        <!-- 右侧干员图片 -->
-                        <td><img id="right_png"></td>
+                    <!-- 右侧干员图片 -->
+                    <td><img id="right_png"></td>
 
-                    </tr>
-                </table>
-            </div>
+                </tr>
+            </table>
         </div>
-
         <!-- footer部分 -->
         <div class="footer">
-            <div class="w">
-                <h2>V1.0.1 公测版</h2>
-                <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有干员的胜率和得分，以胜率排名。</h2>
-                <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
-                <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
-                <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
-                <h3>本项目已开源至GitHub仓库：https://github.com/SYadda/Arknights_6Star_Rank_Vote</h2>
-
-                    <!-- 不可见数据部分,在获取数据后展示 -->
-                    <h2 id="已收集数据量">&nbsp;</h2>
-                    <table id="final_order_table" style="display: none; margin: 0 auto;">
-                        <thead>
-                            <tr>
-                                <th>杯型</th>
-                                <th>排名</th>
-                                <th>干员代号</th>
-                                <th>&nbsp;&nbsp;&nbsp;&nbsp;胜率&nbsp;&nbsp;&nbsp;&nbsp;</th>
-                                <th>得分</th>
-                            </tr>
-                        </thead>
-                        <tbody id="final_order_tbody"></tbody>
-                    </table>
-            </div>
+            <h2>V1.0.1 公测版</h2>
+            <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有干员的胜率和得分，以胜率排名。</h2>
+            <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
+            <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
+            <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
+            <h3>本项目已开源至GitHub仓库：</h3>
+            <a
+                href="https://github.com/SYadda/Arknights_6Star_Rank_Vote">https://github.com/SYadda/Arknights_6Star_Rank_Vote</a>
         </div>
-
+        <!-- 不可见数据部分,在获取数据后展示 -->
+        <div class="final">
+            <h2 id="已收集数据量">&nbsp;</h2>
+            <table id="final_order_table" style="display: none; margin: 0 auto;">
+                <thead>
+                    <tr>
+                        <th>杯型</th>
+                        <th>排名</th>
+                        <th>干员代号</th>
+                        <th>胜率</th>
+                        <th>得分</th>
+                    </tr>
+                </thead>
+                <tbody id="final_order_tbody"></tbody>
+            </table>
+        </div>
 
 
 
