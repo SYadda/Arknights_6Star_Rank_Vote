@@ -270,10 +270,13 @@
                     </tr>
                 </table>
             </div>
-            <!-- footer部分 -->
-            <div class="footer">
-                <h2>V1.0.0 公测版</h2>
-                <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有投票得分。</h2>
+        </div>
+
+        <!-- footer部分 -->
+        <div class="footer">
+            <div class="w">
+                <h2>V1.0.1 公测版</h2>
+                <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有干员的胜率和得分，以胜率排名。</h2>
                 <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
                 <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
                 <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
@@ -287,6 +290,7 @@
                                 <th>杯型</th>
                                 <th>排名</th>
                                 <th>干员代号</th>
+                                <th>&nbsp;&nbsp;&nbsp;&nbsp;胜率&nbsp;&nbsp;&nbsp;&nbsp;</th>
                                 <th>得分</th>
                             </tr>
                         </thead>
@@ -393,7 +397,7 @@
         //接口:new_compare
         function new_compare() {
             xhr = new XMLHttpRequest();
-            xhr.open('GET', 'http://127.0.0.1:9876/new_compare', true);
+            xhr.open('GET', 'http://114.132.188.253:9876/new_compare', true);
             xhr.send();
 
             xhr.onreadystatechange = function () {
@@ -406,8 +410,6 @@
                     document.getElementById("right_png").src = dic_pic_url[right_name];
                 }
             }
-            // document.getElementById("left_png").src = dic_pic_url['能天使'];
-            // document.getElementById("right_png").src = dic_pic_url['推进之王'];
         }
 
 
@@ -417,7 +419,7 @@
         //供给参数:win_name, lose_name
         function save_score_left() {
             xhr = new XMLHttpRequest();
-            xhr.open('POST', 'http://127.0.0.1:9876/save_score?win_name=' + left_name + '&lose_name=' + right_name + '&code=' + code, true);
+            xhr.open('POST', 'http://114.132.188.253:9876/save_score?win_name=' + left_name + '&lose_name=' + right_name + '&code=' + code, true);
             xhr.send();
 
             xhr.onreadystatechange = function () {
@@ -430,7 +432,7 @@
 
         function save_score_right() {
             xhr = new XMLHttpRequest();
-            xhr.open('POST', 'http://127.0.0.1:9876/save_score?win_name=' + right_name + '&lose_name=' + left_name + '&code=' + code, true);
+            xhr.open('POST', 'http://114.132.188.253:9876/save_score?win_name=' + right_name + '&lose_name=' + left_name + '&code=' + code, true);
             xhr.send();
 
             xhr.onreadystatechange = function () {
@@ -445,7 +447,7 @@
         //http方法: GET
         function view_final_order() {
             xhr = new XMLHttpRequest();
-            xhr.open('GET', 'http://127.0.0.1:9876/view_final_order', true);
+            xhr.open('GET', 'http://114.132.188.253:9876/view_final_order', true);
             xhr.send();
 
             xhr.onreadystatechange = function () {
@@ -471,7 +473,7 @@
                                     if (this_rank < cup_rank[3]) { this_size = cup_size[3]; } else
                                         if (this_rank < cup_rank[4]) { this_size = cup_size[4]; } else
                                             if (this_rank < cup_rank[5]) { this_size = cup_size[5]; } else { this_size = cup_size[6]; }
-                        htmlStr += "<tr><td>" + this_size + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.score[i] + "</td></tr>";
+                        htmlStr += "<tr><td>" + this_size + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + obj.score[i] + "</td></tr>";
                     }
                     document.getElementById("final_order_tbody").innerHTML = htmlStr;
                 }
