@@ -52,12 +52,14 @@ def view_final_order():
     with open('list/lose_score.pickle', 'rb') as f:
         lst_lose_score = pickle.load(f)
 
+    lst_rate = [100 * lst_win_score[_] / (lst_win_score[_] + lst_lose_score[_]) for _ in range(len(lst_win_score))]
     lst_score = [lst_win_score[_] - lst_lose_score[_] for _ in range(len(lst_win_score))]
-    # lst_score = lst_win_score
-    dict_score = dict(zip(lst_name, lst_score))
+    dict_score = dict(zip(zip(lst_name, lst_score), lst_rate))
 
-    final_name, final_score = zip(*sorted(dict_score.items(), key=lambda _: -_[1]))
-    return jsonify({'name': final_name, 'score': final_score, 'count': '已收集数据 ' + str(sum(lst_win_score)) + ' 条'})
+    final_n_s, final_rate = zip(*sorted(dict_score.items(), key=lambda _: -_[1]))
+    final_name, final_score = zip(*final_n_s)
+    final_rate = ['%.1f'%_ + ' %' for _ in final_rate]
+    return jsonify({'name': final_name, 'rate': final_rate, 'score': final_score, 'count': '已收集数据 ' + str(sum(lst_win_score)) + ' 条'})
 
 
 @app.route('/page', methods=['GET'])
