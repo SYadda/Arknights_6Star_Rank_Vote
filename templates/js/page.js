@@ -150,52 +150,25 @@ function view_final_order() {
             document.getElementById("已收集数据量").innerText = obj.count;
 
             const star6_staff_amount = obj.name.length;
-            const score_array = obj.score;
+            const score_list = obj.score;
 
-            // const size_name = ['中杯', '大杯', '超大杯'];
-            // const size_type = ['下', '中', '上'];
-            // const class_num = size_name.length * size_type.length;
-            const class_num = 6;
+            const class_num = 6; // 聚类簇数
 
-            var mpn = palette('mpn65', class_num);
-            // const palette_mpn = mpn.reverse();
-            const palette_mpn = ['6464ff', '64ffff', '64ff64', 'ffff64', 'ffe464', 'ff6464']
-            const serie = new geostats(score_array);
-            const cup_rank = serie.getClassJenks2(class_num);
-            // const cup_size = new Array(star6_staff_amount);
-            const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯', '中杯', '中杯']
+            const color_list = ['', '9090ff', '64ffff', '64ff64', 'ffff64', 'ffe464', 'ff9090']
+            const serie = new geostats(score_list);
+            const cluster_list = serie.getClassJenks2(class_num);
+            console.log(cluster_list)
+            const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下']
             const star6_staff_amount_div_9 = star6_staff_amount / 9;
             const cup_color = new Array(star6_staff_amount);
 
-            /* 
-             * 由于约定俗成“杯型”就是平均划分的，所以这里不能按照聚类划分
-            // 共分 9 档，但中杯不再区分上中下
-            for (let i = 0; i < star6_staff_amount; i++) {
-                for (let j = 0; j < size_name.length; j++) {
-                    if (score_array[i] <= cup_rank[size_type.length * (j + 1)]) {
-                        cup_size[i] = size_name[j];
-                        for (let k = 0; k < size_type.length; k++) {
-                            if (score_array[i] <= cup_rank[size_type.length * j + k + 1]) {
-                                cup_size[i] += size_type[k];
-                                cup_color[i] = palette_mpn[size_type.length * j + k];
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-            }
-            */
-
             // 按照聚类划分梯度
-            for (let i = 0; i < star6_staff_amount; i++) {
-                for (let j = 1; j < cup_rank.length; j++) {
-                    if (score_array[i] <= cup_rank[j]) {
-                        // cup_size[i] = 'T' + (class_num - j);
-                        cup_color[i] = palette_mpn[j - 1];
-                        break;
-                    }
+            let j = 1
+            for (let i = star6_staff_amount - 1; i >= 0; i--) {
+                if (score_list[i] > cluster_list[j]) {
+                    j++;
                 }
+                cup_color[i] = color_list[j];
             }
 
             var table = document.getElementById("final_order_table")
@@ -205,7 +178,7 @@ function view_final_order() {
             for (let i = 0; i < star6_staff_amount; i++) {
                 var this_rank = i + 1;
 
-                htmlStr += "<tr style=\"background:#" + cup_color[i] + ";\"><td>" + cup_size[parseInt(i / star6_staff_amount_div_9)] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + score_array[i] + "</td></tr>";
+                htmlStr += "<tr style=\"background:#" + cup_color[i] + ";\"><td>" + cup_size[parseInt(i / star6_staff_amount_div_9)] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + score_list[i] + "</td></tr>";
             }
             document.getElementById("final_order_tbody").innerHTML = htmlStr;
         }
