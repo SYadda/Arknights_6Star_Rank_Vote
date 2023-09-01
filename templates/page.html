@@ -464,23 +464,28 @@ body {
                     document.getElementById("已收集数据量").innerText = obj.count;
 
                     const star6_staff_amount = obj.name.length;
-                    const serie = new geostats(obj.score);
-                    let cup_rank = serie.getClassJenks2(3);
+                    const score_array = obj.score;
+                    const size_name = ['中杯', '大杯', '超大杯'];
+                    const size_type = ['下', '中', '上'];
+                    const class_num = size_name.length * size_type.length;
+                    const serie = new geostats(score_array);
+                    const cup_rank = serie.getClassJenks2(class_num);
                     const cup_size = new Array(star6_staff_amount);
-                    for (let i = 0; i < star6_staff_amount; i++) {
-                        if (obj.score[i] > cup_rank[2]) { cup_size[i] = '超大杯'; }
-                        else if (obj.score[i] > cup_rank[1]) { cup_size[i] = '大杯'; }
-                        else { cup_size[i] = '中杯'; }
-                    }
                     // 共分 9 档，但中杯不再区分上中下
-                    const cup_rank_index = [0, obj.score.indexOf(cup_rank[2]), obj.score.indexOf(cup_rank[1])];
-                    for (let i = 1; i < cup_rank_index.length; i++) {
-                        serie.setSerie(obj.score.slice(cup_rank_index[i - 1], cup_rank_index[i]));
-                        cup_rank = serie.getClassJenks2(3);
-                        for (let j = cup_rank_index[i - 1]; j < cup_rank_index[i]; j++) {
-                            if (obj.score[j] > cup_rank[2]) { cup_size[j] += '上'; }
-                            else if (obj.score[j] > cup_rank[1]) { cup_size[j] += '中'; }
-                            else { cup_size[j] += '下'; }
+                    for (let i = 0; i < star6_staff_amount; i++) {
+                        for (let j = 0; j < size_name.length; j++) {
+                            if (score_array[i] <= cup_rank[size_type.length * (j + 1)]) {
+                                cup_size[i] = size_name[j];
+                                if (score_array[i] > cup_rank[size_type.length]) {
+                                    for (let k = 0; k < size_type.length; k++) {
+                                        if (score_array[i] <= cup_rank[size_type.length * j + k + 1]) {
+                                            cup_size[i] += size_type[k];
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
                         }
                     }
 
@@ -491,7 +496,7 @@ body {
                     for (let i = 0; i < star6_staff_amount; i++) {
                         var this_rank = i + 1;
 
-                        htmlStr += "<tr><td>" + cup_size[i] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + obj.score[i] + "</td></tr>";
+                        htmlStr += "<tr><td>" + cup_size[i] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + score_array[i] + "</td></tr>";
                     }
                     document.getElementById("final_order_tbody").innerHTML = htmlStr;
                 }
