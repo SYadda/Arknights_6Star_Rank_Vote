@@ -68,10 +68,28 @@ def page():
     return render_template('page.html')
 
 
+# @app.route('/favicon.ico', methods=['GET'])
+# @cross_origin()
+# def ico():
+#     return send_from_directory(os.path.join(app.root_path, 'templates'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+
+
+@app.route('/css/base.css', methods=['GET'])
+@cross_origin()
+def base_css():
+    return render_template('css/base.css')
+
+
+@app.route('/css/compare.css', methods=['GET'])
+@cross_origin()
+def compare_css():
+    return render_template('css/compare.css')
+
+
 @app.route('/favicon.ico', methods=['GET'])
 @cross_origin()
 def ico():
-    return send_from_directory(os.path.join(app.root_path, 'templates'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
+    return render_template('favicon.ico')
 
 
 def verify():
