@@ -152,9 +152,8 @@ function view_final_order() {
             const star6_staff_amount = obj.name.length;
             const score_list = obj.score;
 
-            var scheme = palette.listSchemes('rainbow')[0];
             const cluster_bounds_list = get_cluster_bounds_list(score_list).reverse();
-            const color_list = scheme.apply(scheme, [cluster_bounds_list.length - 1, 0.5]);
+            const color_list = palette('rainbow', cluster_bounds_list.length - 1, null, 0.5);
             const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
             const star6_staff_amount_div = star6_staff_amount / cup_size.length;
 
@@ -175,20 +174,21 @@ function view_final_order() {
 
 function get_cluster_bounds_list(data_array) {
     const serie = new geostats(data_array);
+    
+    let nclasses = 2;   // 聚类簇数
+    let cluster_bounds_list;
+    let SDCM;   // the Sum of squared Deviations about Class Mean
     const SDAM = serie.variance();  // the Sum of squared Deviations from the Array Mean
-
-    let gvf, cluster_bounds_list;
-    for (let k = 2; k < data_array.length; k++) {
-        cluster_bounds_list = serie.getClassJenks2(k);
-        gvf = get_gvf(serie.serie, cluster_bounds_list, SDAM);
-        if (gvf >= 0.8) {
-            return cluster_bounds_list;
-        }
+    let GVF = 0;    // The Goodness of Variance Fit 方差拟合优度
+    while (GVF < 0.8) {
+        cluster_bounds_list = serie.getClassJenks2(nclasses++);
+        SDCM = get_SDCM(serie.serie, cluster_bounds_list);
+        GVF = (SDAM - SDCM) / SDAM;
     }
+    return cluster_bounds_list;
 }
 
-// 计算 The Goodness of Variance Fit 方差拟合优度
-function get_gvf(data_array, bound_list, SDAM) {
+function get_SDCM(data_array, bound_list) {
     const bound_index = [0];
     for (let i = 1; i < bound_list.length - 1; i++) {
         bound_index.push(data_array.indexOf(bound_list[i]));
@@ -196,11 +196,11 @@ function get_gvf(data_array, bound_list, SDAM) {
     bound_index.push(data_array.length);
 
     const serie = new geostats();
-    let SDCM = 0;   // the Sum of squared Deviations about Class Mean
+    let SDCM = 0;
     for (let i = 1; i < bound_index.length; i++) {
         serie.setSerie(data_array.slice(bound_index[i - 1], bound_index[i]));
         SDCM += serie.variance();
     }
 
-    return (SDAM - SDCM) / SDAM;
+    return SDCM;
 }
