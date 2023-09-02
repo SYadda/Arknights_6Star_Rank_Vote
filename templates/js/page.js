@@ -152,35 +152,55 @@ function view_final_order() {
             const star6_staff_amount = obj.name.length;
             const score_list = obj.score;
 
-            const class_num = 6; // 聚类簇数
-
-            const color_list = ['', '9090ff', '64ffff', '64ff64', 'ffff64', 'ffe464', 'ff9090']
-            const serie = new geostats(score_list);
-            const cluster_list = serie.getClassJenks2(class_num);
-            console.log(cluster_list)
-            const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下']
-            const star6_staff_amount_div_9 = star6_staff_amount / 9;
-            const cup_color = new Array(star6_staff_amount);
-
-            // 按照聚类划分梯度
-            let j = 1
-            for (let i = star6_staff_amount - 1; i >= 0; i--) {
-                if (score_list[i] > cluster_list[j]) {
-                    j++;
-                }
-                cup_color[i] = color_list[j];
-            }
+            var scheme = palette.listSchemes('rainbow')[0];
+            const cluster_bounds_list = get_cluster_bounds_list(score_list).reverse();
+            const color_list = scheme.apply(scheme, [cluster_bounds_list.length - 1, 0.5]);
+            const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
+            const star6_staff_amount_div = star6_staff_amount / cup_size.length;
 
             var table = document.getElementById("final_order_table")
             table.style.display = "inline";
 
             htmlStr = '';
-            for (let i = 0; i < star6_staff_amount; i++) {
+            for (let i = 0, j = 0; i < star6_staff_amount; i++) {
                 var this_rank = i + 1;
-
-                htmlStr += "<tr style=\"background:#" + cup_color[i] + ";\"><td>" + cup_size[parseInt(i / star6_staff_amount_div_9)] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + score_list[i] + "</td></tr>";
+                // 按照聚类划分梯度
+                if (score_list[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j++; }
+                htmlStr += "<tr style=\"background:#" + color_list[j] + ";\"><td>" + cup_size[parseInt(i / star6_staff_amount_div)] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + score_list[i] + "</td></tr>";
             }
             document.getElementById("final_order_tbody").innerHTML = htmlStr;
         }
     }
+}
+
+function get_cluster_bounds_list(data_array) {
+    const serie = new geostats(data_array);
+    const SDAM = serie.variance();  // the Sum of squared Deviations from the Array Mean
+
+    let gvf, cluster_bounds_list;
+    for (let k = 2; k < data_array.length; k++) {
+        cluster_bounds_list = serie.getClassJenks2(k);
+        gvf = get_gvf(serie.serie, cluster_bounds_list, SDAM);
+        if (gvf >= 0.8) {
+            return cluster_bounds_list;
+        }
+    }
+}
+
+// 计算 The Goodness of Variance Fit 方差拟合优度
+function get_gvf(data_array, bound_list, SDAM) {
+    const bound_index = [0];
+    for (let i = 1; i < bound_list.length - 1; i++) {
+        bound_index.push(data_array.indexOf(bound_list[i]));
+    }
+    bound_index.push(data_array.length);
+
+    const serie = new geostats();
+    let SDCM = 0;   // the Sum of squared Deviations about Class Mean
+    for (let i = 1; i < bound_index.length; i++) {
+        serie.setSerie(data_array.slice(bound_index[i - 1], bound_index[i]));
+        SDCM += serie.variance();
+    }
+
+    return (SDAM - SDCM) / SDAM;
 }
