@@ -86,6 +86,24 @@ def compare_css():
     return render_template('css/compare.css')
 
 
+@app.route('/js/geostats.min.js', methods=['GET'])
+@cross_origin()
+def geostats_min_js():
+    return render_template('js/geostats.min.js')
+
+
+@app.route('/js/palette.min.js', methods=['GET'])
+@cross_origin()
+def palette_min_js():
+    return render_template('js/palette.min.js')
+
+
+@app.route('/js/page.js', methods=['GET'])
+@cross_origin()
+def page_js():
+    return render_template('js/page.js')
+
+
 def verify():
     global set_code
     code = request.args.get('code')
