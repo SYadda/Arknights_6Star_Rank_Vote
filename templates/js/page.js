@@ -159,7 +159,7 @@ function view_final_order() {
             const star6_staff_amount_div = star6_staff_amount / cup_size.length;
 
             var table = document.getElementById("final_order_table")
-            table.style.display = "inline";
+            table.style.display = "inline-block";
 
             htmlStr = '';
             for (let i = 0, j = 0; i < star6_staff_amount; i++) {

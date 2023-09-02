@@ -123,7 +123,8 @@
 
         /* 比较模块 */
         .compare,
-        .footer {
+        .footer,
+        .final_table {
             margin: 10px auto 0;
             padding: 20px;
             border-radius: 8px;
@@ -134,7 +135,8 @@
 
 
         .compare:hover,
-        .footer:hover {
+        .footer:hover,
+        .final_table:hover {
             box-shadow: 0 3px 5px 5px rgba(0, 0, 0, 0.2);
         }
 
@@ -258,6 +260,13 @@
             font-size: 25px;
         }
 
+        .final_table {
+            display: none;
+            margin: 0 auto;
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+
         #topBtn {
             display: none;
             /* 默认情况下隐藏按钮 */
@@ -331,7 +340,7 @@
         <!-- 不可见数据部分,在获取数据后展示 -->
         <div class="final">
             <br><h1 id="已收集数据量">&nbsp;</h1><br>
-            <table id="final_order_table" style="display: none; margin: 0 auto; border-collapse: collapse; border-spacing: 0;">
+            <table id="final_order_table" class="final_table">
                 <thead>
                     <tr>
                         <th>杯型</th>
