@@ -150,10 +150,12 @@ function view_final_order() {
             document.getElementById("已收集数据量").innerText = obj.count;
 
             const star6_staff_amount = obj.name.length;
+            const rate_list = obj.rate;
             const score_list = obj.score;
 
-            const cluster_bounds_list = get_cluster_bounds_list(score_list).reverse();
-            const color_list = palette('rainbow', cluster_bounds_list.length - 1, null, 0.5);
+            const cluster_list = rate_list.map((r) => parseFloat(r));
+            const cluster_bounds_list = get_cluster_bounds_list(cluster_list).reverse();
+            const color_list = palette('rainbow', cluster_bounds_list.length - 1, 0, 0.5, 1);
             const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
             const star6_staff_amount_div = star6_staff_amount / cup_size.length;
 
@@ -164,8 +166,8 @@ function view_final_order() {
             for (let i = 0, j = 0; i < star6_staff_amount; i++) {
                 var this_rank = i + 1;
                 // 按照聚类划分梯度
-                if (score_list[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j++; }
-                htmlStr += "<tr style=\"background:#" + color_list[j] + ";\"><td>" + cup_size[parseInt(i / star6_staff_amount_div)] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + obj.rate[i] + "</td><td>" + score_list[i] + "</td></tr>";
+                if (cluster_list[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j = j + 1; }
+                htmlStr += "<tr style=\"background:#" + color_list[j] + ";\"><td>" + cup_size[parseInt(i / star6_staff_amount_div)] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + rate_list[i] + "</td><td>" + score_list[i] + "</td></tr>";
             }
             document.getElementById("final_order_tbody").innerHTML = htmlStr;
         }
@@ -174,7 +176,7 @@ function view_final_order() {
 
 function get_cluster_bounds_list(data_array) {
     const serie = new geostats(data_array);
-    
+
     let nclasses = 2;   // 聚类簇数
     let cluster_bounds_list;
     let SDCM;   // the Sum of squared Deviations about Class Mean
