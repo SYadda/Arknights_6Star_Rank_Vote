@@ -48,7 +48,7 @@
         }
 
         a {
-            color: #000;
+            color: #666;
             text-decoration: none
         }
 
@@ -138,6 +138,24 @@
         .footer:hover,
         .final_table:hover {
             box-shadow: 0 3px 5px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .operator-container {
+            background-color: transparent;
+            display: inline-block;
+            filter: drop-shadow(0 0 7px rgba(0, 0, 0, .7));
+            transition: All 50ms ease-in-out;
+        }
+
+        .zh {
+            position: absolute;
+            right: 0;
+            bottom: 1px;
+            z-index: 3;
+            color: #fff;
+            text-shadow: 1px 1px 10px #000;
+            width: 100%;
+            text-align: center;
         }
 
         /* 干员图片大小设置 */
@@ -299,7 +317,12 @@
             <table class="compare">
                 <tr>
                     <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
-                    <td><img id="left_png"></td>
+                    <td>
+                        <div class="operator-container">
+                            <img id="left_png">
+                            <div class="zh" id="left_png_name"></div>
+                        </div>
+                    </td>
 
                     <!-- 比较核心区域 -->
                     <td>
@@ -327,8 +350,12 @@
                     </td>
 
                     <!-- 右侧干员图片 -->
-                    <td><img id="right_png"></td>
-
+                    <td>
+                        <div class="operator-container">
+                            <img id="right_png">
+                            <div class="zh" id="right_png_name"></div>
+                        </div>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -340,13 +367,15 @@
             <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
             <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
             <h3>本项目已开源至GitHub仓库：</h3>
-            <a
-                href="https://github.com/SYadda/Arknights_6Star_Rank_Vote">https://github.com/SYadda/Arknights_6Star_Rank_Vote</a>
+            <a href="https://github.com/SYadda/Arknights_6Star_Rank_Vote">
+                https://github.com/SYadda/Arknights_6Star_Rank_Vote
+            </a>
         </div>
         <!-- 不可见数据部分,在获取数据后展示 -->
         <div class="final">
             <br>
-            <h1 id="已收集数据量">&nbsp;</h1><br>
+            <h1 id="已收集数据量">&nbsp;</h1>
+            <br>
             <table id="final_order_table" class="final_table">
                 <thead>
                     <tr>
