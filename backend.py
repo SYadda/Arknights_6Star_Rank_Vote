@@ -107,7 +107,7 @@ def page_js():
 @app.route('/images/夕trans.gif', methods=['GET'])
 @cross_origin()
 def images_gif():
-    return render_template('images/夕trans.gif')
+    return send_from_directory(os.path.join(app.root_path, 'templates', 'images'), '夕trans.gif', mimetype='image/gif')
 
 
 def verify():
