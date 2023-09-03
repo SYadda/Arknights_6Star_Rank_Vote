@@ -97,10 +97,14 @@ function new_compare() {
             left_name = name[0]
             right_name = name[1]
             code = name[2]
-            document.getElementById("left_png").src = dic_pic_url[left_name];
-            document.getElementById("left_png").alt = left_name;
-            document.getElementById("right_png").src = dic_pic_url[right_name];
-            document.getElementById("right_png").alt = right_name;
+            const left_png = document.getElementById("left_png");
+            const right_png = document.getElementById("right_png");
+            left_png.src = dic_pic_url[left_name];
+            left_png.alt = dic_pic_url[left_name].split('/').at(-1);
+            right_png.src = dic_pic_url[right_name];
+            right_png.alt = dic_pic_url[right_name].split('/').at(-1);
+            document.getElementById("left_png_name").innerText = left_name;
+            document.getElementById("right_png_name").innerText = right_name;
         }
     }
 }
