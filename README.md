@@ -1,6 +1,8 @@
 # Arknights_6Star_Rank_Vote
 明日方舟 六星干员强度投票箱
 
+__由于添加新功能时操作不慎，9月3日的部分投票数据丢失了，非常抱歉！！以后这种事情不会发生。__
+
 感谢由 [@blackwang08](https://github.com/blackwang08) 提供的网页美化，由 [@lengyanyu258](https://github.com/lengyanyu258) 提供的聚类分块！
 
 前端JS，后端Python Flask，数据全部来自网友投票，仅供娱乐，准确度可能很低，求轻喷。
