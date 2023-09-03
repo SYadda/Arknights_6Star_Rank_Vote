@@ -104,6 +104,12 @@ def page_js():
     return render_template('js/page.js')
 
 
+@app.route('/images/夕trans.gif', methods=['GET'])
+@cross_origin()
+def images_gif():
+    return render_template('images/夕trans.gif')
+
+
 def verify():
     global set_code
     code = request.args.get('code')
