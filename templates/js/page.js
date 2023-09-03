@@ -159,7 +159,7 @@ function view_final_order() {
 
             const cluster_list = rate_list.map((r) => parseFloat(r));
             const cluster_bounds_list = get_cluster_bounds_list(cluster_list).reverse();
-            const color_list = palette('rainbow', cluster_bounds_list.length - 1, 0, 0.5, 1);
+            const color_list = palette('rainbow', cluster_bounds_list.length - 1, 0, 0.5, 0.95);
             const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
             const star6_staff_amount_div = star6_staff_amount / cup_size.length;
 
