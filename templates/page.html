@@ -239,7 +239,7 @@
             font-weight: 700;
         }
 
-        /* 投票结果表格头部分设计 */
+        /* 投票结果表格部分设计 */
         .final table thead tr th {
             padding: 0 40px;
             font-size: 25px;
@@ -275,6 +275,11 @@
 
         #topBtn:hover {
             background-color: #ccc;
+        }
+
+        #mouse_follower {
+            position: absolute;
+            width: 100px;
         }
     </style>
 </head>
@@ -346,7 +351,7 @@
                 <tbody id="final_order_tbody"></tbody>
             </table>
         </div>
-
+        <img id="mouse_follower" src="images/夕trans.gif" alt="">
 
 
     </div>
@@ -359,6 +364,8 @@
 
     <script type="text/javascript">
 
+
+        //控制列表出现和关闭的按钮
         var flag = true;
         function close_or_view() {
             if (flag) {
@@ -399,6 +406,14 @@
                 topBtn.style.display = 'none';
             }
         });
+
+        var pic_mouse = document.querySelector('#mouse_follower');
+        document.addEventListener('mousemove', function (e) {
+            var x = e.pageX;
+            var y = e.pageY;
+            pic_mouse.style.left = 1 + x + 'px';
+            pic_mouse.style.top = 1 + y + 'px';
+        })
     </script>
 </body>
 
