@@ -420,8 +420,9 @@
         document.addEventListener('mousemove', function (e) {
             var x = e.pageX;
             var y = e.pageY;
-            pic_mouse.style.left = 1 + x + 'px';
-            pic_mouse.style.top = 1 + y + 'px';
+            //如果还有点击失效的话就再调整这里的坐标就好
+            pic_mouse.style.left = 5 + x + 'px';
+            pic_mouse.style.top = 5 + y + 'px';
         })
     </script>
 </body>
