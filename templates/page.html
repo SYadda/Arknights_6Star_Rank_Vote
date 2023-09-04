@@ -125,35 +125,35 @@
             }
         }
 
-        // JavaScript 函数，用于滚动到页面顶部
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth' // 使用平滑滚动效果
-            });
-        }
-
-        // 当页面向下滚动一定距离时，显示回到顶部按钮
-        window.addEventListener('scroll', function () {
-            var topBtn = document.getElementById('topBtn');
-            if (document.documentElement.scrollTop > 200) { // 当滚动超过200像素时显示按钮
-                topBtn.style.display = 'block';
-            } else {
-                topBtn.style.display = 'none';
-            }
-        });
+        let currentMouseTop, currentScrollTop;
 
         // 跟随鼠标的夕龙泡泡
         let pic_mouse = document.querySelector('#mouse_follower');
-        let currentMouseTop, currentScrollTop;
         document.addEventListener('mousemove', function (e) {
             currentMouseTop = e.pageY;
             currentScrollTop = document.documentElement.scrollTop;
             pic_mouse.style.left = `${e.pageX}px`;
             pic_mouse.style.top = `${e.pageY}px`;
         })
-        window.onscroll = function () {
+
+        // 当页面向下滚动一定距离时，显示回到顶部按钮
+        let topBtn = document.getElementById('topBtn');
+        window.addEventListener('scroll', function () {
+            if (document.documentElement.scrollTop > 200) { // 当滚动超过200像素时显示按钮
+                topBtn.style.display = 'block';
+            } else {
+                topBtn.style.display = 'none';
+            }
+            // 实时更新龙泡泡坐标
             pic_mouse.style.top = `${currentMouseTop + document.documentElement.scrollTop - currentScrollTop}px`;
+        });
+
+        // JavaScript 函数，用于滚动到页面顶部
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth' // 使用平滑滚动效果
+            });
         }
     </script>
 </body>
