@@ -16,7 +16,7 @@
                 <tr>
                     <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
                     <td>
-                        <div class="operator-container">
+                        <div class="operator-container" onclick="save_score_left()">
                             <img id="left_png">
                             <div class="zh" id="left_png_name"></div>
                         </div>
@@ -49,7 +49,7 @@
 
                     <!-- 右侧干员图片 -->
                     <td>
-                        <div class="operator-container">
+                        <div class="operator-container" onclick="save_score_right()">
                             <img id="right_png">
                             <div class="zh" id="right_png_name"></div>
                         </div>
@@ -153,8 +153,7 @@
             pic_mouse.style.top = `${e.pageY}px`;
         })
         window.onscroll = function () {
-            let scrollTop = document.documentElement.scrollTop;
-            pic_mouse.style.top = `${currentMouseTop + scrollTop - currentScrollTop}px`;
+            pic_mouse.style.top = `${currentMouseTop + document.documentElement.scrollTop - currentScrollTop}px`;
         }
     </script>
 </body>
