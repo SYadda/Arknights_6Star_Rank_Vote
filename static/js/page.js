@@ -1,4 +1,9 @@
-var code = "000";
+// const SERVER_IP = '127.0.0.1';
+const SERVER_IP = '114.132.188.253';
+const SERVER_PORT = '9876'
+let code = "000";
+let left_name = '';
+let right_name = '';
 
 const dic_pic_url = {
     '纯烬艾雅法拉': 'https://prts.wiki/images/b/bd/半身像_纯烬艾雅法拉_1.png',
@@ -88,7 +93,7 @@ const dic_pic_url = {
 //接口:new_compare
 function new_compare() {
     xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://114.132.188.253:9876/new_compare', true);
+    xhr.open('GET', `http://${SERVER_IP}:${SERVER_PORT}/new_compare`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {
@@ -114,37 +119,32 @@ function new_compare() {
 //http方法: POST
 //接口: safescore
 //供给参数:win_name, lose_name
-function save_score_left() {
+function save_score(win_name, lose_name) {
     xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://114.132.188.253:9876/save_score?win_name=' + left_name + '&lose_name=' + right_name + '&code=' + code, true);
+    xhr.open('POST', `http://${SERVER_IP}:${SERVER_PORT}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            document.getElementById("toupiao_success").innerText = "成功投票给：" + left_name + " !";
+            document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
             new_compare()
         }
     }
 }
 
-function save_score_right() {
-    xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://114.132.188.253:9876/save_score?win_name=' + right_name + '&lose_name=' + left_name + '&code=' + code, true);
-    xhr.send();
+function save_score_left() {
+    save_score(left_name, right_name);
+}
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            document.getElementById("toupiao_success").innerText = "成功投票给：" + right_name + " !";
-            new_compare()
-        }
-    }
+function save_score_right() {
+    save_score(right_name, left_name);
 }
 
 //获取总比较结果
 //http方法: GET
 function view_final_order() {
     xhr = new XMLHttpRequest();
-    xhr.open('GET', 'http://114.132.188.253:9876/view_final_order', true);
+    xhr.open('GET', `http://${SERVER_IP}:${SERVER_PORT}/view_final_order`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {

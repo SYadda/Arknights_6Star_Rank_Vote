@@ -215,4 +215,5 @@ body {
     position: absolute;
     width: 100px;
     pointer-events: none;
+    z-index: 9;
 }

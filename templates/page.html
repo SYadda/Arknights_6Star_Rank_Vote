@@ -143,13 +143,19 @@
             }
         });
 
-        var pic_mouse = document.querySelector('#mouse_follower');
+        // 跟随鼠标的夕龙泡泡
+        let pic_mouse = document.querySelector('#mouse_follower');
+        let currentMouseTop, currentScrollTop;
         document.addEventListener('mousemove', function (e) {
-            var x = e.pageX;
-            var y = e.pageY;
-            pic_mouse.style.left = x + 'px';
-            pic_mouse.style.top = y + 'px';
+            currentMouseTop = e.pageY;
+            currentScrollTop = document.documentElement.scrollTop;
+            pic_mouse.style.left = `${e.pageX}px`;
+            pic_mouse.style.top = `${e.pageY}px`;
         })
+        window.onscroll = function () {
+            let scrollTop = document.documentElement.scrollTop;
+            pic_mouse.style.top = `${currentMouseTop + scrollTop - currentScrollTop}px`;
+        }
     </script>
 </body>
 

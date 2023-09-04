@@ -15,13 +15,31 @@ __由于添加新功能时操作不慎，9月3日的部分投票数据丢失了�
 
 ## 在本地电脑上部署
 
-1.clone 本项目
+1. clone 本项目
 
-2.运行 “backend.py” (需安装python 3.9和flask, flask-cors）
+   `git clone --depth=1 https://github.com/SYadda/Arknights_6Star_Rank_Vote.git`
 
-3.将 `templates\js\page.js` 中的 IP 地址全部改为本地（`127.0.0.1`）
+2. 将 `templates\js\page.js` 中的 `IP` 改为本地地址: `127.0.0.1`
 
-4.用浏览器打开 [`127.0.0.1:9876`](http://127.0.0.1:9876)
+3. 搭建 Python 环境：
+
+   ```powershell
+   # 需安装 Python 3.9
+   python -m venv venv
+   .\venv\Scripts\activate
+   python -m pip install -U pip
+   pip install -r requirements.txt
+   ```
+
+4. 运行 `Flask`：
+
+   ```powershell
+   $env:FLASK_APP = "backend.py"
+   $env:FLASK_ENV = "development"
+   flask run --port 9876
+   ```
+
+5. 用浏览器打开 [`127.0.0.1:9876`](http://127.0.0.1:9876)
 
 ## 计分规则
 
