@@ -1,7 +1,9 @@
+# -*- coding: utf-8 -*-
+
 import random, os, pickle
-from flask import Flask, render_template, request, jsonify, send_from_directory
+from flask import Flask, redirect, url_for, render_template, request, jsonify, send_from_directory
 from flask_cors import CORS, cross_origin
-app = Flask(__name__, template_folder='templates')
+app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
 
 dict_name = {'能天使': 0, '推进之王': 1, '伊芙利特': 2, '艾雅法拉': 3, '安洁莉娜': 4, '闪灵': 5, '夜莺': 6, '星熊': 7, '塞雷娅': 8, '银灰': 9, '斯卡蒂': 10, '陈': 11, '黑': 12, '赫拉格': 13, '麦哲伦': 14, '莫斯提马': 15, '煌': 16, '阿': 17, '年': 18, '刻俄柏': 19, '风笛': 20, '傀影': 21, '温蒂': 22, 'W': 23, '早露': 24, '铃兰': 25, '棘刺': 26, '森蚺': 27, '史尔特尔': 28, '瑕光': 29, '泥岩': 30, '迷迭香': 31, '山': 32, '空弦': 33, '嵯峨': 34, '夕': 35, '灰烬': 36, '异客': 37, '歌蕾蒂娅': 38, '凯尔希': 39, '浊心斯卡蒂': 40, '卡涅利安': 41, '帕拉斯': 42, '水月': 43, '假日威龙陈': 44, '琴柳': 45, '远牙': 46, '焰尾': 47, '耀骑士临光': 48, '灵知': 49, '老鲤': 50, '令': 51, '澄闪': 52, '菲亚梅塔': 53, '号角': 54, '流明': 55, '艾丽妮': 56, '归溟幽灵鲨': 57, '黑键': 58, '多萝西': 59, '鸿雪': 60, '百炼嘉维尔': 61, '玛恩纳': 62, '白铁': 63, '伺夜': 64, '斥罪': 65, '缄默德克萨斯': 66, '焰影苇草': 67, '林': 68, '重岳': 69, '仇白': 70, '麒麟R夜刀': 71, '伊内丝': 72, '淬羽赫默': 73, '霍尔海雅': 74, '缪尔赛思': 75, '圣约送葬人': 76, '提丰': 77, '琳琅诗怀雅': 78, '纯烬艾雅法拉': 79}
@@ -62,52 +64,16 @@ def view_final_order():
     return jsonify({'name': final_name, 'rate': final_rate, 'score': final_score, 'count': '已收集数据 ' + str(sum(lst_win_score)) + ' 条'})
 
 
+@app.route('/')
+@cross_origin()
+def index():
+    return redirect(url_for('page'))
+
+
 @app.route('/page', methods=['GET'])
 @cross_origin()
 def page():
     return render_template('page.html')
-
-
-@app.route('/favicon.ico', methods=['GET'])
-@cross_origin()
-def ico():
-    return send_from_directory(os.path.join(app.root_path, 'templates'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
-
-
-@app.route('/css/base.css', methods=['GET'])
-@cross_origin()
-def base_css():
-    return render_template('css/base.css')
-
-
-@app.route('/css/compare.css', methods=['GET'])
-@cross_origin()
-def compare_css():
-    return render_template('css/compare.css')
-
-
-@app.route('/js/geostats.min.js', methods=['GET'])
-@cross_origin()
-def geostats_min_js():
-    return render_template('js/geostats.min.js')
-
-
-@app.route('/js/palette.min.js', methods=['GET'])
-@cross_origin()
-def palette_min_js():
-    return render_template('js/palette.min.js')
-
-
-@app.route('/js/page.js', methods=['GET'])
-@cross_origin()
-def page_js():
-    return render_template('js/page.js')
-
-
-@app.route('/images/夕trans.gif', methods=['GET'])
-@cross_origin()
-def images_gif():
-    return send_from_directory(os.path.join(app.root_path, 'templates', 'images'), '夕trans.gif', mimetype='image/gif')
 
 
 def verify():

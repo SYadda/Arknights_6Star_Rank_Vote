@@ -2,313 +2,11 @@
 <html lang="zh">
 
 <head>
-    <link rel="icon" href="favicon.ico" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
     <meta charset="utf-8" />
     <title>六星干员强度投票箱</title>
-    <style>
-        /*
-        这里是一些前端网页的常用初始化样式,
-        可以尽量保证网页在不同浏览器的显示效果一致,
-        可以简单浏览一下涉及到的标签,
-        以保证在后期继续开发的过程中
-        提前了解对应标签初始状态的变化,
-        但不建议在这里更改任何样式
-        如有任何问题请联系王小黑 @名为王小黑!
-        */
-
-
-        /* 把我们所有标签的内外边距清零 */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* em 和 i 斜体的文字不倾斜 */
-        em,
-        i {
-            font-style: normal
-        }
-
-        /* 去掉li 的小圆点 */
-        li {
-            list-style: none
-        }
-
-        img {
-            /* border 0 照顾低版本浏览器 如果 图片外面包含了链接会有边框的问题 */
-            border: 0;
-            /* 取消图片底侧有空白缝隙的问题 */
-            vertical-align: middle
-        }
-
-        button {
-            /* 当我们鼠标经过button 按钮的时候，鼠标变成小手 */
-            cursor: pointer
-        }
-
-        a {
-            color: #666;
-            text-decoration: none
-        }
-
-        a:hover {
-            color: #c81623
-        }
-
-        button,
-        input {
-            /* 去边框 */
-            border: 0;
-            outline: none;
-            /* "\5B8B\4F53" 就是宋体的意思 这样浏览器兼容性比较好 */
-            font-family: Microsoft YaHei, Heiti SC, tahoma, arial, Hiragino Sans GB, "\5B8B\4F53", sans-serif
-        }
-
-        body {
-            /* CSS3 抗锯齿形 让文字显示的更加清晰 */
-            -webkit-font-smoothing: antialiased;
-            background-color: #fff;
-            font: 16px/1.5 Microsoft YaHei, Heiti SC, tahoma, arial, Hiragino Sans GB, "\5B8B\4F53", sans-serif;
-            color: #000
-        }
-
-        .hide,
-        .none {
-            display: none
-        }
-
-        /* 清除浮动 */
-        .clearfix:after {
-            visibility: hidden;
-            clear: both;
-            display: block;
-            content: ".";
-            height: 0
-        }
-
-        .clearfix {
-            *zoom: 1
-        }
-
-        /*
-        这里是对本页面样式的主要更改部分
-        ****
-        包括之前你写在标签内的所有style=""部分
-        ****
-        如有任何对页面设计的更改都会在此处进行修改
-        如果有看不懂的代码可以尝试联系王小黑 @名为王小黑!
-        */
-
-
-        /* 页面红色文字的修改 */
-        .red_text {
-            color: red;
-        }
-
-        /* 主题样式 */
-        body {
-            background-color: #F6F6F6;
-        }
-
-        .bg {
-            text-align: center;
-        }
-
-        /* 版心 */
-        .w {
-            width: 1200px;
-            margin: 0px auto;
-        }
-
-        /* 比较模块 */
-        .compare,
-        .footer,
-        .final_table {
-            margin: 10px auto 0;
-            padding: 20px;
-            border-radius: 8px;
-            background: rgba(250, 250, 250, 0.05);
-            box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.2);
-            transition: all 0.3s ease;
-        }
-
-
-        .compare:hover,
-        .footer:hover,
-        .final_table:hover {
-            box-shadow: 0 3px 5px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .operator-container {
-            background-color: transparent;
-            display: inline-block;
-            filter: drop-shadow(0 0 7px rgba(0, 0, 0, .7));
-            transition: All 50ms ease-in-out;
-        }
-
-        .zh {
-            position: absolute;
-            right: 0;
-            bottom: 1px;
-            z-index: 3;
-            color: #fff;
-            text-shadow: 1px 1px 10px #000;
-            width: 100%;
-            text-align: center;
-        }
-
-        /* 干员图片大小设置 */
-        .compare tr td img {
-            width: 100%;
-        }
-
-        /* 干员比较部分标题文字样式设置 */
-        .compare tr td h1 {
-            text-align: center;
-            font-size: 32px;
-            margin: 0 0 11px;
-        }
-
-        /* 干员比较部分作者文字样式设置 */
-        .compare tr td h4 {
-            text-align: center;
-            font-size: 16px;
-            margin: 11px 0;
-        }
-
-        /* 干员比较核心盒子 */
-        .compare_block {
-            margin: 0px;
-            text-align: center;
-        }
-
-        /* 干员比较核心中的所有按钮 */
-        .compare_block input {
-            padding: 1px 6px;
-            border: 1px solid transparent;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-        }
-
-        .compare_block input:hover {
-            background-color: #ccc;
-        }
-
-        /* 比较核心中投票按钮设计 */
-        .compare_block .vote_button {
-            width: 70px;
-            margin: 0px 25px;
-            font-size: 40px;
-            white-space: normal;
-        }
-
-        .compare_block #toupiao_success {
-            text-align: center;
-            font-size: 20px;
-            color: orangered;
-        }
-
-        /* 比较核心中其他功能按钮设计 */
-        .compare_block .function {
-            margin-top: 30px;
-        }
-
-        /* 比较核心中跳过按钮设计 */
-        .compare_block .skip {
-            margin: 0 10px;
-            font-size: 20px;
-        }
-
-        /* 比较核心中查看结果按钮设计 */
-        .compare_block .result,
-        .compare_block .close {
-            margin: 0 10px;
-            font-size: 20px;
-        }
-
-        .compare_block .result {
-            display: inline;
-        }
-
-        .compare_block .close {
-            display: none;
-        }
-
-        /* 下方规则等文字设计 */
-        .footer {
-            width: 723px;
-            margin-bottom: 10px;
-        }
-
-        .footer h2 {
-            margin: 0 0 20px;
-            text-align: center;
-            font-size: 24px;
-        }
-
-        .footer h3 {
-            text-align: center;
-            font-size: 19px;
-        }
-
-        .footer a {
-            display: inline-block;
-            text-align: center;
-            font-size: 19px;
-            font-weight: 700;
-        }
-
-        /* 投票结果表格部分设计 */
-        .final table thead tr th {
-            padding: 0 40px;
-            font-size: 25px;
-        }
-
-        .final table thead tr th:nth-child(2),
-        .final table thead tr th:nth-child(3) {
-            padding: 0 40px;
-        }
-
-        .final table thead tr th:nth-child(4) {
-            padding: 0 45px;
-        }
-
-        .final table tbody tr td {
-            font-size: 25px;
-        }
-
-        .final_table {
-            display: none;
-            margin: 0 auto;
-            border-collapse: collapse;
-            border-spacing: 0;
-        }
-
-        #topBtn {
-            display: none;
-            /* 默认情况下隐藏按钮 */
-            position: fixed;
-            bottom: 100px;
-            right: 100px;
-            background-color: #dddddd;
-            color: #000;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            padding: 10px 20px;
-            transition: all 0.5s ease;
-        }
-
-        #topBtn:hover {
-            background-color: #ccc;
-        }
-
-        #mouse_follower {
-            position: absolute;
-            width: 100px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/compare.css') }}" />
 </head>
 
 <body onload="new_compare();">
@@ -318,7 +16,7 @@
                 <tr>
                     <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
                     <td>
-                        <div class="operator-container">
+                        <div class="operator-container" onclick="save_score_left()">
                             <img id="left_png">
                             <div class="zh" id="left_png_name"></div>
                         </div>
@@ -351,7 +49,7 @@
 
                     <!-- 右侧干员图片 -->
                     <td>
-                        <div class="operator-container">
+                        <div class="operator-container" onclick="save_score_right()">
                             <img id="right_png">
                             <div class="zh" id="right_png_name"></div>
                         </div>
@@ -389,16 +87,16 @@
                 <tbody id="final_order_tbody"></tbody>
             </table>
         </div>
-        <img id="mouse_follower" src="images/夕trans.gif" alt="">
+        <img id="mouse_follower" src="{{ url_for('static', filename='img/夕trans.gif') }}" alt="夕trans">
 
 
     </div>
 
     <button id="topBtn" onclick="scrollToTop()">回到顶部</button>
 
-    <script type="text/javascript" src="js/geostats.min.js"></script>
-    <script type="text/javascript" src="js/palette.min.js"></script>
-    <script type="text/javascript" src="js/page.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/geostats.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/palette.min.js') }}"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/page.js') }}"></script>
 
     <script type="text/javascript">
 
@@ -427,6 +125,29 @@
             }
         }
 
+        let currentMouseTop, currentScrollTop;
+
+        // 跟随鼠标的夕龙泡泡
+        let pic_mouse = document.querySelector('#mouse_follower');
+        document.addEventListener('mousemove', function (e) {
+            currentMouseTop = e.pageY;
+            currentScrollTop = document.documentElement.scrollTop;
+            pic_mouse.style.left = `${e.pageX}px`;
+            pic_mouse.style.top = `${e.pageY}px`;
+        })
+
+        // 当页面向下滚动一定距离时，显示回到顶部按钮
+        let topBtn = document.getElementById('topBtn');
+        window.addEventListener('scroll', function () {
+            if (document.documentElement.scrollTop > 200) { // 当滚动超过200像素时显示按钮
+                topBtn.style.display = 'block';
+            } else {
+                topBtn.style.display = 'none';
+            }
+            // 实时更新龙泡泡坐标
+            pic_mouse.style.top = `${currentMouseTop + document.documentElement.scrollTop - currentScrollTop}px`;
+        });
+
         // JavaScript 函数，用于滚动到页面顶部
         function scrollToTop() {
             window.scrollTo({
@@ -434,24 +155,6 @@
                 behavior: 'smooth' // 使用平滑滚动效果
             });
         }
-
-        // 当页面向下滚动一定距离时，显示回到顶部按钮
-        window.addEventListener('scroll', function () {
-            var topBtn = document.getElementById('topBtn');
-            if (document.documentElement.scrollTop > 200) { // 当滚动超过200像素时显示按钮
-                topBtn.style.display = 'block';
-            } else {
-                topBtn.style.display = 'none';
-            }
-        });
-
-        var pic_mouse = document.querySelector('#mouse_follower');
-        document.addEventListener('mousemove', function (e) {
-            var x = e.pageX;
-            var y = e.pageY;
-            pic_mouse.style.left = 1 + x + 'px';
-            pic_mouse.style.top = 1 + y + 'px';
-        })
     </script>
 </body>
 

@@ -11,17 +11,34 @@ __由于添加新功能时操作不慎，9月3日的部分投票数据丢失了�
 
 运行正常时，界面如下图所示：
 
-<img src="templates\frontend.png" width="100%">
+<img src="images\frontend.png" width="100%">
 
 ## 在本地电脑上部署
 
-1.clone 本项目
+1. Clone 本项目
 
-2.运行 “backend.py” (需安装python 3.9和flask, flask-cors）
+   `git clone --depth=1 https://github.com/SYadda/Arknights_6Star_Rank_Vote.git`
 
-3.将 “templates\page.html”中的ip地址全部改为本地（127.0.0.1）
+2. 将 `templates\js\page.js` 中的 `SERVER_IP` 改为本地地址
 
-4.用浏览器打开 “templates\page.html”
+3. 搭建环境：
+
+   ```powershell
+   # 创建虚拟环境
+   python -m venv venv
+   # 激活该环境
+   .\venv\Scripts\activate
+   # (可选) 更新 pip
+   python -m pip install -U pip
+   # 安装依赖
+   pip install -r requirements.txt
+   ```
+
+4. 运行应用：
+
+   `flask --app backend.py run --debug --host=0.0.0.0 --port 9876`
+
+5. 用浏览器打开 [`127.0.0.1:9876`](http://127.0.0.1:9876)
 
 ## 计分规则
 
