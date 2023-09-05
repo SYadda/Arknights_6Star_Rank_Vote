@@ -48,6 +48,10 @@ body {
 }
 
 .operator-container {
+    position: relative;
+}
+
+.operator-container:hover {
     background-color: transparent;
     display: inline-block;
     filter: drop-shadow(0 0 7px rgba(0, 0, 0, .7));
