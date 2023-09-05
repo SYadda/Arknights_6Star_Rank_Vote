@@ -15,15 +15,16 @@ set_code = set()
 @app.route('/new_compare', methods=['GET'])
 @cross_origin()
 def new_compare():
-    global set_code
-    code = str(random.randint(100, 999))
-    set_code.add(code)
-
     a = random.randint(0, len_lst_name_1)
     b = random.randint(0, len_lst_name_1)
     while a == b:
         b = random.randint(0, len_lst_name_1)
-    return lst_name[a] + ' ' + lst_name[b] + ' ' + code
+    
+    global set_code
+    code = random.randint(100, 799) + a + b
+    set_code.add(code)
+
+    return lst_name[a] + ' ' + lst_name[b] + ' ' + str(code)
 
 
 @app.route('/save_score', methods=['POST']) 
@@ -78,7 +79,7 @@ def page():
 
 def verify():
     global set_code
-    code = request.args.get('code')
+    code = int(request.args.get('code')) + dict_name[request.args.get('win_name')] + dict_name[request.args.get('lose_name')]
     if code in set_code:
         set_code.remove(code)
         return True
