@@ -56,6 +56,7 @@ body {
     display: inline-block;
     filter: drop-shadow(0 0 7px rgba(0, 0, 0, .7));
     transition: All 50ms ease-in-out;
+    cursor: pointer;
 }
 
 .zh {
@@ -107,6 +108,10 @@ body {
 }
 
 /* 比较核心中投票按钮设计 */
+.vote_button {
+    cursor: pointer;
+}
+
 .compare_block .vote_button {
     width: 70px;
     margin: 0px 25px;
