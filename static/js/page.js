@@ -6,6 +6,7 @@ let left_name = '';
 let right_name = '';
 
 const dic_pic_url = {
+    '涤火杰西卡': 'https://prts.wiki/images/1/1e/半身像_涤火杰西卡_1.png',
     '纯烬艾雅法拉': 'https://prts.wiki/images/b/bd/半身像_纯烬艾雅法拉_1.png',
     '琳琅诗怀雅': 'https://prts.wiki/images/9/99/半身像_琳琅诗怀雅_1.png',
     '提丰': 'https://prts.wiki/images/5/51/半身像_提丰_1.png',
@@ -14,7 +15,7 @@ const dic_pic_url = {
     '霍尔海雅': 'https://prts.wiki/images/5/5a/半身像_霍尔海雅_1.png',
     '淬羽赫默': 'https://prts.wiki/images/5/54/半身像_淬羽赫默_1.png',
     '伊内丝': 'https://prts.wiki/images/5/59/半身像_伊内丝_1.png',
-    '麒麟R夜刀': 'https://prts.wiki/images/6/66/半身像_麒麟X夜刀_1.png',
+    '麒麟R夜刀': 'https://prts.wiki/images/1/16/半身像_麒麟R夜刀_1.png',
     '仇白': 'https://prts.wiki/images/4/40/半身像_仇白_1.png',
     '重岳': 'https://prts.wiki/images/e/e5/半身像_重岳_1.png',
     '林': 'https://prts.wiki/images/7/75/半身像_林_1.png',
