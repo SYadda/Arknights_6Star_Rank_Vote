@@ -21,10 +21,11 @@ def new_compare():
         b = random.randint(0, len_lst_name_1)
     
     global set_code
-    code = random.randint(100, 799) + a + b
+    code_random = random.randint(100, 799)
+    code = code_random + a + b
     set_code.add(code)
 
-    return lst_name[a] + ' ' + lst_name[b] + ' ' + str(code)
+    return lst_name[a] + ' ' + lst_name[b] + ' ' + str(code_random)
 
 
 @app.route('/save_score', methods=['POST']) 
