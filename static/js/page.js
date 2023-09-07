@@ -40,6 +40,7 @@ function new_operator() {
         open[0].style.display = 'inline';
         close[0].style.display = 'none';
     }
+    new_compare();
 }
 
 //获取本次进行比较干员的头像
@@ -85,7 +86,7 @@ function save_score(win_name, lose_name) {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
-            new_compare()
+            new_compare();
         }
     }
 }

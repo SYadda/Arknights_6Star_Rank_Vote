@@ -27,7 +27,7 @@ def new_operator_compare():
 
     lst_count = [lst_win_score[i] + lst_lose_score[i] for i in range(len(lst_win_score))]
     max_count = max(lst_count)
-    weights = [max_count - count for count in lst_count]
+    weights = [max_count - count + 1 for count in lst_count]
     a, b = random.choices(range(len(weights)), weights, k=2)
     if a == b:
         b = (b + 1) % len(weights)
