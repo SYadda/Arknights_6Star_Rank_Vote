@@ -216,6 +216,10 @@ body {
     border-spacing: 0;
 }
 
+.final_table_text {
+    filter: grayscale(1) contrast(999) invert(1)
+}
+
 #topBtn {
     display: none;
     /* 默认情况下隐藏按钮 */

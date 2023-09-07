@@ -124,12 +124,12 @@ function view_final_order() {
             var table = document.getElementById("final_order_table")
             table.style.display = "inline-block";
 
-            htmlStr = '';
+            let htmlStr = '', this_rank;
             for (let i = 0, j = 0; i < star6_staff_amount; i++) {
-                var this_rank = i + 1;
+                this_rank = i + 1;
                 // 按照聚类划分梯度
                 if (cluster_list[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j = j + 1; }
-                htmlStr += "<tr style=\"background:#" + color_list[j] + ";\"><td>" + cup_size[parseInt(i / star6_staff_amount_div)] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + rate_list[i] + "</td><td>" + score_list[i] + "</td></tr>";
+                htmlStr += `<tr style="color: #${color_list[j]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${obj.name[i]}</td><td class="final_table_text">${rate_list[i]}</td><td class="final_table_text">${score_list[i]}</td></tr>`;
             }
             document.getElementById("final_order_tbody").innerHTML = htmlStr;
         }
