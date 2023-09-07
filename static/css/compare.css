@@ -136,6 +136,21 @@ body {
     font-size: 20px;
 }
 
+.new_compare_mode_open,
+.new_compare_mode_close {
+    margin: auto;
+    font-size: 20px;
+}
+
+.new_compare_mode_open {
+    display: none;
+    background-color: #4CAF50;
+}
+
+.compare_block .new_compare_mode_open:hover {
+    background-color: darkgreen;
+}
+
 /* 比较核心中查看结果按钮设计 */
 .compare_block .result,
 .compare_block .close {
