@@ -1,5 +1,4 @@
-const SERVER_IP = DATA_DICT['SERVER_IP'];
-const SERVER_PORT = DATA_DICT['SERVER_PORT'];
+const SERVER_ADDRESS = `http://${DATA_DICT['SERVER_IP']}:${DATA_DICT['SERVER_PORT']}`;
 const DICT_PIC_URL = DATA_DICT['DICT_PIC_URL'];
 
 let code = "000";
@@ -7,30 +6,29 @@ let left_name = '';
 let right_name = '';
 
 //控制列表出现和关闭的按钮
-var flag = true;
+let close_or_view_flag = true;
 function close_or_view() {
-    var close = document.getElementsByClassName('close');
-    var result = document.getElementsByClassName('result');
-    if (flag) {
-        flag = false;
+    const close = document.getElementsByClassName('close');
+    const result = document.getElementsByClassName('result');
+    if (close_or_view_flag) {
+        close_or_view_flag = false;
         view_final_order()
         result[0].style.display = 'none';
         close[0].style.display = 'inline';
-
     } else {
+        close_or_view_flag = true;
         document.getElementById("已收集数据量").innerText = '';
         var table = document.getElementById("final_order_table");
         table.style.display = "none";
         result[0].style.display = 'inline';
         close[0].style.display = 'none';
-        flag = true;
     }
 }
 
 let new_operator_flag = false;
 function new_operator() {
-    let open = document.getElementsByClassName('new_compare_mode_open');
-    let close = document.getElementsByClassName('new_compare_mode_close');
+    const open = document.getElementsByClassName('new_compare_mode_open');
+    const close = document.getElementsByClassName('new_compare_mode_close');
     if (new_operator_flag) {
         new_operator_flag = false;
         open[0].style.display = 'none';
@@ -49,9 +47,9 @@ function new_operator() {
 function new_compare() {
     xhr = new XMLHttpRequest();
     if (new_operator_flag) {
-        xhr.open('GET', `http://${SERVER_IP}:${SERVER_PORT}/new_operator_compare`, true);
+        xhr.open('GET', `${SERVER_ADDRESS}/new_operator_compare`, true);
     } else {
-        xhr.open('GET', `http://${SERVER_IP}:${SERVER_PORT}/new_compare`, true);
+        xhr.open('GET', `${SERVER_ADDRESS}/new_compare`, true);
     }
     xhr.send();
 
@@ -80,7 +78,7 @@ function new_compare() {
 //供给参数:win_name, lose_name
 function save_score(win_name, lose_name) {
     xhr = new XMLHttpRequest();
-    xhr.open('POST', `http://${SERVER_IP}:${SERVER_PORT}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
+    xhr.open('POST', `${SERVER_ADDRESS}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {
@@ -103,7 +101,7 @@ function save_score_right() {
 //http方法: GET
 function view_final_order() {
     xhr = new XMLHttpRequest();
-    xhr.open('GET', `http://${SERVER_IP}:${SERVER_PORT}/view_final_order`, true);
+    xhr.open('GET', `${SERVER_ADDRESS}/view_final_order`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {
