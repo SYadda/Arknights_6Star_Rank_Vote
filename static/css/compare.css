@@ -220,6 +220,20 @@ body {
     filter: grayscale(1) contrast(999) invert(1)
 }
 
+.nclassesInput {
+    display: none;
+    /* 默认情况下隐藏按钮 */
+    position: fixed;
+    bottom: 150px;
+    right: 100px;
+    background-color: #dddddd;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    transition: all 0.5s ease;
+}
+
 #topBtn {
     display: none;
     /* 默认情况下隐藏按钮 */
