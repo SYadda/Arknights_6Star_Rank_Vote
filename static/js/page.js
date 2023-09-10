@@ -197,17 +197,17 @@ function view_final_order() {
 
 function get_cluster_bounds_list(data_array) {
     const serie = new geostats(data_array);
+    const SDAM = serie.variance();  // the Sum of squared Deviations from the Array Mean
 
     let cluster_bounds_list;
     let nclasses = 3;   // 聚类簇数
     let SDCM;   // the Sum of squared Deviations about Class Mean
-    const SDAM = serie.variance();  // the Sum of squared Deviations from the Array Mean
-    let GVF = 0;    // The Goodness of Variance Fit 方差拟合优度
-    while (GVF < 0.8) {
+    let GVF;    // The Goodness of Variance Fit 方差拟合优度
+    do {
         cluster_bounds_list = serie.getClassJenks2(nclasses++);
         SDCM = get_SDCM(serie.serie, cluster_bounds_list);
-        GVF = 1 - SDCM / SDAM;
-    };
+        GVF = (SDAM - SDCM) / SDAM;
+    } while (GVF < 0.8);
     document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
     return cluster_bounds_list;
 }
