@@ -30,8 +30,8 @@ function recluster() {
 nclasses_input.addEventListener('input', recluster);
 nclasses_input.addEventListener('change', recluster);
 
-let currentMouseTop, currentScrollTop;
 // 跟随鼠标的夕龙泡泡
+let currentMouseTop, currentScrollTop;
 const pic_mouse = document.querySelector('#mouse_follower');
 document.addEventListener('mousemove', function (e) {
     currentMouseTop = e.pageY;
@@ -41,9 +41,9 @@ document.addEventListener('mousemove', function (e) {
 })
 
 // 当页面向下滚动一定距离时，显示回到顶部按钮
-const topBtn = document.getElementById('topBtn');
-const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
 window.addEventListener('scroll', function () {
+    const topBtn = document.getElementById('topBtn');
+    const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
     if (document.documentElement.scrollTop > 500) { // 当滚动超过 500 像素时显示按钮
         topBtn.style.display = 'block';
         nclassesInput.style.display = 'block';
