@@ -42,14 +42,14 @@ document.addEventListener('mousemove', function (e) {
 
 // 当页面向下滚动一定距离时，显示回到顶部按钮
 const topBtn = document.getElementById('topBtn');
-const nclassesInput = document.getElementsByClassName('nclassesInput');
+const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
 window.addEventListener('scroll', function () {
     if (document.documentElement.scrollTop > 500) { // 当滚动超过 500 像素时显示按钮
         topBtn.style.display = 'block';
-        nclassesInput[0].style.display = 'block';
+        nclassesInput.style.display = 'block';
     } else {
         topBtn.style.display = 'none';
-        nclassesInput[0].style.display = 'none';
+        nclassesInput.style.display = 'none';
     }
     // 实时更新龙泡泡坐标
     pic_mouse.style.top = `${currentMouseTop + document.documentElement.scrollTop - currentScrollTop}px`;
