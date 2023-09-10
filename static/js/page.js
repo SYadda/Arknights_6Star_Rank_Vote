@@ -15,14 +15,13 @@ function recluster() {
     let nclasses = parseInt(nclasses_input.value, 10);
     nclasses = nclasses > nclasses_input.min ? nclasses < nclasses_input.max ? nclasses : nclasses_input.max : nclasses_input.min;
     let cluster_bounds_list = serie.getClassJenks2(nclasses);
-    const color_list = palette('rainbow', cluster_bounds_list.length - 1, 0, 0.5, 0.95);
     const SDCM = get_SDCM(serie.serie, cluster_bounds_list);
-    const GVF = 1 - SDCM / SDAM;    // The Goodness of Variance Fit 方差拟合优度
+    const GVF = 1 - SDCM / SDAM;
     document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
-    const tr = document.querySelectorAll("#final_order_tbody>tr");
-    let j = 0;
     cluster_bounds_list = cluster_bounds_list.reverse();
-    tr.forEach((item, i) => {
+    const color_list = palette('rainbow', cluster_bounds_list.length - 1, 0, 0.5, 0.95);
+    let j = 0;
+    document.querySelectorAll("#final_order_tbody>tr").forEach((item, i) => {
         if (clusterList[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j = j + 1; }
         item.style.color = `#${color_list[j]}`;
     });
