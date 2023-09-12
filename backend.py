@@ -53,10 +53,10 @@ def new_compare():
     role_counts[b] -= 1
     global set_code
     code_random = random.randint(100, 799)
-    code = code_random + a + b
+    code = code_random + lst_name.index(a) + lst_name.index(b)
     set_code.add(code)
 
-    return lst_name[a] + ' ' + lst_name[b] + ' ' + str(code_random)
+    return a + ' ' + b + ' ' + str(code_random)
 
 
 @app.route('/save_score', methods=['POST'])
