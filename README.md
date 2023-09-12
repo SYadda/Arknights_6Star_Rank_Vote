@@ -17,9 +17,7 @@ __更新1.0.3版 点击图片或按钮皆可投票！__
 
    `git clone --depth=1 https://github.com/SYadda/Arknights_6Star_Rank_Vote.git`
 
-2. 将 `templates\js\page.js` 中的 `SERVER_IP` 改为本地地址
-
-3. 搭建环境：
+1. 搭建环境：
 
    ```powershell
    # 创建虚拟环境
@@ -32,11 +30,11 @@ __更新1.0.3版 点击图片或按钮皆可投票！__
    pip install -r requirements.txt
    ```
 
-4. 运行应用：
+1. 运行应用：
 
    `flask --app backend.py run --debug --host=0.0.0.0 --port 9876`
 
-5. 用浏览器打开 [`127.0.0.1:9876`](http://127.0.0.1:9876)
+1. 用浏览器打开 [`127.0.0.1:9876`](http://127.0.0.1:9876)
 
 ## 计分规则
 

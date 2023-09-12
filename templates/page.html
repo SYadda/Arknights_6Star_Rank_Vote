@@ -2,9 +2,9 @@
 <html lang="zh">
 
 <head>
-    <link rel="icon" href="{{ url_for('static', filename='img/favicon.ico') }}" type="image/x-icon">
     <meta charset="utf-8" />
     <title>六星干员强度投票箱</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='img/favicon.ico') }}">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/compare.css') }}" />
 </head>
@@ -27,9 +27,8 @@
                         <!-- 标题 -->
                         <h1>明日方舟六星</h1>
                         <h1>强度投票箱</h1>
-                        <h5>by: 董杭杭, @blackwang08, @lengyanyu258</h5>
+                        <h4>by: 董杭杭, @blackwang08, @lengyanyu258</h4>
                         <div class="compare_block">
-
                             <!-- 为干员投票按钮 -->
                             <div class="vote">
                                 <input class="vote_button" type="button" value="👈👍" onclick="save_score_left()">
@@ -41,10 +40,13 @@
                             <!-- 部分辅助功能 -->
                             <div class="function">
                                 <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
+                                <input class="new_compare_mode_open" type="button" value="测评新干员模式"
+                                    onclick="new_operator()">
+                                <input class="new_compare_mode_close" type="button" value="测评新干员模式"
+                                    onclick="new_operator()">
                                 <input class="result" type="button" value="查看投票结果" onclick="close_or_view()">
                                 <input class="close" type="button" value="关闭投票结果" onclick="close_or_view()">
                             </div>
-
                     </td>
 
                     <!-- 右侧干员图片 -->
@@ -88,74 +90,22 @@
             </table>
         </div>
         <img id="mouse_follower" src="{{ url_for('static', filename='img/夕trans.gif') }}" alt="夕trans">
-
-
+        <div class="nclassesInput">
+            <label for="nclassesInput">分层数：</label>
+            <input id="nclassesInput" style="font-size: medium;" type="number" min="1" max="9" value="6">
+            <br>
+            <label for="GVF">区分度:</label>
+            <label id="GVF"></label>
+        </div>
+        <button id="topBtn" onclick="scrollToTop()">回到顶部</button>
     </div>
 
-    <button id="topBtn" onclick="scrollToTop()">回到顶部</button>
-
+    <script type="text/javascript">
+        const DATA_DICT = JSON.parse('{{ data_dict | tojson | safe }}');
+    </script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/geostats.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/palette.min.js') }}"></script>
     <script type="text/javascript" src="{{ url_for('static', filename='js/page.js') }}"></script>
-
-    <script type="text/javascript">
-
-
-        //控制列表出现和关闭的按钮
-        var flag = true;
-        function close_or_view() {
-            if (flag) {
-                flag = false;
-                view_final_order()
-                var close = document.getElementsByClassName('close');
-                var result = document.getElementsByClassName('result');
-                result[0].style.display = 'none';
-                close[0].style.display = 'inline';
-
-            }
-            else {
-                document.getElementById("已收集数据量").innerText = '';
-                var table = document.getElementById("final_order_table");
-                table.style.display = "none";
-                var close = document.getElementsByClassName('close');
-                var result = document.getElementsByClassName('result');
-                result[0].style.display = 'inline';
-                close[0].style.display = 'none';
-                flag = true;
-            }
-        }
-
-        let currentMouseTop, currentScrollTop;
-
-        // 跟随鼠标的夕龙泡泡
-        let pic_mouse = document.querySelector('#mouse_follower');
-        document.addEventListener('mousemove', function (e) {
-            currentMouseTop = e.pageY;
-            currentScrollTop = document.documentElement.scrollTop;
-            pic_mouse.style.left = `${e.pageX}px`;
-            pic_mouse.style.top = `${e.pageY}px`;
-        })
-
-        // 当页面向下滚动一定距离时，显示回到顶部按钮
-        let topBtn = document.getElementById('topBtn');
-        window.addEventListener('scroll', function () {
-            if (document.documentElement.scrollTop > 200) { // 当滚动超过200像素时显示按钮
-                topBtn.style.display = 'block';
-            } else {
-                topBtn.style.display = 'none';
-            }
-            // 实时更新龙泡泡坐标
-            pic_mouse.style.top = `${currentMouseTop + document.documentElement.scrollTop - currentScrollTop}px`;
-        });
-
-        // JavaScript 函数，用于滚动到页面顶部
-        function scrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth' // 使用平滑滚动效果
-            });
-        }
-    </script>
 </body>
 
 </html>

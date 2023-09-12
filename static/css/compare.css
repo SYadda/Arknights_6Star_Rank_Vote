@@ -136,6 +136,21 @@ body {
     font-size: 20px;
 }
 
+.new_compare_mode_open,
+.new_compare_mode_close {
+    margin: auto;
+    font-size: 20px;
+}
+
+.new_compare_mode_open {
+    display: none;
+    background-color: #4CAF50;
+}
+
+.compare_block .new_compare_mode_open:hover {
+    background-color: darkgreen;
+}
+
 /* 比较核心中查看结果按钮设计 */
 .compare_block .result,
 .compare_block .close {
@@ -199,6 +214,24 @@ body {
     margin: 0 auto;
     border-collapse: collapse;
     border-spacing: 0;
+}
+
+.final_table_text {
+    filter: grayscale(1) contrast(999) invert(1)
+}
+
+.nclassesInput {
+    display: none;
+    /* 默认情况下隐藏按钮 */
+    position: fixed;
+    bottom: 150px;
+    right: 100px;
+    background-color: #dddddd;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    transition: all 0.5s ease;
 }
 
 #topBtn {

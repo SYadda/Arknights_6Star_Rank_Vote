@@ -1,92 +1,101 @@
-// const SERVER_IP = '127.0.0.1';
-const SERVER_IP = '114.132.188.253';
-const SERVER_PORT = '9876'
+const SERVER_ADDRESS = `http://${DATA_DICT['SERVER_IP']}:${DATA_DICT['SERVER_PORT']}`;
+const DICT_PIC_URL = DATA_DICT['DICT_PIC_URL'];
+
 let code = "000";
 let left_name = '';
 let right_name = '';
+let clusterList = [];
 
-const dic_pic_url = {
-    '涤火杰西卡': 'https://prts.wiki/images/1/1e/半身像_涤火杰西卡_1.png',
-    '纯烬艾雅法拉': 'https://prts.wiki/images/b/bd/半身像_纯烬艾雅法拉_1.png',
-    '琳琅诗怀雅': 'https://prts.wiki/images/9/99/半身像_琳琅诗怀雅_1.png',
-    '提丰': 'https://prts.wiki/images/5/51/半身像_提丰_1.png',
-    '圣约送葬人': 'https://prts.wiki/images/7/71/半身像_圣约送葬人_1.png',
-    '缪尔赛思': 'https://prts.wiki/images/4/4a/半身像_缪尔赛思_1.png',
-    '霍尔海雅': 'https://prts.wiki/images/5/5a/半身像_霍尔海雅_1.png',
-    '淬羽赫默': 'https://prts.wiki/images/5/54/半身像_淬羽赫默_1.png',
-    '伊内丝': 'https://prts.wiki/images/5/59/半身像_伊内丝_1.png',
-    '麒麟R夜刀': 'https://prts.wiki/images/1/16/半身像_麒麟R夜刀_1.png',
-    '仇白': 'https://prts.wiki/images/4/40/半身像_仇白_1.png',
-    '重岳': 'https://prts.wiki/images/e/e5/半身像_重岳_1.png',
-    '林': 'https://prts.wiki/images/7/75/半身像_林_1.png',
-    '焰影苇草': 'https://prts.wiki/images/a/ae/半身像_焰影苇草_1.png',
-    '缄默德克萨斯': 'https://prts.wiki/images/0/0d/半身像_缄默德克萨斯_1.png',
-    '斥罪': 'https://prts.wiki/images/e/e7/半身像_斥罪_1.png',
-    '伺夜': 'https://prts.wiki/images/f/fc/半身像_伺夜_1.png',
-    '白铁': 'https://prts.wiki/images/e/e5/半身像_白铁_1.png',
-    '玛恩纳': 'https://prts.wiki/images/b/b1/半身像_玛恩纳_1.png',
-    '百炼嘉维尔': 'https://prts.wiki/images/e/ed/半身像_百炼嘉维尔_1.png',
-    '鸿雪': 'https://prts.wiki/images/4/4d/半身像_鸿雪_1.png',
-    '多萝西': 'https://prts.wiki/images/0/04/半身像_多萝西_1.png',
-    '黑键': 'https://prts.wiki/images/e/e6/半身像_黑键_1.png',
-    '归溟幽灵鲨': 'https://prts.wiki/images/f/f7/半身像_归溟幽灵鲨_1.png',
-    '艾丽妮': 'https://prts.wiki/images/b/bd/半身像_艾丽妮_1.png',
-    '流明': 'https://prts.wiki/images/9/9f/半身像_流明_1.png',
-    '号角': 'https://prts.wiki/images/8/85/半身像_号角_1.png',
-    '菲亚梅塔': 'https://prts.wiki/images/f/f8/半身像_菲亚梅塔_1.png',
-    '澄闪': 'https://prts.wiki/images/1/17/半身像_澄闪_1.png',
-    '令': 'https://prts.wiki/images/d/d6/半身像_令_1.png',
-    '老鲤': 'https://prts.wiki/images/e/e8/半身像_老鲤_1.png',
-    '灵知': 'https://prts.wiki/images/a/a9/半身像_灵知_1.png',
-    '耀骑士临光': 'https://prts.wiki/images/d/db/半身像_耀骑士临光_1.png',
-    '焰尾': 'https://prts.wiki/images/9/92/半身像_焰尾_1.png',
-    '远牙': 'https://prts.wiki/images/4/4f/半身像_远牙_1.png',
-    '琴柳': 'https://prts.wiki/images/2/28/半身像_琴柳_1.png',
-    '假日威龙陈': 'https://prts.wiki/images/5/51/半身像_假日威龙陈_1.png',
-    '水月': 'https://prts.wiki/images/2/22/半身像_水月_1.png',
-    '帕拉斯': 'https://prts.wiki/images/7/72/半身像_帕拉斯_1.png',
-    '卡涅利安': 'https://prts.wiki/images/3/36/半身像_卡涅利安_1.png',
-    '浊心斯卡蒂': 'https://prts.wiki/images/7/7f/半身像_浊心斯卡蒂_1.png',
-    '凯尔希': 'https://prts.wiki/images/c/c0/半身像_凯尔希_1.png',
-    '歌蕾蒂娅': 'https://prts.wiki/images/3/33/半身像_歌蕾蒂娅_1.png',
-    '异客': 'https://prts.wiki/images/d/d3/半身像_异客_1.png',
-    '灰烬': 'https://prts.wiki/images/f/fa/半身像_灰烬_1.png',
-    '夕': 'https://prts.wiki/images/f/f2/半身像_夕_1.png',
-    '嵯峨': 'https://prts.wiki/images/a/a4/半身像_嵯峨_1.png',
-    '空弦': 'https://prts.wiki/images/8/86/半身像_空弦_1.png',
-    '山': 'https://prts.wiki/images/7/7b/半身像_山_1.png',
-    '迷迭香': 'https://prts.wiki/images/9/9a/半身像_迷迭香_1.png',
-    '泥岩': 'https://prts.wiki/images/0/08/半身像_泥岩_1.png',
-    '瑕光': 'https://prts.wiki/images/a/a6/半身像_瑕光_1.png',
-    '史尔特尔': 'https://prts.wiki/images/5/58/半身像_史尔特尔_1.png',
-    '森蚺': 'https://prts.wiki/images/4/4a/半身像_森蚺_1.png',
-    '棘刺': 'https://prts.wiki/images/0/08/半身像_棘刺_1.png',
-    '铃兰': 'https://prts.wiki/images/f/fe/半身像_铃兰_1.png',
-    '早露': 'https://prts.wiki/images/9/92/半身像_早露_1.png',
-    'W': 'https://prts.wiki/images/4/45/半身像_W_1.png',
-    '温蒂': 'https://prts.wiki/images/5/5f/半身像_温蒂_1.png',
-    '傀影': 'https://prts.wiki/images/a/ad/半身像_傀影_1.png',
-    '风笛': 'https://prts.wiki/images/e/ea/半身像_风笛_1.png',
-    '刻俄柏': 'https://prts.wiki/images/6/69/半身像_刻俄柏_1.png',
-    '年': 'https://prts.wiki/images/4/4d/半身像_年_1.png',
-    '阿': 'https://prts.wiki/images/7/72/半身像_阿_1.png',
-    '煌': 'https://prts.wiki/images/1/1c/半身像_煌_1.png',
-    '莫斯提马': 'https://prts.wiki/images/f/fc/半身像_莫斯提马_1.png',
-    '麦哲伦': 'https://prts.wiki/images/c/c7/半身像_麦哲伦_1.png',
-    '赫拉格': 'https://prts.wiki/images/8/82/半身像_赫拉格_1.png',
-    '黑': 'https://prts.wiki/images/2/23/半身像_黑_1.png',
-    '陈': 'https://prts.wiki/images/e/e1/半身像_陈_1.png',
-    '斯卡蒂': 'https://prts.wiki/images/a/a5/半身像_斯卡蒂_1.png',
-    '银灰': 'https://prts.wiki/images/9/90/半身像_银灰_1.png',
-    '塞雷娅': 'https://prts.wiki/images/4/44/半身像_塞雷娅_1.png',
-    '星熊': 'https://prts.wiki/images/2/22/半身像_星熊_1.png',
-    '夜莺': 'https://prts.wiki/images/e/e9/半身像_夜莺_1.png',
-    '闪灵': 'https://prts.wiki/images/d/d6/半身像_闪灵_1.png',
-    '安洁莉娜': 'https://prts.wiki/images/3/30/半身像_安洁莉娜_1.png',
-    '艾雅法拉': 'https://prts.wiki/images/3/36/半身像_艾雅法拉_1.png',
-    '伊芙利特': 'https://prts.wiki/images/2/23/半身像_伊芙利特_1.png',
-    '推进之王': 'https://prts.wiki/images/9/98/半身像_推进之王_1.png',
-    '能天使': 'https://prts.wiki/images/2/2e/半身像_能天使_1.png'
+// 调整聚类簇数
+const nclasses_input = document.getElementById('nclassesInput');
+function recluster() {
+    const serie = new geostats(clusterList);
+    const SDAM = serie.variance();
+
+    let nclasses = parseInt(nclasses_input.value, 10);
+    nclasses = nclasses > nclasses_input.min ? nclasses < nclasses_input.max ? nclasses : nclasses_input.max : nclasses_input.min;
+    let cluster_bounds_list = serie.getClassJenks2(nclasses);
+    const SDCM = get_SDCM(serie.serie, cluster_bounds_list);
+    const GVF = 1 - SDCM / SDAM;
+    document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
+    cluster_bounds_list = cluster_bounds_list.reverse();
+    const color_list = palette('rainbow', cluster_bounds_list.length - 1, 0, 0.5, 0.95);
+    let j = 0;
+    document.querySelectorAll("#final_order_tbody>tr").forEach((item, i) => {
+        if (clusterList[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j = j + 1; }
+        item.style.color = `#${color_list[j]}`;
+    });
+}
+nclasses_input.addEventListener('input', recluster);
+nclasses_input.addEventListener('change', recluster);
+
+// 跟随鼠标的夕龙泡泡
+let currentMouseTop, currentScrollTop;
+const pic_mouse = document.querySelector('#mouse_follower');
+document.addEventListener('mousemove', function (e) {
+    currentMouseTop = e.pageY;
+    currentScrollTop = document.documentElement.scrollTop;
+    pic_mouse.style.left = `${e.pageX}px`;
+    pic_mouse.style.top = `${e.pageY}px`;
+})
+
+// 当页面向下滚动一定距离时，显示回到顶部按钮
+window.addEventListener('scroll', function () {
+    const topBtn = document.getElementById('topBtn');
+    const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
+    if (document.documentElement.scrollTop > 500) { // 当滚动超过 500 像素时显示按钮
+        topBtn.style.display = 'block';
+        nclassesInput.style.display = 'block';
+    } else {
+        topBtn.style.display = 'none';
+        nclassesInput.style.display = 'none';
+    }
+    // 实时更新龙泡泡坐标
+    pic_mouse.style.top = `${currentMouseTop + document.documentElement.scrollTop - currentScrollTop}px`;
+});
+
+// JavaScript 函数，用于滚动到页面顶部
+function scrollToTop() {
+    window.scrollTo({
+        top: 0,
+        behavior: 'smooth' // 使用平滑滚动效果
+    });
+}
+
+//控制列表出现和关闭的按钮
+let close_or_view_flag = true;
+function close_or_view() {
+    const close = document.getElementsByClassName('close');
+    const result = document.getElementsByClassName('result');
+    if (close_or_view_flag) {
+        close_or_view_flag = false;
+        view_final_order()
+        result[0].style.display = 'none';
+        close[0].style.display = 'inline';
+    } else {
+        close_or_view_flag = true;
+        document.getElementById("已收集数据量").innerText = '';
+        var table = document.getElementById("final_order_table");
+        table.style.display = "none";
+        result[0].style.display = 'inline';
+        close[0].style.display = 'none';
+    }
+}
+
+let new_operator_flag = false;
+function new_operator() {
+    const open = document.getElementsByClassName('new_compare_mode_open');
+    const close = document.getElementsByClassName('new_compare_mode_close');
+    if (new_operator_flag) {
+        new_operator_flag = false;
+        open[0].style.display = 'none';
+        close[0].style.display = 'inline';
+    } else {
+        new_operator_flag = true;
+        open[0].style.display = 'inline';
+        close[0].style.display = 'none';
+    }
+    new_compare();
 }
 
 //获取本次进行比较干员的头像
@@ -94,7 +103,11 @@ const dic_pic_url = {
 //接口:new_compare
 function new_compare() {
     xhr = new XMLHttpRequest();
-    xhr.open('GET', `http://${SERVER_IP}:${SERVER_PORT}/new_compare`, true);
+    if (new_operator_flag) {
+        xhr.open('GET', `${SERVER_ADDRESS}/new_operator_compare`, true);
+    } else {
+        xhr.open('GET', `${SERVER_ADDRESS}/new_compare`, true);
+    }
     xhr.send();
 
     xhr.onreadystatechange = function () {
@@ -105,10 +118,10 @@ function new_compare() {
             code = name[2]
             const left_png = document.getElementById("left_png");
             const right_png = document.getElementById("right_png");
-            left_png.src = dic_pic_url[left_name];
-            left_png.alt = dic_pic_url[left_name].split('/').at(-1);
-            right_png.src = dic_pic_url[right_name];
-            right_png.alt = dic_pic_url[right_name].split('/').at(-1);
+            left_png.src = DICT_PIC_URL[left_name];
+            left_png.alt = DICT_PIC_URL[left_name].split('/').at(-1);
+            right_png.src = DICT_PIC_URL[right_name];
+            right_png.alt = DICT_PIC_URL[right_name].split('/').at(-1);
             document.getElementById("left_png_name").innerText = left_name;
             document.getElementById("right_png_name").innerText = right_name;
         }
@@ -122,13 +135,13 @@ function new_compare() {
 //供给参数:win_name, lose_name
 function save_score(win_name, lose_name) {
     xhr = new XMLHttpRequest();
-    xhr.open('POST', `http://${SERVER_IP}:${SERVER_PORT}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
+    xhr.open('POST', `${SERVER_ADDRESS}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
-            new_compare()
+            new_compare();
         }
     }
 }
@@ -145,7 +158,7 @@ function save_score_right() {
 //http方法: GET
 function view_final_order() {
     xhr = new XMLHttpRequest();
-    xhr.open('GET', `http://${SERVER_IP}:${SERVER_PORT}/view_final_order`, true);
+    xhr.open('GET', `${SERVER_ADDRESS}/view_final_order`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {
@@ -158,8 +171,8 @@ function view_final_order() {
             const rate_list = obj.rate;
             const score_list = obj.score;
 
-            const cluster_list = rate_list.map((r) => parseFloat(r));
-            const cluster_bounds_list = get_cluster_bounds_list(cluster_list).reverse();
+            clusterList = rate_list.map((r) => parseFloat(r));
+            const cluster_bounds_list = get_cluster_bounds_list(clusterList).reverse();
             const color_list = palette('rainbow', cluster_bounds_list.length - 1, 0, 0.5, 0.95);
             const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
             const star6_staff_amount_div = star6_staff_amount / cup_size.length;
@@ -167,31 +180,35 @@ function view_final_order() {
             var table = document.getElementById("final_order_table")
             table.style.display = "inline-block";
 
-            htmlStr = '';
+            let htmlStr = '', this_rank;
             for (let i = 0, j = 0; i < star6_staff_amount; i++) {
-                var this_rank = i + 1;
+                this_rank = i + 1;
                 // 按照聚类划分梯度
-                if (cluster_list[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j = j + 1; }
-                htmlStr += "<tr style=\"background:#" + color_list[j] + ";\"><td>" + cup_size[parseInt(i / star6_staff_amount_div)] + "</td><td>" + this_rank + "</td><td>" + obj.name[i] + "</td><td>" + rate_list[i] + "</td><td>" + score_list[i] + "</td></tr>";
+                if (clusterList[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j = j + 1; }
+                htmlStr += `<tr style="color: #${color_list[j]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${obj.name[i]}</td><td class="final_table_text">${rate_list[i]}</td><td class="final_table_text" style="text-align: right; padding-right: 25px">${score_list[i]}</td></tr>`;
             }
             document.getElementById("final_order_tbody").innerHTML = htmlStr;
+
+            nclasses_input.max = star6_staff_amount - 1;
+            nclasses_input.value = cluster_bounds_list.length - 1;
         }
     }
 }
 
 function get_cluster_bounds_list(data_array) {
     const serie = new geostats(data_array);
-
-    let nclasses = 2;   // 聚类簇数
-    let cluster_bounds_list;
-    let SDCM;   // the Sum of squared Deviations about Class Mean
     const SDAM = serie.variance();  // the Sum of squared Deviations from the Array Mean
-    let GVF = 0;    // The Goodness of Variance Fit 方差拟合优度
-    while (GVF < 0.8) {
+
+    let cluster_bounds_list;
+    let nclasses = 3;   // 聚类簇数
+    let SDCM;   // the Sum of squared Deviations about Class Mean
+    let GVF;    // The Goodness of Variance Fit 方差拟合优度
+    do {
         cluster_bounds_list = serie.getClassJenks2(nclasses++);
         SDCM = get_SDCM(serie.serie, cluster_bounds_list);
         GVF = (SDAM - SDCM) / SDAM;
-    }
+    } while (GVF < 0.8);
+    document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
     return cluster_bounds_list;
 }
 

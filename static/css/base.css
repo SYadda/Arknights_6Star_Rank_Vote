@@ -78,7 +78,3 @@ body {
     content: ".";
     height: 0
 }
-
-.clearfix {
-    *zoom: 1
-}
