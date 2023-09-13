@@ -8,26 +8,21 @@ let clusterList = [];
 
 // 调整聚类簇数
 const nclasses_input = document.getElementById('nclassesInput');
-function recluster() {
-    const serie = new geostats(clusterList);
-    const SDAM = serie.variance();
-
+nclasses_input.addEventListener('input', function () {
     let nclasses = parseInt(nclasses_input.value, 10);
     nclasses = nclasses > nclasses_input.min ? nclasses < nclasses_input.max ? nclasses : nclasses_input.max : nclasses_input.min;
-    let cluster_bounds_list = serie.getClassJenks2(nclasses);
-    const SDCM = get_SDCM(serie.serie, cluster_bounds_list);
-    const GVF = 1 - SDCM / SDAM;
+
+    const serie = new geostats(clusterList);
+    const cluster_list = get_cluster_list(serie.serie, serie.getClassJenks2(nclasses));
+
+    const GVF = 1 - get_SDCM(cluster_list) / serie.variance();
     document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
-    cluster_bounds_list = cluster_bounds_list.reverse();
-    const color_list = palette('rainbow', cluster_bounds_list.length - 1, 0, 0.5, 0.95);
-    let j = 0;
+
+    const color_list = get_color_list(cluster_list.reverse());
     document.querySelectorAll("#final_order_tbody>tr").forEach((item, i) => {
-        if (clusterList[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j = j + 1; }
-        item.style.color = `#${color_list[j]}`;
+        item.style.color = `#${color_list[i]}`;
     });
-}
-nclasses_input.addEventListener('input', recluster);
-nclasses_input.addEventListener('change', recluster);
+});
 
 // 跟随鼠标的夕龙泡泡
 let currentMouseTop, currentScrollTop;
@@ -172,57 +167,82 @@ function view_final_order() {
             const score_list = obj.score;
 
             clusterList = rate_list.map((r) => parseFloat(r));
-            const cluster_bounds_list = get_cluster_bounds_list(clusterList).reverse();
-            const color_list = palette('rainbow', cluster_bounds_list.length - 1, 0, 0.5, 0.95);
+            const cluster_list = get_best_cluster_list(clusterList);
+            const color_list = get_color_list(cluster_list.reverse());
+
             const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
             const star6_staff_amount_div = star6_staff_amount / cup_size.length;
 
-            var table = document.getElementById("final_order_table")
+            const table = document.getElementById("final_order_table")
             table.style.display = "inline-block";
 
             let htmlStr = '', this_rank;
-            for (let i = 0, j = 0; i < star6_staff_amount; i++) {
+            for (let i = 0; i < star6_staff_amount; i++) {
                 this_rank = i + 1;
-                // 按照聚类划分梯度
-                if (clusterList[i] <= cluster_bounds_list[j + 1] && (j + 1) < color_list.length) { j = j + 1; }
-                htmlStr += `<tr style="color: #${color_list[j]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${obj.name[i]}</td><td class="final_table_text">${rate_list[i]}</td><td class="final_table_text" style="text-align: right; padding-right: 25px">${score_list[i]}</td></tr>`;
+                htmlStr += `<tr style="color: #${color_list[i]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${obj.name[i]}</td><td class="final_table_text">${rate_list[i]}</td><td class="final_table_text" style="text-align: right; padding-right: 25px">${score_list[i]}</td></tr>`;
             }
             document.getElementById("final_order_tbody").innerHTML = htmlStr;
 
             nclasses_input.max = star6_staff_amount - 1;
-            nclasses_input.value = cluster_bounds_list.length - 1;
+            nclasses_input.value = cluster_list.length;
         }
     }
 }
 
-function get_cluster_bounds_list(data_array) {
+function get_color_list(cluster_list) {
+    // 按照聚类划分梯度
+    const color_list = [];
+    palette('rainbow', cluster_list.length, 0, 0.5, 0.95).forEach((color, i) => {
+        color_list.push.apply(color_list, new Array(cluster_list[i].length).fill(color))
+    })
+    return color_list;
+}
+
+function get_best_cluster_list(data_array) {
     const serie = new geostats(data_array);
     const SDAM = serie.variance();  // the Sum of squared Deviations from the Array Mean
 
-    let cluster_bounds_list;
+    let cluster_list;
     let nclasses = 3;   // 聚类簇数
     let SDCM;   // the Sum of squared Deviations about Class Mean
     let GVF;    // The Goodness of Variance Fit 方差拟合优度
     do {
-        cluster_bounds_list = serie.getClassJenks2(nclasses++);
-        SDCM = get_SDCM(serie.serie, cluster_bounds_list);
+        cluster_list = get_cluster_list(serie.serie, serie.getClassJenks2(nclasses++));
+        SDCM = get_SDCM(cluster_list);
         GVF = (SDAM - SDCM) / SDAM;
     } while (GVF < 0.8);
     document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
-    return cluster_bounds_list;
+    return cluster_list;
 }
 
-function get_SDCM(data_array, bound_list) {
+function get_cluster_list(data_array, bound_list) {
+    let i, j, k;
     const bound_index = [0];
-    for (let i = 1; i < bound_list.length - 1; i++) {
-        bound_index.push(data_array.indexOf(bound_list[i]));
+    for (i = 1, j = 1; i < bound_list.length - 1; i++, j++) {
+        j = data_array.indexOf(bound_list[i], j);
+        bound_index.push(j);
     }
-    bound_index.push(data_array.length);
+    bound_index.push(data_array.length - 1);
 
-    const serie = new geostats();
-    let SDCM = 0;
-    for (let i = 1; i < bound_index.length; i++) {
-        serie.setSerie(data_array.slice(bound_index[i - 1], bound_index[i]));
+    const cluster_list = [];
+    for (i = 1, j = 0; i < bound_index.length; i++, j = k) {
+        k = bound_index[i];
+        if (i + 1 === bound_index.length ||
+            (bound_index[i - 1] + 1 !== bound_index[i] && bound_index[i] !== bound_index[i + 1] - 1)) {
+            k++;
+        }
+        cluster_list.push(data_array.slice(j, k));
+    }
+
+    return cluster_list;
+}
+
+function get_SDCM(cluster_list) {
+    const serie = new geostats(cluster_list[0]);
+    let SDCM = serie.variance();
+
+    for (let i = 1; i < cluster_list.length; i++) {
+        serie.setSerie(cluster_list[i]);
         SDCM += serie.variance();
     }
 
