@@ -20,6 +20,7 @@ __更新1.0.4版 新增“测评新干员模式”和“自定义聚类数目”
 1. 搭建环境：
 
    ```powershell
+   cd .\Arknights_6Star_Rank_Vote\
    # 创建虚拟环境
    python -m venv venv
    # 激活该环境
