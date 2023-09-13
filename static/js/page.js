@@ -66,7 +66,7 @@ function close_or_view() {
     const result = document.getElementsByClassName('result');
     if (close_or_view_flag) {
         close_or_view_flag = false;
-        view_final_order()
+        view_final_order();
         close[0].style.display = 'inline';
         result[0].style.display = 'none';
     } else {
@@ -109,10 +109,8 @@ function new_compare() {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            var name = xhr.responseText.split(' ');
-            left_name = name[0]
-            right_name = name[1]
-            code = name[2]
+            const name = xhr.responseText.split(' ');
+            [left_name, right_name, code] = name;
             const left_png = document.getElementById("left_png");
             const right_png = document.getElementById("right_png");
             left_png.src = DICT_PIC_URL[left_name];
@@ -160,7 +158,7 @@ function view_final_order() {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            const json = xhr.responseText
+            const json = xhr.responseText;
             obj = JSON.parse(json);
             document.getElementById("已收集数据量").innerText = obj.count;
 
@@ -195,7 +193,7 @@ function get_color_list(cluster_list) {
     // 按照聚类划分梯度
     const color_list = [];
     palette('rainbow', cluster_list.length, 0, 0.5, 0.95).forEach((color, i) => {
-        color_list.push.apply(color_list, new Array(cluster_list[i].length).fill(color))
+        color_list.push.apply(color_list, new Array(cluster_list[i].length).fill(color));
     })
     return color_list;
 }
