@@ -37,13 +37,10 @@ document.addEventListener('mousemove', function (e) {
 // 当页面向下滚动一定距离时，显示回到顶部按钮
 window.addEventListener('scroll', function () {
     const topBtn = document.getElementById('topBtn');
-    const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
-    if (document.documentElement.scrollTop > 500) { // 当滚动超过 500 像素时显示按钮
+    if (document.documentElement.scrollTop > 550) { // 当滚动超过 550 像素时显示按钮
         topBtn.style.display = 'block';
-        nclassesInput.style.display = 'block';
     } else {
         topBtn.style.display = 'none';
-        nclassesInput.style.display = 'none';
     }
     // 实时更新龙泡泡坐标
     pic_mouse.style.top = `${currentMouseTop + document.documentElement.scrollTop - currentScrollTop}px`;
@@ -62,18 +59,21 @@ let close_or_view_flag = true;
 function close_or_view() {
     const close = document.getElementsByClassName('close');
     const result = document.getElementsByClassName('result');
+    const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
     if (close_or_view_flag) {
         close_or_view_flag = false;
         view_final_order()
-        result[0].style.display = 'none';
         close[0].style.display = 'inline';
+        result[0].style.display = 'none';
+        nclassesInput.style.display = 'block';
     } else {
         close_or_view_flag = true;
         document.getElementById("已收集数据量").innerText = '';
         var table = document.getElementById("final_order_table");
         table.style.display = "none";
-        result[0].style.display = 'inline';
         close[0].style.display = 'none';
+        result[0].style.display = 'inline';
+        nclassesInput.style.display = 'none';
     }
 }
 
