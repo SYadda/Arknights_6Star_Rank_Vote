@@ -38,7 +38,7 @@ document.addEventListener('mousemove', function (e) {
 window.addEventListener('scroll', function () {
     const topBtn = document.getElementById('topBtn');
     const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
-    if (document.documentElement.scrollTop > 150) { // 当滚动超过 550 像素时显示按钮
+    if (document.documentElement.scrollTop > 550) { // 当滚动超过 550 像素时显示按钮
         topBtn.style.display = 'block';
         if (close_or_view_flag === false) {
             nclassesInput.style.display = 'block';
