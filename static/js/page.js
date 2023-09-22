@@ -204,32 +204,40 @@ function get_best_cluster_list(data_array) {
 
     let cluster_list;
     let nclasses = 3;   // 聚类簇数
-    let SDCM;   // the Sum of squared Deviations about Class Mean
     let GVF;    // The Goodness of Variance Fit 方差拟合优度
     do {
         cluster_list = get_cluster_list(serie.serie, serie.getClassJenks2(nclasses++));
-        SDCM = get_SDCM(cluster_list);
-        GVF = (SDAM - SDCM) / SDAM;
+        GVF = 1 - get_SDCM(cluster_list) / SDAM;
     } while (GVF < 0.8);
+
     document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
+
     return cluster_list;
 }
 
 function get_cluster_list(data_array, bound_list) {
     let i, j, k;
+
     const bound_index = [0];
     for (i = 1, j = 1; i < bound_list.length - 1; i++, j++) {
-        j = data_array.indexOf(bound_list[i], j);
+        if (bound_list[i] === bound_list[i + 1]) {
+            j = data_array.indexOf(bound_list[i], j);
+        } else {
+            j = data_array.lastIndexOf(bound_list[i]);
+        }
         bound_index.push(j);
     }
     bound_index.push(data_array.length - 1);
 
     const cluster_list = [];
     for (i = 1, j = 0; i < bound_index.length; i++, j = k) {
-        k = bound_index[i];
-        if (i + 1 === bound_index.length ||
-            (bound_index[i - 1] + 1 !== bound_index[i] && bound_index[i] !== bound_index[i + 1] - 1)) {
-            k++;
+        k = bound_index[i] + 1;
+        if (i + 1 < bound_index.length) {
+            if (bound_index[i - 1] + 1 === bound_index[i]) {
+                k = k - 1;
+            } else if (bound_index[i] === bound_index[i + 1] - 1) {
+                k = j + 1;
+            }
         }
         cluster_list.push(data_array.slice(j, k));
     }
@@ -239,7 +247,7 @@ function get_cluster_list(data_array, bound_list) {
 
 function get_SDCM(cluster_list) {
     const serie = new geostats(cluster_list[0]);
-    let SDCM = serie.variance();
+    let SDCM = serie.variance();    // the Sum of squared Deviations about Class Mean
 
     for (let i = 1; i < cluster_list.length; i++) {
         serie.setSerie(cluster_list[i]);
