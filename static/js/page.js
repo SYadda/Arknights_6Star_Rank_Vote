@@ -216,31 +216,24 @@ function get_best_cluster_list(data_array) {
 }
 
 function get_cluster_list(data_array, bound_list) {
-    let i, j, k;
-
-    const bound_index = [0];
-    for (i = 1, j = 1; i < bound_list.length - 1; i++, j++) {
-        if (bound_list[i] === bound_list[i + 1]) {
-            j = data_array.indexOf(bound_list[i], j);
-        } else {
-            j = data_array.lastIndexOf(bound_list[i]);
-        }
-        bound_index.push(j);
-    }
-    bound_index.push(data_array.length - 1);
+    let i, j, k = 0, first, last;
 
     const cluster_list = [];
-    for (i = 1, j = 0; i < bound_index.length; i++, j = k) {
-        k = bound_index[i] + 1;
-        if (i + 1 < bound_index.length) {
-            if (bound_index[i - 1] + 1 === bound_index[i]) {
-                k = k - 1;
-            } else if (bound_index[i] === bound_index[i + 1] - 1) {
-                k = j + 1;
-            }
+    if (bound_list[1] === data_array[1]) {
+        k = 1;
+        cluster_list.push(data_array.slice(0, k));
+    }
+    for (i = 1, j = k; i < bound_list.length - 1; i++, j = k) {
+        first = data_array.indexOf(bound_list[i], j);
+        last = data_array.lastIndexOf(bound_list[i]);
+        if (bound_list[i] === bound_list[i + 1]) {
+            k = first + 1;
+        } else {
+            k = last + 1;
         }
         cluster_list.push(data_array.slice(j, k));
     }
+    cluster_list.push(data_array.slice(j));
 
     return cluster_list;
 }
