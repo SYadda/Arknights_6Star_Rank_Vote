@@ -71,7 +71,6 @@ function close_or_view() {
         result[0].style.display = 'none';
     } else {
         close_or_view_flag = true;
-        document.getElementById("已收集数据量").innerText = '';
         var table = document.getElementById("final_order_table");
         table.style.display = "none";
         close[0].style.display = 'none';
@@ -79,88 +78,31 @@ function close_or_view() {
     }
 }
 
-let new_operator_flag = false;
-function new_operator() {
-    const open = document.getElementsByClassName('new_compare_mode_open');
-    const close = document.getElementsByClassName('new_compare_mode_close');
-    if (new_operator_flag) {
-        new_operator_flag = false;
-        open[0].style.display = 'none';
-        close[0].style.display = 'inline';
-    } else {
-        new_operator_flag = true;
-        open[0].style.display = 'inline';
-        close[0].style.display = 'none';
-    }
-    new_compare();
-}
-
-//获取本次进行比较干员的头像
-//http方法: GET
-//接口:new_compare
-function new_compare() {
-    xhr = new XMLHttpRequest();
-    if (new_operator_flag) {
-        xhr.open('GET', `${SERVER_ADDRESS}/new_operator_compare`, true);
-    } else {
-        xhr.open('GET', `${SERVER_ADDRESS}/new_compare`, true);
-    }
-    xhr.send();
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const name = xhr.responseText.split(' ');
-            [left_name, right_name, code] = name;
-            const left_png = document.getElementById("left_png");
-            const right_png = document.getElementById("right_png");
-            left_png.src = DICT_PIC_URL[left_name];
-            left_png.alt = DICT_PIC_URL[left_name].split('/').at(-1);
-            right_png.src = DICT_PIC_URL[right_name];
-            right_png.alt = DICT_PIC_URL[right_name].split('/').at(-1);
-            document.getElementById("left_png_name").innerText = left_name;
-            document.getElementById("right_png_name").innerText = right_name;
-        }
-    }
-}
-
-
-//上传本次比较结果
-//http方法: POST
-//接口: safescore
-//供给参数:win_name, lose_name
-function save_score(win_name, lose_name) {
-    xhr = new XMLHttpRequest();
-    xhr.open('POST', `${SERVER_ADDRESS}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
-    xhr.send();
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
-            new_compare();
-        }
-    }
-}
-
-function save_score_left() {
-    save_score(left_name, right_name);
-}
-
-function save_score_right() {
-    save_score(right_name, left_name);
-}
-
 //获取总比较结果
 //http方法: GET
 function view_final_order() {
+    var this_fiducial = -1;
+    var fiducials = document.getElementsByName('fiducial');
+    for (i = 0; i < fiducials.length; i++) {
+        if (fiducials[i].checked) {
+            this_fiducial = fiducials[i].value;
+            break;
+        }
+    }
+
+    if (this_fiducial == -1) {
+        this_fiducial = document.getElementById("self_fiducial").value;
+    }
+
     xhr = new XMLHttpRequest();
-    xhr.open('GET', `${SERVER_ADDRESS}/view_final_order`, true);
+    xhr.open('GET', `${SERVER_ADDRESS}/view_final_order?weight=${this_fiducial.toString()}`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const json = xhr.responseText;
             obj = JSON.parse(json);
-            document.getElementById("已收集数据量").innerText = obj.count;
+            document.getElementById("statistics").style.display="";
 
             const star6_staff_amount = obj.name.length;
             const rate_list = obj.rate;
