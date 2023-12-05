@@ -86,8 +86,10 @@ class Config(object):
         "止颂": 82,
         "薇薇安娜": 83,
         "塑心": 84,
+        "锏": 85,
     }
     DICT_PIC_URL = {
+        "锏": "http://8.219.81.5:9876/img/锏.png",
         "塑心": "https://prts.wiki/images/7/7e/半身像_塑心_1.png",
         "薇薇安娜": "https://prts.wiki/images/5/5d/半身像_薇薇安娜_1.png",
         "止颂": "https://prts.wiki/images/4/49/半身像_止颂_1.png",
