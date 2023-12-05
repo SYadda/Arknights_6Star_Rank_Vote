@@ -82,8 +82,16 @@ class Config(object):
         "琳琅诗怀雅": 78,
         "纯烬艾雅法拉": 79,
         "涤火杰西卡": 80,
+        "赫德雷": 81,
+        "止颂": 82,
+        "薇薇安娜": 83,
+        "塑心": 84,
     }
     DICT_PIC_URL = {
+        "塑心": "https://prts.wiki/images/7/7e/半身像_塑心_1.png",
+        "薇薇安娜": "https://prts.wiki/images/5/5d/半身像_薇薇安娜_1.png",
+        "止颂": "https://prts.wiki/images/4/49/半身像_止颂_1.png",
+        "赫德雷": "https://prts.wiki/images/b/b4/半身像_赫德雷_1.png",
         "涤火杰西卡": "https://prts.wiki/images/1/1e/半身像_涤火杰西卡_1.png",
         "纯烬艾雅法拉": "https://prts.wiki/images/b/bd/半身像_纯烬艾雅法拉_1.png",
         "琳琅诗怀雅": "https://prts.wiki/images/9/99/半身像_琳琅诗怀雅_1.png",
@@ -169,7 +177,7 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    SERVER_IP = "114.132.188.253"
+    SERVER_IP = "8.219.81.5"
 
 
 class DevelopmentConfig(Config):

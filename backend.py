@@ -5,6 +5,7 @@ from flask import Flask, redirect, url_for, render_template, request, jsonify, s
 from flask_cors import CORS, cross_origin
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
+# app.debug = True
 
 if app.debug:
     from config import DevelopmentConfig as Config
@@ -17,9 +18,9 @@ len_lst_name_1 = len(lst_name) - 1
 set_code = set()
 
 
-@app.route('/new_operator_compare', methods=['GET'])
+@app.route('/new_compare', methods=['GET'])
 @cross_origin()
-def new_operator_compare():
+def new_compare():
     with open('list/win_score.pickle', 'rb') as f:
         lst_win_score = pickle.load(f)
     with open('list/lose_score.pickle', 'rb') as f:
@@ -32,17 +33,6 @@ def new_operator_compare():
     if a == b:
         b = (b + 1) % len(weights)
 
-    return compare(a, b)
-
-
-@app.route('/new_compare', methods=['GET'])
-@cross_origin()
-def new_compare():
-    a = random.randint(0, len_lst_name_1)
-    b = random.randint(0, len_lst_name_1)
-    while a == b:
-        b = random.randint(0, len_lst_name_1)
-    
     return compare(a, b)
 
 

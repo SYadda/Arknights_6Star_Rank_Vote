@@ -79,32 +79,12 @@ function close_or_view() {
     }
 }
 
-let new_operator_flag = false;
-function new_operator() {
-    const open = document.getElementsByClassName('new_compare_mode_open');
-    const close = document.getElementsByClassName('new_compare_mode_close');
-    if (new_operator_flag) {
-        new_operator_flag = false;
-        open[0].style.display = 'none';
-        close[0].style.display = 'inline';
-    } else {
-        new_operator_flag = true;
-        open[0].style.display = 'inline';
-        close[0].style.display = 'none';
-    }
-    new_compare();
-}
-
 //获取本次进行比较干员的头像
 //http方法: GET
 //接口:new_compare
 function new_compare() {
     xhr = new XMLHttpRequest();
-    if (new_operator_flag) {
-        xhr.open('GET', `${SERVER_ADDRESS}/new_operator_compare`, true);
-    } else {
-        xhr.open('GET', `${SERVER_ADDRESS}/new_compare`, true);
-    }
+    xhr.open('GET', `${SERVER_ADDRESS}/new_compare`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {
