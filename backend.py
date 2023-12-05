@@ -69,8 +69,9 @@ def view_final_order():
 
     final_n_s, final_rate = zip(*sorted(dict_score.items(), key=lambda _: -_[1]))
     final_name, final_score = zip(*final_n_s)
+    final_score = ['%.2f'%_ for _ in final_score]
     final_rate = ['%.1f'%_ + ' %' for _ in final_rate]
-    return jsonify({'name': final_name, 'rate': final_rate, 'score': final_score, 'count': '已收集数据 ' + str(sum(lst_win_score)) + ' 条'})
+    return jsonify({'name': final_name, 'rate': final_rate, 'score': final_score, 'count': '已收集数据 ' + '%.2f'%(sum(lst_win_score)) + ' 条'})
 
 
 @app.route('/')
