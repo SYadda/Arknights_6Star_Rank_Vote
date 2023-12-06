@@ -179,7 +179,7 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    SERVER_IP = "8.219.81.5"
+    SERVER_IP = "47.120.33.76"
 
 
 class DevelopmentConfig(Config):
