@@ -217,6 +217,8 @@ body {
 
 .final_table_group {
     display: flex;
+    /* 如果需要按列分布总表和个人表，去掉注释 */
+    /* flex-direction: column; */
     justify-content: space-between;
 }
 

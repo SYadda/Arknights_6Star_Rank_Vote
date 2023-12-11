@@ -39,9 +39,11 @@
                             <!-- 部分辅助功能 -->
                             <div class="function">
                                 <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
-                                <input class="result" type="button" value="查看投票结果" onclick="close_or_view()">
-                                <input class="close" type="button" value="关闭投票结果" onclick="close_or_view()">
+                                <input class="result" type="button" value="查看总投票结果" onclick="close_or_view()">
+                                <input class="close" type="button" value="关闭总投票结果" onclick="close_or_view()">
                             </div>
+                            <input class="result" id="self_rst_button" type="button" value="查看您的投票结果"
+                                onclick="view_self()">
                     </td>
 
                     <!-- 右侧干员图片 -->
@@ -101,7 +103,7 @@
             <br>
             <div class="final_table_group">
                 <table id="final_order_table" class="final_table">
-                    <caption>大家的投票结果</caption>
+                    <caption>总投票结果</caption>
                     <thead>
                         <tr>
                             <th>杯型</th>
