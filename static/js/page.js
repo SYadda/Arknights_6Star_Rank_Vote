@@ -1,6 +1,18 @@
 const SERVER_ADDRESS = `http://${DATA_DICT['SERVER_IP']}:${DATA_DICT['SERVER_PORT']}`;
 const DICT_PIC_URL = DATA_DICT['DICT_PIC_URL'];
 
+// 本地评分
+let vote_times = 0;
+const local_scores = {};
+const local_win_times = {};
+const local_visit_times = {};
+for (const key in DICT_PIC_URL) {
+    local_scores[key] = 0;
+    local_win_times[key] = 0;
+    local_visit_times[key] = 0;
+}
+
+
 let code = "000";
 let left_name = '';
 let right_name = '';
@@ -20,6 +32,9 @@ nclasses_input.addEventListener('input', function () {
 
     const color_list = get_color_list(cluster_list.reverse());
     document.querySelectorAll("#final_order_tbody>tr").forEach((item, i) => {
+        item.style.color = `#${color_list[i]}`;
+    });
+    document.querySelectorAll("#self_order_tbody>tr").forEach((item, i) => {
         item.style.color = `#${color_list[i]}`;
     });
 });
@@ -72,8 +87,11 @@ function close_or_view() {
     } else {
         close_or_view_flag = true;
         document.getElementById("已收集数据量").innerText = '';
+        document.getElementById("您已投票").innerText = '';
         var table = document.getElementById("final_order_table");
         table.style.display = "none";
+        var self_table = document.getElementById("self_table");
+        self_table.style.display = "none";
         close[0].style.display = 'none';
         result[0].style.display = 'inline';
     }
@@ -109,6 +127,12 @@ function new_compare() {
 //接口: safescore
 //供给参数:win_name, lose_name
 function save_score(win_name, lose_name) {
+    local_scores[win_name]++;
+    local_scores[lose_name]--;
+    local_win_times[win_name]++;
+    local_visit_times[win_name]++;
+    local_visit_times[lose_name]++;
+    vote_times++;
     xhr = new XMLHttpRequest();
     xhr.open('POST', `${SERVER_ADDRESS}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
     xhr.send();
@@ -141,7 +165,7 @@ function view_final_order() {
             const json = xhr.responseText;
             obj = JSON.parse(json);
             document.getElementById("已收集数据量").innerText = obj.count;
-
+            document.getElementById("您已投票").innerText = '您已投票:' + vote_times + '次';
             const star6_staff_amount = obj.name.length;
             const rate_list = obj.rate;
             const score_list = obj.score;
@@ -149,19 +173,25 @@ function view_final_order() {
             clusterList = rate_list.map((r) => parseFloat(r));
             const cluster_list = get_best_cluster_list(clusterList);
             const color_list = get_color_list(cluster_list.reverse());
-
             const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
             const star6_staff_amount_div = star6_staff_amount / cup_size.length;
 
-            const table = document.getElementById("final_order_table")
+            const table = document.getElementById("final_order_table");
             table.style.display = "inline-block";
 
-            let htmlStr = '', this_rank;
+            const self_table = document.getElementById("self_table");
+            self_table.style.display = "inline-block";
+            const sorted_self_table = Object.entries(local_scores).sort((a, b) => b[1] - a[1]);
+
+            let htmlStr = '', selfStr = '', this_rank;
             for (let i = 0; i < star6_staff_amount; i++) {
                 this_rank = i + 1;
                 htmlStr += `<tr style="color: #${color_list[i]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${obj.name[i]}</td><td class="final_table_text">${rate_list[i]}</td><td class="final_table_text" style="text-align: right; padding-right: 25px">${score_list[i]}</td></tr>`;
+                const chr_name = sorted_self_table[i][0];
+                selfStr += `<tr style="color: #${color_list[i]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${chr_name}</td><td class="final_table_text">${local_win_times[chr_name] / local_visit_times[chr_name]}</td><td class="final_table_text" style="text-align: right; padding-right: 25px">${sorted_self_table[i][1]}</td></tr>`;
             }
             document.getElementById("final_order_tbody").innerHTML = htmlStr;
+            document.getElementById("self_order_tbody").innerHTML = selfStr;
 
             nclasses_input.max = star6_staff_amount - 1;
             nclasses_input.value = cluster_list.length;
