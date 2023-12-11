@@ -1,6 +1,22 @@
 const SERVER_ADDRESS = `http://${DATA_DICT['SERVER_IP']}:${DATA_DICT['SERVER_PORT']}`;
 const DICT_PIC_URL = DATA_DICT['DICT_PIC_URL'];
 
+// 本地评分
+let vote_times = 0;
+const local_scores = {};
+const local_win_times = {};
+const local_visit_times = {};
+for (const key in DICT_PIC_URL) {
+    local_scores[key] = 0;
+    local_win_times[key] = 0;
+    local_visit_times[key] = 0;
+}
+
+const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
+const star6_staff_amount = Object.keys(DICT_PIC_URL).length;
+const star6_staff_amount_div = star6_staff_amount / cup_size.length;
+
+
 let code = "000";
 let left_name = '';
 let right_name = '';
@@ -11,16 +27,35 @@ const nclasses_input = document.getElementById('nclassesInput');
 nclasses_input.addEventListener('input', function () {
     let nclasses = parseInt(nclasses_input.value, 10);
     nclasses = nclasses > nclasses_input.min ? nclasses < nclasses_input.max ? nclasses : nclasses_input.max : nclasses_input.min;
+    // 如果没有打开过总表，则clusterList为空，new geostats会失败
+    if (clusterList.length > 0) {
+        const serie = new geostats(clusterList);
+        const cluster_list = get_cluster_list(serie.serie, serie.getClassJenks2(nclasses));
 
-    const serie = new geostats(clusterList);
-    const cluster_list = get_cluster_list(serie.serie, serie.getClassJenks2(nclasses));
+        const GVF = 1 - get_SDCM(cluster_list) / serie.variance();
+        document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
 
-    const GVF = 1 - get_SDCM(cluster_list) / serie.variance();
-    document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
+        const color_list = get_color_list(cluster_list.reverse());
+        document.querySelectorAll("#final_order_tbody>tr").forEach((item, i) => {
+            item.style.color = `#${color_list[i]}`;
+        });
+    }
 
-    const color_list = get_color_list(cluster_list.reverse());
-    document.querySelectorAll("#final_order_tbody>tr").forEach((item, i) => {
-        item.style.color = `#${color_list[i]}`;
+    const sorted_self_table = Object.entries(local_scores).sort((a, b) => b[1] - a[1]);
+    const selfClusterList = [];
+    for (let i = 0; i < star6_staff_amount; i++) {
+        selfClusterList.push(sorted_self_table[i][1]);
+    }
+    const self_serie = new geostats(selfClusterList);
+    const self_cluster_list = get_cluster_list(self_serie.serie, self_serie.getClassJenks2(nclasses));
+    // 如果总表未启用，则计算local表区分度。
+    if (close_or_view_flag) {
+        const self_GVF = 1 - get_SDCM(self_cluster_list) / self_serie.variance();
+        document.getElementById('GVF').innerText = `${(self_GVF * 100).toFixed(2)}%`;
+    }
+    const self_color_list = get_color_list(self_cluster_list.reverse());
+    document.querySelectorAll("#self_order_tbody>tr").forEach((item, i) => {
+        item.style.color = `#${self_color_list[i]}`;
     });
 });
 
@@ -40,7 +75,7 @@ window.addEventListener('scroll', function () {
     const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
     if (document.documentElement.scrollTop > 550) { // 当滚动超过 550 像素时显示按钮
         topBtn.style.display = 'block';
-        if (close_or_view_flag === false) {
+        if (close_or_view_flag === false || self_close == false) {
             nclassesInput.style.display = 'block';
         }
     } else {
@@ -59,6 +94,46 @@ function scrollToTop() {
     });
 }
 
+// 刷新个人表
+function flush_self() {
+    const sorted_self_table = Object.entries(local_scores).sort((a, b) => b[1] - a[1]);
+
+    let selfStr = '';
+    const clusterList = [];
+    for (let i = 0; i < star6_staff_amount; i++) {
+        clusterList.push(sorted_self_table[i][1]);
+    }
+    // 如果总表未启用，则显示个人表的区分度，否则显示总表区分度
+    const cluster_list = get_best_cluster_list(clusterList, close_or_view_flag);
+    const color_list = get_color_list(cluster_list.reverse());
+
+    for (let i = 0; i < star6_staff_amount; i++) {
+        let this_rank = i + 1;
+        const chr_name = sorted_self_table[i][0];
+        selfStr += `<tr style="color: #${color_list[i]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${chr_name}</td><td class="final_table_text">${(local_win_times[chr_name] / local_visit_times[chr_name] * 100).toFixed(2)}%</td><td class="final_table_text" style="text-align: right; padding-right: 25px">${sorted_self_table[i][1]}</td></tr>`;
+    }
+    document.getElementById("self_order_tbody").innerHTML = selfStr;
+}
+
+let self_close = true;
+function view_self() {
+    var self_table = document.getElementById("self_table");
+    var self_button = document.getElementById("self_rst_button");
+    if (self_close) {
+        self_close = false;
+        self_table.style.display = "inline-block";
+        document.getElementById("您已投票").innerText = '您已投票:' + vote_times + '次';
+        self_button.value = "关闭您的投票结果";
+        flush_self();
+    }
+    else {
+        self_close = true;
+        self_table.style.display = "none";
+        document.getElementById("您已投票").innerText = '';
+        self_button.value = "查看您的投票结果";
+    }
+}
+
 //控制列表出现和关闭的按钮
 let close_or_view_flag = true;
 function close_or_view() {
@@ -72,6 +147,7 @@ function close_or_view() {
     } else {
         close_or_view_flag = true;
         document.getElementById("已收集数据量").innerText = '';
+        document.getElementById("您已投票").innerText = '';
         var table = document.getElementById("final_order_table");
         table.style.display = "none";
         close[0].style.display = 'none';
@@ -109,6 +185,13 @@ function new_compare() {
 //接口: safescore
 //供给参数:win_name, lose_name
 function save_score(win_name, lose_name) {
+    local_scores[win_name]++;
+    local_scores[lose_name]--;
+    local_win_times[win_name]++;
+    local_visit_times[win_name]++;
+    local_visit_times[lose_name]++;
+    vote_times++;
+    flush_self();
     xhr = new XMLHttpRequest();
     xhr.open('POST', `${SERVER_ADDRESS}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
     xhr.send();
@@ -141,7 +224,6 @@ function view_final_order() {
             const json = xhr.responseText;
             obj = JSON.parse(json);
             document.getElementById("已收集数据量").innerText = obj.count;
-
             const star6_staff_amount = obj.name.length;
             const rate_list = obj.rate;
             const score_list = obj.score;
@@ -150,10 +232,7 @@ function view_final_order() {
             const cluster_list = get_best_cluster_list(clusterList);
             const color_list = get_color_list(cluster_list.reverse());
 
-            const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
-            const star6_staff_amount_div = star6_staff_amount / cup_size.length;
-
-            const table = document.getElementById("final_order_table")
+            const table = document.getElementById("final_order_table");
             table.style.display = "inline-block";
 
             let htmlStr = '', this_rank;
@@ -178,7 +257,7 @@ function get_color_list(cluster_list) {
     return color_list;
 }
 
-function get_best_cluster_list(data_array) {
+function get_best_cluster_list(data_array, modify_gvf = true) {
     const serie = new geostats(data_array);
     const SDAM = serie.variance();  // the Sum of squared Deviations from the Array Mean
 
@@ -190,7 +269,9 @@ function get_best_cluster_list(data_array) {
         GVF = 1 - get_SDCM(cluster_list) / SDAM;
     } while (GVF < 0.8);
 
-    document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
+    if (modify_gvf) {
+        document.getElementById('GVF').innerText = `${(GVF * 100).toFixed(2)}%`;
+    }
 
     return cluster_list;
 }
