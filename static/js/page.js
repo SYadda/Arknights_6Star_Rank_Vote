@@ -122,7 +122,7 @@ function view_self() {
     if (self_close) {
         self_close = false;
         self_table.style.display = "inline-block";
-        document.getElementById("您已投票").innerText = '您已投票:' + vote_times + '次';
+        document.getElementById("您已投票").innerText = '您已投票 ' + vote_times + ' 次';
         self_button.value = "关闭您的投票结果";
         flush_self();
     }

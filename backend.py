@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
-import random, os, pickle
-from flask import Flask, redirect, url_for, render_template, request, jsonify, send_from_directory
+import random, pickle
+from flask import Flask, redirect, url_for, render_template, request, jsonify
 from flask_cors import CORS, cross_origin
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)

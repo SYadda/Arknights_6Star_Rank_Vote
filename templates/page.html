@@ -23,27 +23,26 @@
                     </td>
 
                     <!-- 比较核心区域 -->
+                    <!-- fixme: 用css给这一块设置固定宽度，替代下面的一堆&nbsp; -->
                     <td>
                         <!-- 标题 -->
-                        <h1>明日方舟六星</h1>
+                        <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明日方舟六星&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h1>
                         <h1>强度投票箱</h1>
+                        <br>
+                        <!-- 按钮和反馈 -->
                         <div class="compare_block">
-                            <!-- 为干员投票按钮 -->
-                            <div class="vote">
-                                <input class="vote_button" type="button" value="👈👍" onclick="save_score_left()">
-                                <input class="vote_button" type="button" value="👉👍" onclick="save_score_right()">
-                            </div>
-                            <br>
                             <h4 id="toupiao_success">&nbsp;</h4>
-
-                            <!-- 部分辅助功能 -->
                             <div class="function">
                                 <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
+                            </div>
+                            <div class="function">
                                 <input class="result" type="button" value="查看总投票结果" onclick="close_or_view()">
                                 <input class="close" type="button" value="关闭总投票结果" onclick="close_or_view()">
                             </div>
-                            <input class="result" id="self_rst_button" type="button" value="查看您的投票结果"
-                                onclick="view_self()">
+                            <div class="function">
+                                <input class="result" id="self_rst_button" type="button" value="查看您的投票结果" onclick="view_self()">
+                            </div>
+                        </div>
                     </td>
 
                     <!-- 右侧干员图片 -->
@@ -68,13 +67,14 @@
             <h3 class="red_text">服务器带宽小，图片加载有点卡，请稍等一两分钟，谢谢！</h3>
         </div>
         <div class="footer">
-            <h2>V1.1.0 浊燃作战结束啦，投票从零开始~</h2>
-            <h4>作者：董杭杭, @blackwang08, @lengyanyu258</h4>
+            <h2>V1.1.1 支持查看自己的投票结果</h2>
+            <h4>作者：董杭杭, @blackwang08, @lengyanyu258, @lpdink</h4>
             <h4>服务器赞助：@不会偏微分的fw</h4>
         </div>
         <div class="footer">
             <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有干员的胜率和得分，以胜率排名。</h2>
             <h2>每个ip只能投50票，自第51票起，每票按0.01票计算权重。</h2>
+            <h2>自己的投票结果，不受50票限制，但网页刷新/关闭时会清零。</h2>
             <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
             <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
             <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
