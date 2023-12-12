@@ -40,7 +40,8 @@
                                 <input class="close" type="button" value="关闭总投票结果" onclick="close_or_view()">
                             </div>
                             <div class="function">
-                                <input class="result" id="self_rst_button" type="button" value="查看您的投票结果" onclick="view_self()">
+                                <input class="result" id="self_rst_button" type="button" value="查看您的投票结果"
+                                    onclick="view_self()">
                             </div>
                         </div>
                     </td>
@@ -122,8 +123,10 @@
                             <th>杯型</th>
                             <th>排名</th>
                             <th>干员代号</th>
-                            <th>胜率</th>
-                            <th>得分</th>
+                            <th>胜率<span id="win_rate" class="sort-icon select down" onclick="sort_table(this)"></span>
+                            </th>
+                            <th>得分<span id="scores" class="sort-icon down" onclick="sort_table(this)"></span>
+                            </th>
                         </tr>
                     </thead>
                     <tbody id="self_order_tbody"></tbody>
@@ -137,6 +140,12 @@
             <br>
             <label for="GVF">区分度:</label>
             <label id="GVF"></label>
+            <br>
+            <input type="button" class="ioport" onclick="export_rst()" value="导出个人结果">
+            <br>
+            <label for="uploadImage" class="ioport">导入个人结果</label>
+            <input type="file" name="image" value="" id="uploadImage" hidden="hidden" onchange="import_rst(event)"
+                accept=".json" multiple="false">
         </div>
         <button id="topBtn" onclick="scrollToTop()">回到顶部</button>
     </div>

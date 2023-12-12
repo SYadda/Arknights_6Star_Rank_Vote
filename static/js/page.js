@@ -1,15 +1,47 @@
 const SERVER_ADDRESS = `http://${DATA_DICT['SERVER_IP']}:${DATA_DICT['SERVER_PORT']}`;
 const DICT_PIC_URL = DATA_DICT['DICT_PIC_URL'];
 
+class Hero {
+    constructor(name) {
+        this.name = name;
+        this.win_times = 0;
+        this.lose_times = 0;
+        this.scores = 0;
+        this.vote_times = 0;
+        this.win_rate = -1;
+    }
+
+    win() {
+        this.vote_times++;
+        this.win_times++;
+        this.scores++;
+        this.win_rate = ((this.win_times / this.vote_times) * 100).toFixed(2);
+    }
+
+    lose() {
+        this.vote_times++;
+        this.lose_times++;
+        this.scores--;
+        this.win_rate = ((this.win_times / this.vote_times) * 100).toFixed(2);
+    }
+
+    set_attr(dict) {
+        this.name = dict["name"];
+        this.win_times = dict["win_times"];
+        this.lose_times = dict["lose_times"];
+        this.scores = dict["scores"];
+        this.vote_times = dict["vote_times"];
+        this.win_rate = dict["win_rate"];
+    }
+
+}
+
+var hero_dict = new Map();
 // 本地评分
-let vote_times = 0;
-const local_scores = {};
-const local_win_times = {};
-const local_visit_times = {};
+var vote_times = 0;
 for (const key in DICT_PIC_URL) {
-    local_scores[key] = 0;
-    local_win_times[key] = 0;
-    local_visit_times[key] = 0;
+    var hero = new Hero(key);
+    hero_dict.set(key, hero);
 }
 
 const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
@@ -40,15 +72,13 @@ nclasses_input.addEventListener('input', function () {
             item.style.color = `#${color_list[i]}`;
         });
     }
-
-    const sorted_self_table = Object.entries(local_scores).sort((a, b) => b[1] - a[1]);
-    const selfClusterList = [];
-    for (let i = 0; i < star6_staff_amount; i++) {
-        selfClusterList.push(sorted_self_table[i][1]);
-    }
-    const self_serie = new geostats(selfClusterList);
+    // 按照分类数调整个人表颜色
+    const scores_array = Array.from(hero_dict.values()).map(hero => hero.scores);
+    // 从大到小排序
+    scores_array.sort((a, b) => b - a);
+    const self_serie = new geostats(scores_array);
     const self_cluster_list = get_cluster_list(self_serie.serie, self_serie.getClassJenks2(nclasses));
-    // 如果总表未启用，则计算local表区分度。
+    // 如果总表未启用，则计算个人表区分度。
     if (close_or_view_flag) {
         const self_GVF = 1 - get_SDCM(self_cluster_list) / self_serie.variance();
         document.getElementById('GVF').innerText = `${(self_GVF * 100).toFixed(2)}%`;
@@ -72,16 +102,18 @@ document.addEventListener('mousemove', function (e) {
 // 当页面向下滚动一定距离时，显示回到顶部按钮
 window.addEventListener('scroll', function () {
     const topBtn = document.getElementById('topBtn');
-    const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
-    if (document.documentElement.scrollTop > 550) { // 当滚动超过 550 像素时显示按钮
-        topBtn.style.display = 'block';
-        if (close_or_view_flag === false || self_close == false) {
-            nclassesInput.style.display = 'block';
+    const nclassesInputs = Array.from(document.getElementsByClassName('nclassesInput'));
+    nclassesInputs.forEach(nclassesInput => {
+        if (document.documentElement.scrollTop > 550) { // 当滚动超过 550 像素时显示按钮
+            topBtn.style.display = 'block';
+            if (close_or_view_flag === false || self_close == false) {
+                nclassesInput.style.display = 'block';
+            }
+        } else {
+            topBtn.style.display = 'none';
+            nclassesInput.style.display = 'none';
         }
-    } else {
-        topBtn.style.display = 'none';
-        nclassesInput.style.display = 'none';
-    }
+    })
     // 实时更新龙泡泡坐标
     pic_mouse.style.top = `${currentMouseTop + document.documentElement.scrollTop - currentScrollTop}px`;
 });
@@ -95,13 +127,19 @@ function scrollToTop() {
 }
 
 // 刷新个人表
-function flush_self() {
-    const sorted_self_table = Object.entries(local_scores).sort((a, b) => b[1] - a[1]);
+function flush_self(sort_by = 'win_rate', desc = true) {
+    const hero_array = Array.from(hero_dict.values());
+    if (desc) {
+        hero_array.sort((hero1, hero2) => hero2[sort_by] - hero1[sort_by]);
+    }
+    else {
+        hero_array.sort((hero1, hero2) => hero1[sort_by] - hero2[sort_by]);
+    }
 
     let selfStr = '';
     const clusterList = [];
     for (let i = 0; i < star6_staff_amount; i++) {
-        clusterList.push(sorted_self_table[i][1]);
+        clusterList.push(hero_array[i].scores);
     }
     // 如果总表未启用，则显示个人表的区分度，否则显示总表区分度
     const cluster_list = get_best_cluster_list(clusterList, close_or_view_flag);
@@ -109,10 +147,41 @@ function flush_self() {
 
     for (let i = 0; i < star6_staff_amount; i++) {
         let this_rank = i + 1;
-        const chr_name = sorted_self_table[i][0];
-        selfStr += `<tr style="color: #${color_list[i]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${chr_name}</td><td class="final_table_text">${(local_win_times[chr_name] / local_visit_times[chr_name] * 100).toFixed(2)}%</td><td class="final_table_text" style="text-align: right; padding-right: 25px">${sorted_self_table[i][1]}</td></tr>`;
+        const chr_name = hero_array[i].name;
+        const win_rate = hero_array[i].win_rate;
+        const scores = hero_array[i].scores;
+        selfStr += `<tr style="color: #${color_list[i]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${chr_name}</td><td class="final_table_text">${win_rate}%</td><td class="final_table_text" style="text-align: right; padding-right: 25px">${scores}</td></tr>`;
     }
     document.getElementById("self_order_tbody").innerHTML = selfStr;
+    document.getElementById("您已投票").innerText = '您已投票 ' + vote_times + ' 次';
+}
+
+function sort_table(element) {
+    if (!element.classList.contains('select')) {
+        // 取消其他元素的selects
+        const selects = document.querySelectorAll('.select');
+        selects.forEach(element => {
+            element.classList.remove('select');
+        });
+        // 本元素添加select
+        element.classList.add("select");
+        // 按照本元素的当前状态排序
+        var is_desc = element.classList.contains("down");
+    }
+    else {
+        // 本元素有select，则对调本元素的down和up
+        var is_old_desc = element.classList.contains("down");
+        var is_desc = !is_old_desc;
+        if (is_old_desc) {
+            element.classList.remove('down');
+            element.classList.add("up");
+        }
+        else {
+            element.classList.remove('up');
+            element.classList.add("down");
+        }
+    }
+    flush_self(element.id, is_desc);
 }
 
 let self_close = true;
@@ -122,7 +191,6 @@ function view_self() {
     if (self_close) {
         self_close = false;
         self_table.style.display = "inline-block";
-        document.getElementById("您已投票").innerText = '您已投票 ' + vote_times + ' 次';
         self_button.value = "关闭您的投票结果";
         flush_self();
     }
@@ -185,11 +253,9 @@ function new_compare() {
 //接口: safescore
 //供给参数:win_name, lose_name
 function save_score(win_name, lose_name) {
-    local_scores[win_name]++;
-    local_scores[lose_name]--;
-    local_win_times[win_name]++;
-    local_visit_times[win_name]++;
-    local_visit_times[lose_name]++;
+
+    hero_dict.get(win_name).win();
+    hero_dict.get(lose_name).lose();
     vote_times++;
     flush_self();
     xhr = new XMLHttpRequest();
@@ -309,4 +375,49 @@ function get_SDCM(cluster_list) {
     }
 
     return SDCM;
+}
+
+// 导入导出
+
+function export_rst() {
+    const json_string = JSON.stringify(Object.fromEntries(hero_dict), null, 4);
+    const blob = new Blob([json_string], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Arknights_6Star_Rank_Vote.json';
+    link.click();
+}
+
+function import_rst(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        try {
+            const contents = e.target.result;
+            const importedData = JSON.parse(contents);
+            var tmp_vote_times = 0;
+            for (var [key, value] of Object.entries(importedData)) {
+                if (!hero_dict.has(key)) {
+                    // 不存在角色就new一个
+                    var hero = new Hero(key);
+                } else {
+                    var hero = hero_dict.get(key);
+                }
+                if (Number.isInteger(value["vote_times"])) {
+                    tmp_vote_times += value["vote_times"];
+                }
+                hero.set_attr(value);
+            }
+        }
+        catch (error) {
+            alert("导入失败:" + error)
+        }
+        vote_times = tmp_vote_times / 2;
+        flush_self();
+    };
+
+    reader.readAsText(file);
 }
