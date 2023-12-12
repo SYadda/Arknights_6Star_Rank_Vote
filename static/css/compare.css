@@ -233,6 +233,34 @@ body {
     filter: grayscale(1) contrast(999) invert(1)
 }
 
+.sort-icon {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    margin-left: 5px;
+    vertical-align: middle;
+    border-width: 5px;
+    border-style: solid;
+}
+
+.sort-icon.down {
+    border-color: #000000 transparent transparent;
+}
+
+.sort-icon.up {
+    border-color: transparent transparent #000000;
+}
+
+.sort-icon.select.down {
+    border-color: #00FFFF transparent transparent;
+}
+
+.sort-icon.select.up {
+    border-color: transparent transparent #00FFFF;
+}
+
 .nclassesInput {
     display: none;
     /* 默认情况下隐藏按钮 */
