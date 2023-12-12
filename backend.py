@@ -74,13 +74,7 @@ def view_final_order():
     return jsonify({'name': final_name, 'rate': final_rate, 'score': final_score, 'count': '已收集数据 ' + '%.2f'%(sum(lst_win_score)) + ' 条'})
 
 
-@app.route('/')
-@cross_origin()
-def index():
-    return redirect(url_for('page'))
-
-
-@app.route('/page', methods=['GET'])
+@app.route('/', methods=['GET'])
 @cross_origin()
 def page():
     DATA_DICT = {'SERVER_IP': Config.SERVER_IP, 'SERVER_PORT': Config.SERVER_PORT, 'DICT_PIC_URL': Config.DICT_PIC_URL}
