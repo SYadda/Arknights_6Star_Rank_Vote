@@ -140,6 +140,12 @@
             <br>
             <label for="GVF">区分度:</label>
             <label id="GVF"></label>
+            <br>
+            <input type="button" class="ioport" onclick="export_rst()" value="导出个人结果">
+            <br>
+            <label for="uploadImage" class="ioport">导入个人结果</label>
+            <input type="file" name="image" value="" id="uploadImage" hidden="hidden" onchange="import_rst(event)"
+                accept=".json" multiple="false">
         </div>
         <button id="topBtn" onclick="scrollToTop()">回到顶部</button>
     </div>

@@ -300,3 +300,12 @@ body {
     pointer-events: none;
     z-index: 9;
 }
+
+.ioport {
+    padding: 5px 5px;
+    background: #00b0f0;
+    color: #FFF;
+    border: none;
+    border-radius: 5px;
+    font-size: 10px;
+}

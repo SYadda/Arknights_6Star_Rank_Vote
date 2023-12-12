@@ -25,6 +25,15 @@ class Hero {
         this.win_rate = ((this.win_times / this.vote_times) * 100).toFixed(2);
     }
 
+    set_attr(dict) {
+        this.name = dict["name"];
+        this.win_times = dict["win_times"];
+        this.lose_times = dict["lose_times"];
+        this.scores = dict["scores"];
+        this.vote_times = dict["vote_times"];
+        this.win_rate = dict["win_rate"];
+    }
+
 }
 
 var hero_dict = new Map();
@@ -93,16 +102,18 @@ document.addEventListener('mousemove', function (e) {
 // 当页面向下滚动一定距离时，显示回到顶部按钮
 window.addEventListener('scroll', function () {
     const topBtn = document.getElementById('topBtn');
-    const nclassesInput = document.getElementsByClassName('nclassesInput')[0];
-    if (document.documentElement.scrollTop > 550) { // 当滚动超过 550 像素时显示按钮
-        topBtn.style.display = 'block';
-        if (close_or_view_flag === false || self_close == false) {
-            nclassesInput.style.display = 'block';
+    const nclassesInputs = Array.from(document.getElementsByClassName('nclassesInput'));
+    nclassesInputs.forEach(nclassesInput => {
+        if (document.documentElement.scrollTop > 550) { // 当滚动超过 550 像素时显示按钮
+            topBtn.style.display = 'block';
+            if (close_or_view_flag === false || self_close == false) {
+                nclassesInput.style.display = 'block';
+            }
+        } else {
+            topBtn.style.display = 'none';
+            nclassesInput.style.display = 'none';
         }
-    } else {
-        topBtn.style.display = 'none';
-        nclassesInput.style.display = 'none';
-    }
+    })
     // 实时更新龙泡泡坐标
     pic_mouse.style.top = `${currentMouseTop + document.documentElement.scrollTop - currentScrollTop}px`;
 });
@@ -364,4 +375,49 @@ function get_SDCM(cluster_list) {
     }
 
     return SDCM;
+}
+
+// 导入导出
+
+function export_rst() {
+    const json_string = JSON.stringify(Object.fromEntries(hero_dict), null, 4);
+    const blob = new Blob([json_string], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = 'Arknights_6Star_Rank_Vote.json';
+    link.click();
+}
+
+function import_rst(event) {
+    const file = event.target.files[0];
+    const reader = new FileReader();
+
+    reader.onload = function (e) {
+
+        try {
+            const contents = e.target.result;
+            const importedData = JSON.parse(contents);
+            var tmp_vote_times = 0;
+            for (var [key, value] of Object.entries(importedData)) {
+                if (!hero_dict.has(key)) {
+                    // 不存在角色就new一个
+                    var hero = new Hero(key);
+                } else {
+                    var hero = hero_dict.get(key);
+                }
+                if (Number.isInteger(value["vote_times"])) {
+                    tmp_vote_times += value["vote_times"];
+                }
+                hero.set_attr(value);
+            }
+        }
+        catch (error) {
+            alert("导入失败:" + error)
+        }
+        vote_times = tmp_vote_times / 2;
+        flush_self();
+    };
+
+    reader.readAsText(file);
 }
