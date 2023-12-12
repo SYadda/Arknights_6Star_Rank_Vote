@@ -1,5 +1,4 @@
 class Config(object):
-    SERVER_PORT = "9876"
     DICT_NAME = {
         "能天使": 0,
         "推进之王": 1,
@@ -179,8 +178,8 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    SERVER_IP = "47.120.33.76"
+    SERVER_ADDRESS = "https://6starvote.me"
 
 
 class DevelopmentConfig(Config):
-    SERVER_IP = "localhost"
+    SERVER_ADDRESS = "http://localhost:9876"
