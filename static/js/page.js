@@ -210,7 +210,7 @@ function close_or_view() {
     const result = document.getElementsByClassName('result');
     if (close_or_view_flag) {
         close_or_view_flag = false;
-        view_final_order();
+        view_final_order_static();
         close[0].style.display = 'inline';
         result[0].style.display = 'none';
     } else {
@@ -248,6 +248,32 @@ function new_compare() {
     }
 }
 
+function local_compare() { // 不走后端服务器，使用本地JS代码实现抽取和比较干员
+    // 随机生成两个整数（抽取两个干员）
+    const i = Math.floor(Math.random() * star6_staff_amount);
+    let j = -1;
+    while (j === -1 || j === i) {
+        j = Math.floor(Math.random() * star6_staff_amount);
+    }
+
+    // DICT_PIC_URL是一个字典，key是干员名，value是头像url
+    // 获取左侧干员：DICT_PIC_URL的第i个key和value
+    left_name = Object.keys(DICT_PIC_URL)[i];
+    const left_url = Object.values(DICT_PIC_URL)[i];
+    // 获取右侧干员：DICT_PIC_URL的第j个key和value
+    right_name = Object.keys(DICT_PIC_URL)[j];
+    const right_url = Object.values(DICT_PIC_URL)[j];
+
+    const left_png = document.getElementById("left_png");
+    const right_png = document.getElementById("right_png");
+    left_png.src = left_url
+    left_png.alt = left_url.split('/').at(-1);
+    right_png.src = right_url;
+    right_png.alt = right_url.split('/').at(-1);
+    document.getElementById("left_png_name").innerText = left_name;
+    document.getElementById("right_png_name").innerText = right_name;
+}
+
 
 //上传本次比较结果
 //http方法: POST
@@ -259,16 +285,19 @@ function save_score(win_name, lose_name) {
     hero_dict.get(lose_name).lose();
     vote_times++;
     flush_self();
-    xhr = new XMLHttpRequest();
-    xhr.open('POST', `${SERVER_ADDRESS}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
-    xhr.send();
+    // 1.1.3版本，本轮投票结束，总榜不再接受数据
+    // xhr = new XMLHttpRequest();
+    // xhr.open('POST', `${SERVER_ADDRESS}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
+    // xhr.send();
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
-            new_compare();
-        }
-    }
+    // xhr.onreadystatechange = function () {
+    //     if (xhr.readyState === 4 && xhr.status === 200) {
+    //         document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
+    //         new_compare();
+    //     }
+    // }
+    document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
+    local_compare();
 }
 
 function save_score_left() {
@@ -313,6 +342,50 @@ function view_final_order() {
             nclasses_input.value = cluster_list.length;
         }
     }
+}
+
+// 获取总比较结果（静态）
+// 1.1.3版本，本轮投票结束，总榜不再接受数据
+// 由于服务器故障，部分数据丢失了，以下数据从NGA帖子(https://nga.178.com/read.php?tid=38662591)中恢复 
+function view_final_order_static() {
+    obj = {
+        name: [
+            '玛恩纳', '史尔特尔', '缄默德克萨斯', '伊内丝', '麒麟R夜刀', '焰影苇草', '假日威龙陈', '锏', '铃兰', '耀骑士临光', '纯烬艾雅法拉', '风笛', '浊心斯卡蒂', '塞雷娅', '提丰', '令', '琴柳', '夜莺', '塑心', '艾雅法拉', '百炼嘉维尔', '鸿雪', '归溟幽灵鲨', '刻俄柏', '仇白', '圣约送葬人', '凯尔希', '澄闪', '年',
+            '涤火杰西卡', '斥罪', '银灰', '泥岩', '重岳', '莫斯提马', '林', '多萝西', '号角', '山', '温蒂', '灵知', '歌蕾蒂娅', '伊芙利特', '阿', '能天使', '煌', '缪尔赛思', '星熊', '白铁', '瑕光', '棘刺', '赫德雷', '早露', '黑键', '流明', '菲亚梅塔', '麦哲伦', '老鲤', '黑',
+            '傀影', '水月', '薇薇安娜', '斯卡蒂', '艾丽妮', '闪灵', '安洁莉娜', '异客', '琳琅诗怀雅', '嵯峨', '陈', '森蚺', '夕', '灰烬', '霍尔海雅', '焰尾', 'W', '迷迭香', '空弦', '卡涅利安', '帕拉斯', '赫拉格', '淬羽赫默', '推进之王', '远牙', '止颂', '伺夜'
+        ],
+        rate: [
+            '96.4 %', '95.4 %', '94.1 %', '93.8 %', '91.5 %', '90.8 %', '89.4 %', '88.0 %', '83.5 %', '83.3 %', '83.0 %', '82.6 %', '80.4 %', '80.3 %', '78.3 %', '77.5 %', '74.0 %', '73.4 %', '71.8 %', '71.3 %', '71.2 %', '70.5 %', '70.1 %', '67.7 %', '64.7 %', '64.5 %', '63.9 %', '63.5 %', '62.9 %',
+            '61.7 %', '61.5 %', '61.0 %', '61.0 %', '60.7 %', '60.5 %', '60.3 %', '60.2 %', '57.7 %', '57.0 %', '56.8 %', '54.4 %', '50.8 %', '50.6 %', '50.1 %', '49.5 %', '48.8 %', '46.6 %', '46.4 %', '43.7 %', '43.2 %', '41.5 %', '36.9 %', '36.6 %', '36.4 %', '32.6 %', '31.9 %', '30.5 %', '30.5 %', '30.2 %',
+            '29.7 %', '28.7 %', '28.7 %', '28.2 %', '27.8 %', '25.6 %', '24.7 %', '23.5 %', '23.3 %', '22.2 %', '21.8 %', '21.0 %', '20.9 %', '19.4 %', '19.1 %', '17.1 %', '16.3 %', '16.3 %', '15.9 %', '15.4 %', '14.8 %', '13.8 %', '9.9 %', '9.1 %', '6.3 %', '5.9 %', '3.0 %'
+        ],
+        score: [
+            '13899.47', '13454.66', '13024.85', '12804.07', '12076.39', '11807.35', '11509.43', '11125.86', '9542.13', '9511.90', '9474.16', '9351.50', '8693.03', '8370.25', '8115.05', '7797.66', '6843.08', '6409.86', '6110.13', '6086.83', '5937.98', '5746.87', '5580.54', '4923.37', '3995.12', '3960.75', '3878.06', '3807.10', '3505.95',
+            '3255.63', '3197.40', '3095.17', '3022.56', '2960.58', '2866.63', '2854.98', '2767.07', '2137.38', '1932.31', '1823.79', '1196.26', '209.42', '174.01', '17.46', '-134.25', '-331.92', '-928.90', '-967.74', '-1707.31', '-1813.65', '-2334.11', '-3546.42', '-3605.76', '-3599.32', '-4680.69', '-4826.74', '-5187.34', '-5261.25', '-5262.42',
+            '-5374.49', '-5628.15', '-5756.93', '-5793.79', '-5980.69', '-6523.96', '-6713.55', '-7045.62', '-7173.00', '-7433.61', '-7507.69', '-7684.40', '-7857.08', '-8052.01', '-8150.53', '-8703.79', '-8938.41', '-8947.62', '-9098.54', '-9011.52', '-9160.05', '-9525.45', '-10948.80', '-10934.35', '-11566.10', '-12075.55', '-13090.31'
+        ],
+    };
+    document.getElementById("已收集数据量").innerText = '总榜已收集数据约 590000 条';
+    const star6_staff_amount = obj.name.length;
+    const rate_list = obj.rate;
+    const score_list = obj.score;
+
+    clusterList = rate_list.map((r) => parseFloat(r));
+    const cluster_list = get_best_cluster_list(clusterList);
+    const color_list = get_color_list(cluster_list.reverse());
+
+    const table = document.getElementById("final_order_table");
+    table.style.display = "inline-block";
+
+    let htmlStr = '', this_rank;
+    for (let i = 0; i < star6_staff_amount; i++) {
+        this_rank = i + 1;
+        htmlStr += `<tr style="color: #${color_list[i]}; background-color: currentColor"><td class="final_table_text">${cup_size[parseInt(i / star6_staff_amount_div)]}</td><td class="final_table_text">${this_rank}</td><td class="final_table_text">${obj.name[i]}</td><td class="final_table_text">${rate_list[i]}</td><td class="final_table_text" style="text-align: right; padding-right: 25px">${score_list[i]}</td></tr>`;
+    }
+    document.getElementById("final_order_tbody").innerHTML = htmlStr;
+
+    nclasses_input.max = star6_staff_amount - 1;
+    nclasses_input.value = cluster_list.length;
 }
 
 function get_color_list(cluster_list) {
