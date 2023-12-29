@@ -178,7 +178,7 @@ class Config(object):
 
 
 class ProductionConfig(Config):
-    SERVER_ADDRESS = "https://6starvote.me"
+    SERVER_ADDRESS = "http://47.120.33.76:9876"
 
 
 class DevelopmentConfig(Config):
