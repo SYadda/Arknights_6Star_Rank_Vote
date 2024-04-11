@@ -130,10 +130,13 @@ function scrollToTop() {
 // 刷新个人表
 function flush_self(sort_by = 'win_rate', desc = true) {
     const hero_array = Array.from(hero_dict.values());
+    let second_sort_by = sort_by == 'win_rate' ? 'scores' : 'win_rate';
     if (desc) {
+        hero_array.sort((hero1, hero2) => hero2[second_sort_by] - hero1[second_sort_by]);
         hero_array.sort((hero1, hero2) => hero2[sort_by] - hero1[sort_by]);
     }
     else {
+        hero_array.sort((hero1, hero2) => hero1[second_sort_by] - hero2[second_sort_by]);
         hero_array.sort((hero1, hero2) => hero1[sort_by] - hero2[sort_by]);
     }
 
