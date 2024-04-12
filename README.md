@@ -74,7 +74,7 @@
 
 [@lpdink](https://github.com/lpdink)：前端 展示自己的投票结果
 
-[@不会偏微分的fw]：服务器赞助
+@不会偏微分的fw：服务器赞助
 
 [@SkadiD](https://github.com/SkadiD)：前端CDN加速和服务器赞助
 
