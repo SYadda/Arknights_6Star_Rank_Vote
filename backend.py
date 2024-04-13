@@ -1,8 +1,15 @@
 # -*- coding: utf-8 -*-
 
+import hashlib
+import hmac
 import random, pickle
+import time
+import json
+from lzpy import LZString
 from flask import Flask, redirect, url_for, render_template, request, jsonify
 from flask_cors import CORS, cross_origin
+
+from orm import Archive
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
 # app.debug = True
@@ -77,13 +84,44 @@ def view_final_order():
 @app.route('/', methods=['GET'])
 @cross_origin()
 def page():
-    # # DATA_DICT = {'SERVER_IP': Config.SERVER_IP, 'SERVER_PORT': Config.SERVER_PORT, 'DICT_PIC_URL': Config.DICT_PIC_URL}
-    # DATA_DICT = {'SERVER_ADDRESS': Config.SERVER_ADDRESS, 'DICT_PIC_URL': Config.DICT_PIC_URL}
+    return render_template('page.html')
 
-    # return render_template('page.html', data_dict = DATA_DICT)
+    # return redirect('https://vote.ltsc.vip', code=302)
 
-    return redirect('https://vote.ltsc.vip', code=302)
+@app.route('/upload', methods=['POST'])
+@cross_origin()
+def upload():
+    data = request.get_json()
+    key = data.get('key')
+    result = data.get('data')
+    vote_times = int(data.get('vote_times'))
+    ip = get_client_ip()
+    is_create = False
+    if not result:
+        return jsonify({'error': 'result is required'})
+    if not key:
+        is_create = True
+        timestamp = str(time.time())
+        key = hmac.new(ip.encode(), timestamp.encode(), hashlib.sha1).hexdigest()
+    result = LZString.decompressFromUTF16(result)
+    archive = Archive(key = key, data = result, ip = ip, vote_times = vote_times)
+    archive.save(force_insert=is_create)
+    return jsonify({'key': key, "updated_at": int(archive.updated_at.timestamp())}), 200
 
+@app.route('/sync', methods=['GET'])
+@cross_origin()
+def sync():
+    key = request.args.get('key')
+    if not key:
+        return jsonify({'error': '未填写秘钥'})
+    if len(key) != 40:
+        return jsonify({'error': '秘钥长度不合法'})
+    try:
+        archive = Archive.get(Archive.key == key)
+    except Archive.DoesNotExist:
+        return jsonify({'error': '秘钥不存在'})
+    result = LZString.compressToUTF16(archive.data)
+    return jsonify({'data': result, "vote_times": archive.vote_times, "updated_at": archive.updated_at})
 
 def compare(a:int, b:int):
     global set_code
