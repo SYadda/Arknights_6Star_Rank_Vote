@@ -442,7 +442,7 @@ function sync() {
                 localStorage.setItem('hero_dict', data);
                 localStorage.setItem('vote_times', result?.vote_times);
                 alert('同步数据成功：' + formatTime(result?.updated_at));
-                // location.reload();
+                location.reload();
             } else {
                 alert('同步失败');
             }
