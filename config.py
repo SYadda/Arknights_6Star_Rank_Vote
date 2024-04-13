@@ -184,9 +184,8 @@ class Config(object):
         "能天使": "https://media.prts.wiki/2/2e/半身像_能天使_1.png",
     }
 
-
 class ProductionConfig(Config):
-    SERVER_ADDRESS = "http://47.120.33.76:9876"
+    SERVER_ADDRESS = "https://vote.ltsc.vip"
 
 
 class DevelopmentConfig(Config):
