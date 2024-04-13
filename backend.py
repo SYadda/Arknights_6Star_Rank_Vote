@@ -77,10 +77,12 @@ def view_final_order():
 @app.route('/', methods=['GET'])
 @cross_origin()
 def page():
-    # DATA_DICT = {'SERVER_IP': Config.SERVER_IP, 'SERVER_PORT': Config.SERVER_PORT, 'DICT_PIC_URL': Config.DICT_PIC_URL}
-    DATA_DICT = {'SERVER_ADDRESS': Config.SERVER_ADDRESS, 'DICT_PIC_URL': Config.DICT_PIC_URL}
+    # # DATA_DICT = {'SERVER_IP': Config.SERVER_IP, 'SERVER_PORT': Config.SERVER_PORT, 'DICT_PIC_URL': Config.DICT_PIC_URL}
+    # DATA_DICT = {'SERVER_ADDRESS': Config.SERVER_ADDRESS, 'DICT_PIC_URL': Config.DICT_PIC_URL}
 
-    return render_template('page.html', data_dict = DATA_DICT)
+    # return render_template('page.html', data_dict = DATA_DICT)
+
+    return redirect('https://vote.ltsc.vip', code=302)
 
 
 def compare(a:int, b:int):
