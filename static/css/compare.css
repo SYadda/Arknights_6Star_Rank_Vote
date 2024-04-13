@@ -96,14 +96,14 @@ body {
 }
 
 /* 干员比较核心中的所有按钮 */
-.compare_block input {
+.compare_block input, .final_table input {
     padding: 1px 6px;
     border: 1px solid transparent;
     border-radius: 4px;
     transition: all 0.3s ease;
 }
 
-.compare_block input:hover {
+.compare_block input:hover, .final_table input:hover {
     background-color: #ccc;
 }
 
@@ -197,9 +197,12 @@ body {
 }
 
 .final table caption {
+    display: flex;
+    justify-content: space-between;
     font-weight: bold;
     font-size: 32px;
-    text-align: center;
+    text-align: left;
+    margin-bottom: 1rem;
 }
 
 .final table thead tr th:nth-child(2),

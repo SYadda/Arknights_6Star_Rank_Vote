@@ -3,13 +3,13 @@ const SERVER_ADDRESS = DATA_DICT['SERVER_ADDRESS'];
 const DICT_PIC_URL = DATA_DICT['DICT_PIC_URL'];
 
 class Hero {
-    constructor(name) {
+    constructor(name, data = {win_times: 0, lose_times: 0, scores:  0, vote_times:  0, win_rate: -1}) {
         this.name = name;
-        this.win_times = 0;
-        this.lose_times = 0;
-        this.scores = 0;
-        this.vote_times = 0;
-        this.win_rate = -1;
+        this.win_times = data.win_times;
+        this.lose_times = data.lose_times;
+        this.scores = data.scores;
+        this.vote_times = data.vote_times;
+        this.win_rate = data.win_rate;
     }
 
     win() {
@@ -34,16 +34,19 @@ class Hero {
         this.vote_times = dict["vote_times"];
         this.win_rate = dict["win_rate"];
     }
-
 }
 
 var hero_dict = new Map();
+var _hero_dict = JSON.parse(localStorage.getItem('hero_dict') || '{}')
 // 本地评分
-var vote_times = 0;
+var vote_times = Number(localStorage.getItem('vote_times'));
 for (const key in DICT_PIC_URL) {
-    var hero = new Hero(key);
+    var hero = new Hero(key, _hero_dict[key]);
     hero_dict.set(key, hero);
 }
+// const compressed = LZString.compress(JSON.stringify(_hero_dict));
+// console.log(JSON.stringify(_hero_dict))
+// console.log(compressed)
 
 const cup_size = ['超大杯上', '超大杯中', '超大杯下', '大杯上', '大杯中', '大杯下', '中杯上', '中杯中', '中杯下'];
 const star6_staff_amount = Object.keys(DICT_PIC_URL).length;
@@ -89,6 +92,13 @@ nclasses_input.addEventListener('input', function () {
         item.style.color = `#${self_color_list[i]}`;
     });
 });
+
+const key_input = document.getElementById('tokenInput');
+key_input.value = localStorage.getItem('key') || '';
+key_input.addEventListener('blur', function () {
+    localStorage.setItem('key', key_input.value);
+    alert('上传密钥保存成功');
+})
 
 // 跟随鼠标的夕龙泡泡
 let currentMouseTop, currentScrollTop;
@@ -158,6 +168,10 @@ function flush_self(sort_by = 'win_rate', desc = true) {
     }
     document.getElementById("self_order_tbody").innerHTML = selfStr;
     document.getElementById("您已投票").innerText = '您已投票 ' + vote_times + ' 次';
+    new Promise(r => {
+        localStorage.setItem('hero_dict', JSON.stringify(Object.fromEntries(hero_dict)));
+        localStorage.setItem('vote_times', vote_times);
+    });
 }
 
 function sort_table(element) {
@@ -257,7 +271,6 @@ function new_compare() {
 //接口: safescore
 //供给参数:win_name, lose_name
 function save_score(win_name, lose_name) {
-
     hero_dict.get(win_name).win();
     hero_dict.get(lose_name).lose();
     vote_times++;
@@ -377,51 +390,125 @@ function get_SDCM(cluster_list) {
         serie.setSerie(cluster_list[i]);
         SDCM += serie.variance();
     }
-
     return SDCM;
 }
 
-// 导入导出
-
-function export_rst() {
-    const json_string = JSON.stringify(Object.fromEntries(hero_dict), null, 4);
-    const blob = new Blob([json_string], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = 'Arknights_6Star_Rank_Vote.json';
-    link.click();
-}
-
-function import_rst(event) {
-    const file = event.target.files[0];
-    const reader = new FileReader();
-
-    reader.onload = function (e) {
-
-        try {
-            const contents = e.target.result;
-            const importedData = JSON.parse(contents);
-            var tmp_vote_times = 0;
-            for (var [key, value] of Object.entries(importedData)) {
-                if (!hero_dict.has(key)) {
-                    // 不存在角色就new一个
-                    var hero = new Hero(key);
-                } else {
-                    var hero = hero_dict.get(key);
-                }
-                if (Number.isInteger(value["vote_times"])) {
-                    tmp_vote_times += value["vote_times"];
-                }
-                hero.set_attr(value);
+// 上传同步
+function upload() {
+    const key = localStorage.getItem('key') || "";
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `${SERVER_ADDRESS}/upload`, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    console.log(LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))))
+    console.log(LZString.compress(JSON.stringify(Object.fromEntries(hero_dict))))
+    xhr.send(JSON.stringify({
+        key: key, 
+        data: LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))), 
+        vote_times: vote_times
+    }));
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const result = JSON.parse(xhr.responseText); 
+            if (result?.error) {
+                alert('上传失败：' + result?.error);
+                return;
+            }
+            if (result?.key) {
+                alert('上传成功：' + formatTime(result?.updated_at));
+                localStorage.setItem('key', result?.key);
+                const key_input = document.getElementById('tokenInput');
+                key_input.value = result?.key;
+            } else {
+                alert('上传失败');
             }
         }
-        catch (error) {
-            alert("导入失败:" + error)
-        }
-        vote_times = tmp_vote_times / 2;
-        flush_self();
-    };
-
-    reader.readAsText(file);
+    }
 }
+function sync() {
+    const key = localStorage.getItem('key') || "";
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', `${SERVER_ADDRESS}/sync?key=${key}`, true);
+    xhr.send();
+    xhr.onreadystatechange = function () {
+        if (xhr.readyState === 4 && xhr.status === 200) {
+            const result = JSON.parse(xhr.responseText); 
+            if (result?.error) {
+                alert('同步失败：' + result?.error);
+                return;
+            }
+            if (result?.data) {
+                const data = LZString.decompressFromUTF16(result?.data);
+                console.log(result?.data, data)
+                localStorage.setItem('hero_dict', data);
+                localStorage.setItem('vote_times', result?.vote_times);
+                alert('同步数据成功：' + formatTime(result?.updated_at));
+                // location.reload();
+            } else {
+                alert('同步失败');
+            }
+        }
+    }
+
+}
+function formatTime(timestamp) {
+    if (typeof timestamp === 'string') return timestamp;
+    var date = new Date(timestamp * 1000);
+    var year = date.getFullYear();
+    var mon = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var min = date.getMinutes();
+    var sec = date.getSeconds();
+    mon = parseInt(mon) < 10 ? "0" + mon : mon;
+    day = parseInt(day) < 10 ? "0" + day : day;
+    hour = parseInt(hour) < 10 ? "0" + hour : hour;
+    min = parseInt(min) < 10 ? "0" + min : min;
+    sec = parseInt(sec) < 10 ? "0" + sec : sec;
+    let d = year + "-" + mon + "-" + day + " " + hour + ":" + min + ":" + sec
+    return d;
+}
+
+// // 导入导出
+
+// function export_rst() {
+//     const json_string = JSON.stringify(Object.fromEntries(hero_dict), null, 4);
+//     const blob = new Blob([json_string], { type: 'application/json' });
+//     const url = URL.createObjectURL(blob);
+//     const link = document.createElement('a');
+//     link.href = url;
+//     link.download = 'Arknights_6Star_Rank_Vote.json';
+//     link.click();
+// }
+
+// function import_rst(event) {
+//     const file = event.target.files[0];
+//     const reader = new FileReader();
+
+//     reader.onload = function (e) {
+
+//         try {
+//             const contents = e.target.result;
+//             const importedData = JSON.parse(contents);
+//             var tmp_vote_times = 0;
+//             for (var [key, value] of Object.entries(importedData)) {
+//                 if (!hero_dict.has(key)) {
+//                     // 不存在角色就new一个
+//                     var hero = new Hero(key);
+//                 } else {
+//                     var hero = hero_dict.get(key);
+//                 }
+//                 if (Number.isInteger(value["vote_times"])) {
+//                     tmp_vote_times += value["vote_times"];
+//                 }
+//                 hero.set_attr(value);
+//             }
+//         }
+//         catch (error) {
+//             alert("导入失败:" + error)
+//         }
+//         vote_times = tmp_vote_times / 2;
+//         flush_self();
+//     };
+
+//     reader.readAsText(file);
+// }
