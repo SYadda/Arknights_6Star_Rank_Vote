@@ -84,9 +84,9 @@ def view_final_order():
 @app.route('/', methods=['GET'])
 @cross_origin()
 def page():
-    return render_template('page.html')
+    # return render_template('page.html')
 
-    # return redirect('https://vote.ltsc.vip', code=302)
+    return redirect('https://vote.ltsc.vip', code=302)
 
 @app.route('/upload', methods=['POST'])
 @cross_origin()
