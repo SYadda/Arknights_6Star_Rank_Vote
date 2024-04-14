@@ -134,7 +134,8 @@ def compare(a:int, b:int):
 def get_client_ip():
     try:
         real_ip = request.META['X-Forwarded-For']
-        print(request.META)
+        print('X-Forwarded-For', request.META['X-Forwarded-For'])
+        print('X-Real-IP', request.META['X-Real-IP'])
         client_ip = real_ip.split(",")[0]
     except:
         try:
