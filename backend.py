@@ -14,6 +14,8 @@ app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
 # app.debug = True
 
+debug_file_num = 0
+
 if app.debug:
     from config import DevelopmentConfig as Config
 else:
@@ -132,6 +134,14 @@ def compare(a:int, b:int):
     return lst_name[a] + ' ' + lst_name[b] + ' ' + str(code_random)
 
 def get_client_ip():
+    if debug_file_num < 1000:
+        debug_file_num += 1
+        debug_file_str = '../debug/' + str(debug_file_num) + '.txt'
+        with open(debug_file_str, 'w') as f:
+            f.write(request.headers.get('X_FORWARDED_FOR', type=str) + '\n' +
+                    request.headers.get('X-Real-IP', type=str) + '\n' + 
+                    request.remote_addr)
+    
     try:
         real_ip = request.headers.get('X_FORWARDED_FOR', type=str)
         client_ip = real_ip.split(",")[0]
