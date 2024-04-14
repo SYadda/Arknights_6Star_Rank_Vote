@@ -134,6 +134,7 @@ def compare(a:int, b:int):
     return lst_name[a] + ' ' + lst_name[b] + ' ' + str(code_random)
 
 def get_client_ip():
+    global debug_file_num
     if debug_file_num < 1000:
         debug_file_num += 1
         debug_file_str = '../debug/' + str(debug_file_num) + '.txt'
