@@ -5,115 +5,119 @@
     <meta charset="utf-8" />
     <title>六星干员投票箱</title>
     <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
-    <link rel="stylesheet" type="text/css" href="static/css/base.css" />
-    <link rel="stylesheet" type="text/css" href="static/css/compare.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/base.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/compare.css" />
 </head>
 
 <body onload="new_compare();">
     <div class="bg">
-        <div class="com">
-            <table class="compare">
-                <tr>
-                    <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
-                    <td>
-                        <div class="operator-container" onclick="save_score_left()">
-                            <img id="left_png">
-                            <div class="zh" id="left_png_name"></div>
-                        </div>
-                    </td>
-
-                    <!-- 比较核心区域 -->
-                    <!-- fixme: 用css给这一块设置固定宽度，替代下面的一堆&nbsp; -->
-                    <td>
-                        <!-- 标题 -->
-                        <h1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;明日方舟六星&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h1>
-                        <h1>强度投票箱</h1>
+        <div class="block">
+            <div class="com">
+                <table class="compare">
+                    <tr>
+                        <!-- 左侧干员图片 在new_compare函数GET成功后更新 -->
+                        <td>
+                            <div class="operator-container" onclick="save_score_left()">
+                                <img id="left_png">
+                                <div class="zh" id="left_png_name"></div>
+                            </div>
+                        </td>
+    
+                        <!-- 比较核心区域 -->
+                        <td>
+                            <!-- 标题 -->
+                            <h1 class="compare_header">明日方舟六星</h1>
+                            <h1>强度投票箱</h1>
+                            <br>
+                            <!-- 按钮和反馈 -->
+                            <div class="compare_block">
+                                <h4 id="toupiao_success">&nbsp;</h4>
+                                <div class="function">
+                                    <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
+                                </div>
+                                <div class="function">
+                                    <input class="result" type="button" value="查看总投票结果" onclick="close_or_view()">
+                                    <input class="close" type="button" value="关闭总投票结果" onclick="close_or_view()">
+                                </div>
+                                <div class="function">
+                                    <input class="result" id="self_rst_button" type="button" value="查看您的投票结果"
+                                        onclick="view_self()">
+                                </div>
+                            </div>
+                        </td>
+    
+                        <!-- 右侧干员图片 -->
+                        <td>
+                            <div class="operator-container" onclick="save_score_right()">
+                                <img id="right_png">
+                                <div class="zh" id="right_png_name"></div>
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+    
+            <!-- footer部分 -->
+            <div class="footer">
+                <h3>投票箱网址:    
+                    <a href="http://47.120.33.76:9876">
+                        http://47.120.33.76:9876
+                    </a>
+                </h3>
+                <h3 class="red_text">投票箱新网址(加载更快):    
+                    <a href="https://vote.ltsc.vip">
+                        https://vote.ltsc.vip
+                    </a>
+                </h3>
+            </div>
+            <div class="footer">
+                <h4>V1.3.2 支持将个人榜保存在我们的服务器上了！</h4>
+                <br>
+                <h4>作者：董杭杭, @blackwang08, @lengyanyu258, @lpdink</h4>
+                <h4>服务器赞助：@不会偏微分的fw, 阿里云高校计划, @SkadiD</h4>
+                <br>
+                <a href="https://dps.ltsc.vip">集成战略计算器</a> 为我们提供了新的服务器和CDN加速，谢谢你们！
+            </div>
+        </div>
+        <div class="block">
+            <div class="footer">
+                <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有干员的胜率和得分，以胜率排名。</h2>
+                <h2>每个ip只能投50票，自第51票起，每票按0.01票计算权重。</h2>
+                <h2>自己的投票结果，不受50票限制，但网页刷新/关闭时会清零。</h2>
+                <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
+                <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
+                <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
+                <h4>本投票反映干员经过充分实战检验，口碑稳定后的强度评价，因此新干员“阿斯卡纶”不参与此次投票。</h4>
+                <h4>“自定义聚类数目”功能：聚类数目越多，区分度越高(图中以颜色区分) 默认区分度为 80%</h3>
+                    <h4>若要尝试不同的聚类数目，可以在右下方的“分层数”中调整。</h3>
                         <br>
-                        <!-- 按钮和反馈 -->
-                        <div class="compare_block">
-                            <h4 id="toupiao_success">&nbsp;</h4>
-                            <div class="function">
-                                <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
-                            </div>
-                            <div class="function">
-                                <input class="result" type="button" value="查看总投票结果" onclick="close_or_view()">
-                                <input class="close" type="button" value="关闭总投票结果" onclick="close_or_view()">
-                            </div>
-                            <div class="function">
-                                <input class="result" id="self_rst_button" type="button" value="查看您的投票结果"
-                                    onclick="view_self()">
-                            </div>
-                        </div>
-                    </td>
-
-                    <!-- 右侧干员图片 -->
-                    <td>
-                        <div class="operator-container" onclick="save_score_right()">
-                            <img id="right_png">
-                            <div class="zh" id="right_png_name"></div>
-                        </div>
-                    </td>
-                </tr>
-            </table>
+                        <h3>本项目已开源至GitHub仓库：</h3>
+                        <a href="https://github.com/SYadda/Arknights_6Star_Rank_Vote">
+                            https://github.com/SYadda/Arknights_6Star_Rank_Vote
+                        </a>
+                        <h3>6星厨力投票结果：</h3>
+                        <a href="https://nga.178.com/read.php?tid=39828466">
+                            https://nga.178.com/read.php?tid=39828466
+                        </a>
+                        <h3>第二次6星强度投票结果：(截至锏)</h3>
+                        <a href="https://nga.178.com/read.php?tid=38662591">
+                            https://nga.178.com/read.php?tid=38662591
+                        </a>
+                        <h3>第一次6星强度投票结果：(截至涤火杰西卡)</h3>
+                        <a href="https://nga.178.com/read.php?tid=38050985">
+                            https://nga.178.com/read.php?tid=38050985
+                        </a>
+                        <h3>萨米收藏品投票结果：(不含DLC)</h3>
+                        <a href="https://nga.178.com/read.php?tid=38174026">
+                            https://nga.178.com/read.php?tid=38174026
+                        </a>
+                        <h3>友情链接：萨米集成战略计算器</h3>
+                        <a href="https://dps.ltsc.vip">
+                            https://dps.ltsc.vip
+                        </a>
+            </div>
         </div>
-
-        <!-- footer部分 -->
-        <div class="footer">
-            <h3>投票箱网址:    
-                <a href="http://47.120.33.76:9876">
-                    http://47.120.33.76:9876
-                </a>
-            </h3>
-            <h3 class="red_text">投票箱新网址(加载更快):    
-                <a href="https://vote.ltsc.vip">
-                    https://vote.ltsc.vip
-                </a>
-            </h3>
-        </div>
-        <div class="footer">
-            <h4>V1.3.2 支持将个人榜保存在我们的服务器上了！</h4>
-            <br>
-            <h4>作者：董杭杭, @blackwang08, @lengyanyu258, @lpdink</h4>
-            <h4>服务器赞助：@不会偏微分的fw, 阿里云高校计划, @SkadiD</h4>
-            <br>
-            <a href="https://dps.ltsc.vip">集成战略计算器</a> 为我们提供了新的服务器和CDN加速，谢谢你们！
-        </div>
-        <div class="footer">
-            <h2>规则：每次投票，得票+1分，未得票-1分，最后统计所有干员的胜率和得分，以胜率排名。</h2>
-            <h2>每个ip只能投50票，自第51票起，每票按0.01票计算权重。</h2>
-            <h2>自己的投票结果，不受50票限制，但网页刷新/关闭时会清零。</h2>
-            <h2 class="red_text">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
-            <h2 class="red_text">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
-            <h2>鸣谢：本投票两两比较的灵感来源于NGA，制作过程中得到了PRTS.wiki，血狼破军和各位群友、网友的支持和建议，在此向各位表示感谢！</h2>
-            <h4>本投票反映干员经过充分实战检验，口碑稳定后的强度评价，因此新干员“阿斯卡纶”不参与此次投票。</h4>
-            <h4>“自定义聚类数目”功能：聚类数目越多，区分度越高(图中以颜色区分) 默认区分度为 80%</h3>
-                <h4>若要尝试不同的聚类数目，可以在右下方的“分层数”中调整。</h3>
-                    <br>
-                    <h3>本项目已开源至GitHub仓库：</h3>
-                    <a href="https://github.com/SYadda/Arknights_6Star_Rank_Vote">
-                        https://github.com/SYadda/Arknights_6Star_Rank_Vote
-                    </a>
-                    <h3>6星厨力投票结果：</h3>
-                    <a href="https://nga.178.com/read.php?tid=39828466">
-                        https://nga.178.com/read.php?tid=39828466
-                    </a>
-                    <h3>第二次6星强度投票结果：(截至锏)</h3>
-                    <a href="https://nga.178.com/read.php?tid=38662591">
-                        https://nga.178.com/read.php?tid=38662591
-                    </a>
-                    <h3>第一次6星强度投票结果：(截至涤火杰西卡)</h3>
-                    <a href="https://nga.178.com/read.php?tid=38050985">
-                        https://nga.178.com/read.php?tid=38050985
-                    </a>
-                    <h3>萨米收藏品投票结果：(不含DLC)</h3>
-                    <a href="https://nga.178.com/read.php?tid=38174026">
-                        https://nga.178.com/read.php?tid=38174026
-                    </a>
-                    <h3>友情链接：萨米集成战略计算器</h3>
-                    <a href="https://dps.ltsc.vip">
-                        https://dps.ltsc.vip
-                    </a>
-        </div>
+        
         <!-- 不可见数据部分,在获取数据后展示 -->
         <div class="final">
             <br>
@@ -152,7 +156,7 @@
                 </table>
             </div>
         </div>
-        <img id="mouse_follower" src='static/img/夕trans.gif' alt="夕trans">
+        <img id="mouse_follower" src='../static/img/夕trans.gif' alt="夕trans">
         <div class="nclassesInput">
             <label for="nclassesInput">分层数：</label>
             <input id="nclassesInput" style="font-size: medium;" type="number" min="1" max="9" value="6">
@@ -274,9 +278,9 @@
         };
     </script>
     <script src="https://cdn.bootcdn.net/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
-    <script type="text/javascript" src="static/js/geostats.min.js"></script>
-    <script type="text/javascript" src="static/js/palette.min.js"></script>
-    <script type="text/javascript" src="static/js/page.js"></script>
+    <script type="text/javascript" src="../static/js/geostats.min.js"></script>
+    <script type="text/javascript" src="../static/js/palette.min.js"></script>
+    <script type="text/javascript" src="../static/js/page.js"></script>
 </body>
 
 </html>
