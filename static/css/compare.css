@@ -20,7 +20,13 @@ body {
 
 .bg {
     text-align: center;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    flex-wrap: wrap;
 }
+
+
 
 /* 版心 */
 .w {
@@ -68,6 +74,10 @@ body {
     text-shadow: 1px 1px 10px #000;
     width: 100%;
     text-align: center;
+}
+/* 比较核心头部标题恒定宽带 */
+.compare .compare_header {
+    width: 315px;
 }
 
 /* 干员图片大小设置 */
@@ -188,6 +198,10 @@ body {
     text-align: center;
     font-size: 19px;
     font-weight: 700;
+}
+
+.final {
+    display: none;
 }
 
 /* 投票结果表格部分设计 */

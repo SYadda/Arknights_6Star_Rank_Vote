@@ -203,17 +203,25 @@ function sort_table(element) {
 }
 
 let self_close = true;
+let close_or_view_flag = true;
+
 function view_self() {
     var self_table = document.getElementById("self_table");
     var self_button = document.getElementById("self_rst_button");
     if (self_close) {
         self_close = false;
+        const final = document.getElementsByClassName("final");
+        final[0].style.display = "block";
         self_table.style.display = "inline-block";
         self_button.value = "关闭您的投票结果";
         flush_self();
     }
     else {
         self_close = true;
+        const final = document.getElementsByClassName("final");
+        if(self_close && close_or_view_flag){
+            final[0].style.display = "none";
+        }
         self_table.style.display = "none";
         document.getElementById("您已投票").innerText = '';
         self_button.value = "查看您的投票结果";
@@ -221,7 +229,6 @@ function view_self() {
 }
 
 //控制列表出现和关闭的按钮
-let close_or_view_flag = true;
 function close_or_view() {
     const close = document.getElementsByClassName('close');
     const result = document.getElementsByClassName('result');
@@ -236,6 +243,10 @@ function close_or_view() {
         document.getElementById("您已投票").innerText = '';
         var table = document.getElementById("final_order_table");
         table.style.display = "none";
+        const final = document.getElementsByClassName("final");
+        if(self_close && close_or_view_flag){
+            final[0].style.display = "none";
+        }
         close[0].style.display = 'none';
         result[0].style.display = 'inline';
     }
@@ -317,6 +328,8 @@ function view_final_order() {
 
             const table = document.getElementById("final_order_table");
             table.style.display = "inline-block";
+            const final = document.getElementsByClassName("final");
+            final[0].style.display = "block";
 
             let htmlStr = '', this_rank;
             for (let i = 0; i < star6_staff_amount; i++) {
