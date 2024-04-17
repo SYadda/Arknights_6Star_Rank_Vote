@@ -81,13 +81,18 @@ def view_final_order():
     return jsonify({'name': final_name, 'rate': final_rate, 'score': final_score, 'count': '已收集数据 ' + '%.2f'%(sum(lst_win_score)) + ' 条'})
 
 
+# 不走代理，直接访问
+@app.route('/origin', methods=['GET'])
+@cross_origin()
+def page_origin():
+    return render_template('page.html')
+
+
 @app.route('/', methods=['GET'])
 @cross_origin()
 def page():
-    if app.debug:
-        return render_template('page.html')
-    else:
-        return redirect('https://vote.ltsc.vip', code=302)
+    return redirect('https://vote.ltsc.vip', code=302)
+
 
 @app.route('/upload', methods=['POST'])
 @cross_origin()
