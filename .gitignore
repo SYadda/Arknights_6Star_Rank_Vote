@@ -1,3 +1,6 @@
+# 1.3.2版本 将个人榜保存在服务器上的数据库文件
+archive.db
+
 nohup.out
 .vscode/
 
