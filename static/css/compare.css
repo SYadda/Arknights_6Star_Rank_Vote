@@ -326,3 +326,21 @@ body {
     border-radius: 5px;
     font-size: 10px;
 }
+
+
+/* 上移动画类 */
+.move-up-animation {
+    animation: moveUp 1s forwards; /* 动画持续1秒，结束后保持最终状态 */
+    opacity: 0; /* 初始透明度为0 */
+}
+
+@keyframes moveUp {
+    0% {
+        transform: translateY(100%); /* 初始位置：垂直方向下移100% */
+        opacity: 0; /* 初始透明度为0 */
+    }
+    100% {
+        transform: translateY(0); /* 最终位置：垂直方向不移动 */
+        opacity: 1; /* 最终透明度为1 */
+    }
+}
