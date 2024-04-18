@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <title>六星干员投票箱</title>
-    <link rel="icon" type="image/x-icon" href="static/img/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="../static/img/favicon.ico">
     <link rel="stylesheet" type="text/css" href="../static/css/base.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/compare.css" />
 </head>
@@ -84,7 +84,8 @@
                 <!-- 这里增加了动画效果，类和style的效果如下：
                      red_text：原有的类，令文字呈红色
                      move-up-animation：新建动画类，实现向上的动画，具体内容见css文件
-                     animation-delay：对动画的延时，用于使文字展示成从上往下依次出现的效果   -->
+                     animation-delay：对动画的延时，用于使文字展示成从上往下依次出现的效果
+                     如果需要修改文字，增加行数，请对应修改延时描述并加上动画类   -->
                 <h2 class="move-up-animation" style="animation-delay: 0s;">规则：每次投票，得票+1分，未得票-1分，最后统计所有干员的胜率和得分，以胜率排名。</h2>
                 <h2 class="move-up-animation" style="animation-delay: 0.2s;">每个ip只能投50票，自第51票起，每票按0.01票计算权重。</h2>
                 <h2 class="move-up-animation" style="animation-delay: 0.4s;">自己的投票结果，不受50票限制，但网页刷新/关闭时会清零。</h2>
@@ -182,6 +183,7 @@
                 accept=".json" multiple="false"> -->
         </div>
         <button id="topBtn" onclick="scrollToTop()">回到顶部</button>
+        <div class="background"></div>
     </div>
 
     <script type="text/javascript">

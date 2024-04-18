@@ -12,10 +12,22 @@
 .red_text {
     color: red;
 }
-
 /* 主题样式 */
 body {
-    background-color: #F6F6F6;
+    margin: 0;
+    padding: 0;
+    position: relative;
+}
+.background {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 300px; /* 设置背景图片宽度 */
+    height: 200px; /* 设置背景图片高度 */
+    background-image: url('../img/keobeCG.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+    z-index: -1; /* 使背景图片处于内容下方 */
 }
 
 .bg {
@@ -41,7 +53,7 @@ body {
     margin: 10px auto 0;
     padding: 20px;
     border-radius: 8px;
-    background: rgba(250, 250, 250, 0.05);
+    background: rgba(250, 250, 250, 0.87);
     box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.2);
     transition: all 0.3s ease;
 }
