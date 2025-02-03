@@ -90,8 +90,38 @@ class Config(object):
         "左乐": 87,
         "黍": 88,
         "艾拉": 89,
+        "阿斯卡纶": 90,        
+        "魔王": 91,
+        "逻各斯": 92,
+        "维什戴尔": 93,
+        "乌尔比安": 94,
+        "妮芙": 95,
+        "娜仁图亚": 96,
+        "玛露西尔": 97,
+        "维娜·维多利亚": 98,
+        "弑君者": 99,
+        "忍冬": 100,
+        "荒芜拉普兰德": 101,
+        "引星棘刺": 102,
+        "烛煌": 103,
+        "余": 104
     }
     DICT_PIC_URL = {
+        "余": "https://media.prts.wiki/7/73/半身像_余_1.png",
+        "烛煌": "https://media.prts.wiki/8/89/半身像_烛煌_1.png",
+        "引星棘刺": "https://media.prts.wiki/d/d7/半身像_引星棘刺_1.png",
+        "荒芜拉普兰德": "https://media.prts.wiki/a/ac/半身像_荒芜拉普兰德_1.png",
+        "忍冬": "https://media.prts.wiki/b/b5/半身像_忍冬_1.png",
+        "弑君者": "https://media.prts.wiki/e/e9/半身像_弑君者_1.png",
+        "维娜·维多利亚": "https://media.prts.wiki/1/16/半身像_维娜·维多利亚_1.png",
+        "玛露西尔": "https://media.prts.wiki/1/13/半身像_玛露西尔_1.png",
+        "娜仁图亚": "https://media.prts.wiki/3/3c/半身像_娜仁图亚_1.png",
+        "妮芙": "https://media.prts.wiki/4/49/半身像_妮芙_1.png",
+        "乌尔比安": "https://media.prts.wiki/2/20/半身像_乌尔比安_1.png",
+        "维什戴尔": "https://media.prts.wiki/5/5a/半身像_维什戴尔_1.png",
+        "逻各斯": "https://media.prts.wiki/0/0a/半身像_逻各斯_1.png",
+        "魔王": "https://media.prts.wiki/8/8c/半身像_魔王_1.png",
+        "阿斯卡纶": "https://media.prts.wiki/0/08/半身像_阿斯卡纶_1.png",
         "艾拉": "https://media.prts.wiki/1/12/半身像_艾拉_1.png",
         "黍": "https://media.prts.wiki/5/52/半身像_黍_1.png",
         "左乐": "https://media.prts.wiki/9/93/半身像_左乐_1.png",
@@ -183,6 +213,7 @@ class Config(object):
         "推进之王": "https://media.prts.wiki/9/98/半身像_推进之王_1.png",
         "能天使": "https://media.prts.wiki/2/2e/半身像_能天使_1.png",
     }
+
 
 class ProductionConfig(Config):
     SERVER_ADDRESS = "https://vote.ltsc.vip"
