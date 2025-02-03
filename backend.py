@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-
+# TODO: print -> app.logger / loguru
 import hashlib
 import hmac
 import random, pickle
@@ -8,8 +8,13 @@ import json
 from lzpy import LZString
 from flask import Flask, redirect, url_for, render_template, request, jsonify
 from flask_cors import CORS, cross_origin
+from apscheduler.schedulers.background import BackgroundScheduler
+from threading import Lock
+from concurrent.futures import ThreadPoolExecutor
 
-from orm import Archive
+from orm import MemoryDB, Archive, DB_Init, dump_vote_records
+mem_db = DB_Init()
+
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
 # app.debug = True
@@ -19,11 +24,48 @@ if app.debug:
 else:
     from config import ProductionConfig as Config
 
-dict_name = Config.DICT_NAME
-lst_name = list(dict_name.keys())
+
+operators_id_dict = Config.DICT_NAME
+operators_id_dict_length = len(operators_id_dict)
+
+lst_name = list(operators_id_dict.keys())
 len_lst_name_1 = len(lst_name) - 1
 set_code = set()
 
+# 创建后台调度器实例
+scheduler = BackgroundScheduler()
+
+# WARNING: 投票数据安全性不能保证，在进行写入数据库前不能确保数据的安全
+# 如果mem_db 非空，那么将mem_db的内容更新到数据库中
+# TODO: Lock -> mq
+def _process_score(id, scores, locks):
+    # with locks[id]: # 不需要强一致性
+    tmp_val = scores[id]
+    # ...
+    if tmp_val != 0:
+        return (tmp_val, id)
+    return None
+
+def _process_scores_concurrently(scores, locks):
+    result_list = []
+    with ThreadPoolExecutor() as executor:
+        futures = [executor.submit(_process_score, id, scores, locks) for id in range(len(locks))]
+        for future in futures:
+            result = future.result()
+            if result is not None:
+                result_list.append(result)
+    return result_list
+
+# 添加作业到调度器，每隔Config.OPERATORS_VOTE_RECORDS_DB_DUMP_INTERVAL分钟执行一次Memory_DB_Dump函数
+# 持久化投票分数到OPERATORS_VOTE_RECORDS_DB
+@scheduler.scheduled_job('interval', minutes=Config.OPERATORS_VOTE_RECORDS_DB_DUMP_INTERVAL)
+def Memory_DB_Dump():
+    global mem_db
+    win_list =  _process_scores_concurrently(mem_db.score_win, mem_db.lock_score_win)
+    lose_list = _process_scores_concurrently(mem_db.score_lose, mem_db.lock_score_lose)
+    app.logger.info("dump_vote_records start.")
+    dump_vote_records(win_list, lose_list)
+    app.logger.info("dump_vote_records fin.")
 
 @app.route('/new_compare', methods=['GET'])
 @cross_origin()
@@ -46,30 +88,20 @@ def save_score():
      # code对，此ip投票 > 50 次，每票权重降为0.01票，verify() == 0.01
     vrf = verify_code()
     if vrf:
-        with open('list/win_score.pickle', 'rb') as f:
-            lst_win_score = pickle.load(f)
-        with open('list/lose_score.pickle', 'rb') as f:
-            lst_lose_score = pickle.load(f)
-        
-        lst_win_score[dict_name[request.args.get('win_name')]] += vrf
-        lst_lose_score[dict_name[request.args.get('lose_name')]] += vrf
-
-        with open('list/win_score.pickle', 'wb') as f:
-            pickle.dump(lst_win_score, f)
-        with open('list/lose_score.pickle', 'wb') as f:
-            pickle.dump(lst_lose_score, f)
-
+        win_operator_id = operators_id_dict[request.args.get('win_name')]
+        lose_operator_id = operators_id_dict[request.args.get('lose_name')]
+        with mem_db.lock_score_win[win_operator_id]:
+            mem_db.score_win[win_operator_id] += vrf
+        with mem_db.lock_score_lose[lose_operator_id]:
+            mem_db.score_lose[lose_operator_id] += vrf
     return 'success'
-
 
 @app.route('/view_final_order', methods=['GET'])
 @cross_origin()
 def view_final_order():
-    with open('list/win_score.pickle', 'rb') as f:
-        lst_win_score = pickle.load(f)
-    with open('list/lose_score.pickle', 'rb') as f:
-        lst_lose_score = pickle.load(f)
-
+    lst_win_score = list(mem_db.score_win.values())
+    lst_lose_score = list(mem_db.score_lose.values())
+    
     lst_rate = [100 * lst_win_score[_] / (lst_win_score[_] + lst_lose_score[_]) for _ in range(len(lst_win_score))]
     lst_score = [lst_win_score[_] - lst_lose_score[_] for _ in range(len(lst_win_score))]
     dict_score = dict(zip(zip(lst_name, lst_score), lst_rate))
@@ -152,6 +184,7 @@ def verify_ip():
     # code不对，请求非法，verify() == 0
     # code对，此ip投票 <= 50 次，verify() == 1
     # code对，此ip投票 > 50 次，每票权重降为0.01票，verify() == 0.01
+    # ...存在严重的一致性问题
     client_ip = get_client_ip()
     with open('ip/ip_ban.pickle', 'rb') as f:
         ip_ban = pickle.load(f)
@@ -184,12 +217,15 @@ def verify_code():
     # code对，此ip投票 <= 50 次，verify() == 1
     # code对，此ip投票 > 50 次，每票权重降为0.01票，verify() == 0.01
     global set_code
-    code = int(request.args.get('code')) + dict_name[request.args.get('win_name')] + dict_name[request.args.get('lose_name')]
+    code = int(request.args.get('code')) + operators_id_dict[request.args.get('win_name')] + operators_id_dict[request.args.get('lose_name')]
     if code in set_code:
         set_code.remove(code)
         return verify_ip()
     else:
         return 0
+
+# 启动调度器
+scheduler.start()
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=9876)

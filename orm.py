@@ -80,3 +80,24 @@ def DB_Init():
             mem_db.score_win[i] = OperatorsVoteRecords_i.score_win
             mem_db.score_lose[i] = OperatorsVoteRecords_i.score_lose
     return mem_db
+
+# TODO: 用pydantic写个update_list的Model
+def dump_vote_records(win_update_list, lose_update_list):
+    try:
+        with closing(sqlite3.connect("operators_vote_records.db")) as conn:
+            with conn:
+                with closing(conn.cursor()) as cur:
+                    if win_update_list:
+                        cur.executemany(
+                            # "UPDATE operators_vote_records SET score_win = score_win + ? WHERE operator_id = ?", # 没必要设计两层缓存
+                            "UPDATE operators_vote_records SET score_win = ? WHERE operator_id = ?",
+                            win_update_list,
+                        )
+                    if lose_update_list:
+                        cur.executemany(
+                            "UPDATE operators_vote_records SET score_lose = ? WHERE operator_id = ?",
+                            lose_update_list,
+                        )
+    except sqlite3.Error as e:
+        print(f"An error occurred: {e}")
+        # TODO: 其他处理
