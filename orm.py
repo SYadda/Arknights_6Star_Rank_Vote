@@ -1,6 +1,16 @@
 from peewee import *
 from playhouse.pool import PooledSqliteDatabase, PooledCSqliteExtDatabase
+import sqlite3
 import datetime
+from config import Config
+from contextlib import closing
+from collections import OrderedDict
+from threading import Lock
+
+operators_id_dict = Config.DICT_NAME
+operators_id_dict_length = len(operators_id_dict)
+
+archive_db = PooledSqliteDatabase("archive.db", max_connections=32, stale_timeout=300)
 operators_vote_records_db = PooledSqliteDatabase(
     Config.OPERATORS_VOTE_RECORDS_DB_URL,
     max_connections=Config.OPERATORS_VOTE_RECORDS_DB_MAX_CONNECTION,
@@ -8,13 +18,22 @@ operators_vote_records_db = PooledSqliteDatabase(
     pragmas={"journal_mode": "wal", "synchronous": "NORMAL"},
 )
 
+class Archive(Model):
     key = CharField(primary_key=True)
-    data = TextField(null = True)
-    vote_times = IntegerField(null = True)
-    created_at = DateTimeField(formats='%Y-%m-%d %H:%M:%S', default=datetime.datetime.now)
-    updated_at = DateTimeField(formats='%Y-%m-%d %H:%M:%S', default=datetime.datetime.now)
-    shared_link = CharField(null = True)
+    data = TextField(null=True)
+    vote_times = IntegerField(null=True)
+    created_at = DateTimeField(
+        formats="%Y-%m-%d %H:%M:%S", default=datetime.datetime.now
+    )
+    updated_at = DateTimeField(
+        formats="%Y-%m-%d %H:%M:%S", default=datetime.datetime.now
+    )
+    shared_link = CharField(null=True)
     ip = CharField()
+
+    class Meta:
+        database = archive_db
+        db_table = "archive"
 
 class OperatorsVoteRecords(Model):
     operator_id = IntegerField(null=False, primary_key=True)
