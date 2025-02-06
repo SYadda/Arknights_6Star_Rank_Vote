@@ -91,6 +91,8 @@ def save_score():
     code = request.args.get('code')
     if not win_name or not lose_name or not code:
         return '', 400
+    if win_name not in operators_id_dict or lose_name not in operators_id_dict:
+        return '', 400
     vrf = verify_code(code, win_name, lose_name)
     if vrf:
         win_operator_id = operators_id_dict[win_name]
@@ -117,7 +119,7 @@ def view_final_order():
     final_rate = ['%.1f'%_ + ' %' for _ in final_rate]
     return jsonify({'name': final_name, 'rate': final_rate, 'score': final_score, 'count': '已收集数据 ' + '%.2f'%(sum(lst_win_score)) + ' 条'})
 
-
+# 页面
 if app.debug:
     # 为了兼容历史版本
     @app.route('/origin', methods=['GET'])
@@ -223,8 +225,6 @@ def verify_ip():
         return 1
 
 def verify_code(code, win_name, lose_name):
-    if win_name not in operators_id_dict or lose_name not in operators_id_dict:
-        return 0
     # code不对，请求非法，verify() == 0
     # code对，此ip投票 <= 50 次，verify() == 1
     # code对，此ip投票 > 50 次，每票权重降为0.01票，verify() == 0.01
