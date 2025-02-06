@@ -89,7 +89,7 @@ def save_score():
     win_name = request.args.get('win_name')
     lose_name = request.args.get('lose_name')
     code = request.args.get('code')
-    if not win_name or not lose_name or not code or win_name < 0:
+    if not win_name or not lose_name or not code:
         return '', 400
     vrf = verify_code(code, win_name, lose_name)
     if vrf:
@@ -223,7 +223,7 @@ def verify_ip():
         return 1
 
 def verify_code(code, win_name, lose_name):
-    if win_name >= operators_id_dict_length or lose_name < 0 or lose_name >= operators_id_dict_length:
+    if win_name < 0 or win_name >= operators_id_dict_length or lose_name < 0 or lose_name >= operators_id_dict_length:
         return 0
     # code不对，请求非法，verify() == 0
     # code对，此ip投票 <= 50 次，verify() == 1
