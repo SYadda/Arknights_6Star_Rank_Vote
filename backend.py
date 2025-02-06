@@ -86,10 +86,15 @@ def save_score():
      # code不对，请求非法，verify() == 0
      # code对，此ip投票 <= 50 次，verify() == 1
      # code对，此ip投票 > 50 次，每票权重降为0.01票，verify() == 0.01
-    vrf = verify_code()
+    win_name = request.args.get('win_name')
+    lose_name = request.args.get('lose_name')
+    code = request.args.get('code')
+    if not win_name or not lose_name or not code or win_name < 0:
+        return '', 400
+    vrf = verify_code(code, win_name, lose_name)
     if vrf:
-        win_operator_id = operators_id_dict[request.args.get('win_name')]
-        lose_operator_id = operators_id_dict[request.args.get('lose_name')]
+        win_operator_id = operators_id_dict[win_name]
+        lose_operator_id = operators_id_dict[lose_name]
         with mem_db.lock_score_win[win_operator_id]:
             mem_db.score_win[win_operator_id] += vrf
         with mem_db.lock_score_lose[lose_operator_id]:
@@ -217,7 +222,9 @@ def verify_ip():
             pickle.dump(ip_dict, f)
         return 1
 
-def verify_code():
+def verify_code(code, win_name, lose_name):
+    if win_name >= operators_id_dict_length or lose_name < 0 or lose_name >= operators_id_dict_length:
+        return 0
     # code不对，请求非法，verify() == 0
     # code对，此ip投票 <= 50 次，verify() == 1
     # code对，此ip投票 > 50 次，每票权重降为0.01票，verify() == 0.01
