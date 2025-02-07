@@ -279,16 +279,21 @@ function new_compare() {
 
 //上传本次比较结果
 //http方法: POST
-//接口: safescore
-//供给参数:win_name, lose_name
+//接口: save_score
+//供给body: win_name, lose_name, code
 function save_score(win_name, lose_name) {
     hero_dict.get(win_name).win();
     hero_dict.get(lose_name).lose();
     vote_times++;
     flush_self();
     xhr = new XMLHttpRequest();
-    xhr.open('POST', `${SERVER_ADDRESS}/save_score?win_name=${win_name}&lose_name=${lose_name}&code=${code}`, true);
-    xhr.send();
+    xhr.open('POST', `${SERVER_ADDRESS}/save_score`, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify({
+        win_name: win_name,
+        lose_name: lose_name,
+        code: code
+    }));
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {

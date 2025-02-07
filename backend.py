@@ -95,14 +95,19 @@ def save_score():
      # code不对，请求非法，verify() == 0
      # code对，此ip投票 <= 50 次，verify() == 1
      # code对，此ip投票 > 50 次，每票权重降为0.01票，verify() == 0.01
-    win_name = request.args.get('win_name')
-    lose_name = request.args.get('lose_name')
-    code = request.args.get('code')
+    if not request.is_json:
+        return '', 400
+    win_name = request.get_json().get('win_name', None) # request.args.get('win_name')
+    lose_name = request.get_json().get('lose_name', None) # request.args.get('lose_name')
+    code = request.get_json().get('code', None) # request.args.get('code')
+    
     if not win_name or not lose_name or not code:
         return '', 400
     if win_name not in operators_id_dict or lose_name not in operators_id_dict:
         return '', 400
     vrf = verify_code(code, win_name, lose_name)
+    if vrf is None:
+        return '', 400
     if vrf:
         win_operator_id = operators_id_dict[win_name]
         lose_operator_id = operators_id_dict[lose_name]
@@ -238,6 +243,7 @@ def verify_code(code, win_name, lose_name):
         set_code.remove(code)
         return verify_ip()
     else:
+        app.logger.info(f"verify_code fail. code={code}")
         return 0
 
 # 启动调度器
