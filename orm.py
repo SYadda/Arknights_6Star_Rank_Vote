@@ -1,12 +1,12 @@
-from peewee import *
-from playhouse.pool import PooledSqliteDatabase, PooledCSqliteExtDatabase
-import sqlite3
 import datetime
+from peewee import Model, CharField, IntegerField, FloatField, DateTimeField, TextField
+from playhouse.pool import PooledSqliteDatabase, PooledCSqliteExtDatabase
 from config import Config
-from contextlib import closing
-from collections import OrderedDict
 from threading import Lock
-
+from model import VoteRecordDB
+from typing import List, Tuple
+from collections import OrderedDict
+from flask import current_app
 operators_id_dict = Config.DICT_NAME
 operators_id_dict_length = len(operators_id_dict)
 
@@ -45,15 +45,6 @@ class OperatorsVoteRecords(Model):
         db_table = "operators_vote_records"
 
 
-# TODO: 可以用pydantic优化一下
-class MemoryDB(object):
-    def __init__(self, score_win, score_lose, lock_score_win, lock_score_lose):
-        self.score_win: OrderedDict = score_win
-        self.score_lose: OrderedDict = score_lose
-        self.lock_score_win: list = lock_score_win
-        self.lock_score_lose: list = lock_score_lose
-
-
 def DB_Init():
     # archive_db
     archive_db.connect()
@@ -65,39 +56,35 @@ def DB_Init():
 
     # TODO: replace to redis, sqlite(memory mode) or any other memory db...
     # 全局投票数据（内存），反正就几百个浮点数
-    mem_db = MemoryDB(
-        OrderedDict((id, 1) for id in range(operators_id_dict_length)),
-        OrderedDict((id, 1) for id in range(operators_id_dict_length)),
-        [Lock() for _ in range(operators_id_dict_length)],
-        [Lock() for _ in range(operators_id_dict_length)],
+    mem_db = VoteRecordDB(
+        score_win = OrderedDict((id, 1) for id in range(operators_id_dict_length)),
+        score_lose = OrderedDict((id, 1) for id in range(operators_id_dict_length)),
+        lock_score_win = [Lock() for _ in range(operators_id_dict_length)],
+        lock_score_lose = [Lock() for _ in range(operators_id_dict_length)],
     )
 
     with operators_vote_records_db.atomic():
+        # 获取所有已存在的记录
+        existing_records = {record.operator_id: record for record in OperatorsVoteRecords.select()}
+        # 准备要插入的新记录
+        new_records = [OperatorsVoteRecords(operator_id=i) for i in range(len(Config.DICT_NAME)) if i not in existing_records]
+        # 批量插入新记录
+        if new_records:
+            OperatorsVoteRecords.bulk_create(new_records)
+        # 更新 mem_db
+        all_records = {**existing_records, **{record.operator_id: record for record in new_records}}
         for i in range(len(Config.DICT_NAME)):
-            OperatorsVoteRecords_i, _ = OperatorsVoteRecords.get_or_create(
-                operator_id=i, defaults={"score_win": 1, "score_lose": 1}
-            )
-            mem_db.score_win[i] = OperatorsVoteRecords_i.score_win
-            mem_db.score_lose[i] = OperatorsVoteRecords_i.score_lose
+            mem_db.score_win[i] = all_records[i].score_win
+            mem_db.score_lose[i] = all_records[i].score_lose
     return mem_db
 
-# TODO: 用pydantic写个update_list的Model
-def dump_vote_records(win_update_list, lose_update_list):
+def dump_vote_records(win_update_list: List[Tuple[float, int]], lose_update_list: List[Tuple[float, int]]):
     try:
-        with closing(sqlite3.connect("operators_vote_records.db")) as conn:
-            with conn:
-                with closing(conn.cursor()) as cur:
-                    if win_update_list:
-                        cur.executemany(
-                            # "UPDATE operators_vote_records SET score_win = score_win + ? WHERE operator_id = ?", # 没必要设计两层缓存
-                            "UPDATE operators_vote_records SET score_win = ? WHERE operator_id = ?",
-                            win_update_list,
-                        )
-                    if lose_update_list:
-                        cur.executemany(
-                            "UPDATE operators_vote_records SET score_lose = ? WHERE operator_id = ?",
-                            lose_update_list,
-                        )
-    except sqlite3.Error as e:
-        print(f"An error occurred: {e}")
+        win_update_instances = [OperatorsVoteRecords(operator_id=id, score_win=score) for score, id in win_update_list]
+        lose_update_instances = [OperatorsVoteRecords(operator_id=id, score_lose=score) for score, id in lose_update_list]
+        with operators_vote_records_db.atomic():
+            OperatorsVoteRecords.bulk_update(win_update_instances, fields=["score_win"])
+            OperatorsVoteRecords.bulk_update(lose_update_instances, fields=["score_lose"])
+    except Exception as e:
+        current_app.logger.error(f"An error occurred when dump_vote_records: {e}")
         # TODO: 其他处理

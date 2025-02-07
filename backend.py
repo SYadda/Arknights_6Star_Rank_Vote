@@ -11,7 +11,8 @@ from flask_limiter import Limiter
 from apscheduler.schedulers.background import BackgroundScheduler
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor
-from orm import MemoryDB, Archive, DB_Init, dump_vote_records
+from orm import Archive, DB_Init, dump_vote_records
+from model import VoteRecordDB
 from utils import ThreadSafeOrderedDict, get_client_ip
 import atexit
 
