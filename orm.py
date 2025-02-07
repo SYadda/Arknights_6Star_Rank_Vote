@@ -10,7 +10,7 @@ from threading import Lock
 operators_id_dict = Config.DICT_NAME
 operators_id_dict_length = len(operators_id_dict)
 
-archive_db = PooledSqliteDatabase("archive.db", max_connections=32, stale_timeout=300)
+archive_db = PooledSqliteDatabase(Config.ARCHIVE_DB_URL, max_connections=Config.ARCHIVE_DB_MAX_CONNECTION, stale_timeout=Config.ARCHIVE_DB_TIMEOUT)
 operators_vote_records_db = PooledSqliteDatabase(
     Config.OPERATORS_VOTE_RECORDS_DB_URL,
     max_connections=Config.OPERATORS_VOTE_RECORDS_DB_MAX_CONNECTION,
