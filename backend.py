@@ -36,10 +36,8 @@ else:
 
 operators_id_dict = Config.DICT_NAME
 operators_id_dict_length = len(operators_id_dict)
+operators_name_list = list(operators_id_dict.keys())
 
-lst_name = list(operators_id_dict.keys())
-len_lst_name_1 = len(lst_name) - 1
-set_code = set()
 
 # 创建后台调度器实例
 scheduler = BackgroundScheduler()
@@ -81,6 +79,7 @@ def Memory_DB_Dump():
 def new_compare():
     # 由于本次投票开放时间不长，参与投票的六星干员从头到尾固定。
     # 为提升性能，取消了“之前抽取次数少的干员优先抽取”的功能，该功能可在1.0.4版本中找到。
+    len_lst_name_1 = operators_id_dict_length - 1
     a = random.randint(0, len_lst_name_1)
     b = random.randint(0, len_lst_name_1)
     while a == b:
@@ -125,7 +124,7 @@ def view_final_order():
     
     lst_rate = [100 * lst_win_score[_] / (lst_win_score[_] + lst_lose_score[_]) for _ in range(len(lst_win_score))]
     lst_score = [lst_win_score[_] - lst_lose_score[_] for _ in range(len(lst_win_score))]
-    dict_score = dict(zip(zip(lst_name, lst_score), lst_rate))
+    dict_score = dict(zip(zip(operators_name_list, lst_score), lst_rate))
 
     final_n_s, final_rate = zip(*sorted(dict_score.items(), key=lambda _: -_[1]))
     final_name, final_score = zip(*final_n_s)
