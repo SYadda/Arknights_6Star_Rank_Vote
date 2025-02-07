@@ -253,11 +253,11 @@ function close_or_view() {
 }
 
 //获取本次进行比较干员的头像
-//http方法: GET
+//http方法: POST
 //接口:new_compare
 function new_compare() {
     xhr = new XMLHttpRequest();
-    xhr.open('GET', `${SERVER_ADDRESS}/new_compare`, true);
+    xhr.open('POST', `${SERVER_ADDRESS}/new_compare`, true);
     xhr.send();
 
     xhr.onreadystatechange = function () {

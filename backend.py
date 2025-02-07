@@ -67,7 +67,7 @@ def Memory_DB_Dump():
     dump_vote_records(win_list, lose_list)
     app.logger.info("dump_vote_records fin.")
 
-@app.route('/new_compare', methods=['GET'])
+@app.route('/new_compare', methods=['POST'])
 @cross_origin()
 def new_compare():
     # 由于本次投票开放时间不长，参与投票的六星干员从头到尾固定。
@@ -76,8 +76,8 @@ def new_compare():
     b = random.randint(0, len_lst_name_1)
     while a == b:
         b = random.randint(0, len_lst_name_1)
-
-    return compare(a, b)
+    result = compare(a, b)
+    return result
 
 
 @app.route('/save_score', methods=['POST']) 
@@ -173,9 +173,14 @@ def sync():
     result = LZString.compressToUTF16(archive.data)
     return jsonify({'data': result, "vote_times": archive.vote_times, "updated_at": archive.updated_at})
 
+# 流量控制返回结果
+@app.errorhandler(429)
+def handle_rate_limit_exceeded(e):
+    return jsonify({"error": "请求频率超过限制", 'code':400}), 200
+
 def compare(a:int, b:int):
-    global set_code
-    code_random = random.randint(100, 799)
+    # 存在一致性问题，仍然不确保code_random会不会撞
+    code_random = uuid.uuid4().int
     code = code_random + a + b
     set_code.add(code)
 
