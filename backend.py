@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-# TODO: print -> app.logger / loguru
 import hashlib
 import hmac
 import random, pickle
@@ -16,31 +15,48 @@ from orm import MemoryDB, Archive, DB_Init, dump_vote_records
 from utils import ThreadSafeOrderedDict, get_client_ip
 import atexit
 
-mem_db = DB_Init()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
-
-# 限制用户访问流量
-limiter = Limiter(
-    key_func=get_client_ip,  # 根据请求的源IP地址来限制
-    default_limits=["5000 per day", "1000 per hour"]  # 默认限制: 每天5000次，每小时1000次
-)
-limiter.init_app(app)
 
 if app.debug:
     from config import DevelopmentConfig as Config
 else:
     from config import ProductionConfig as Config
+# web页面
+if app.debug:
+    # 为了兼容历史版本
+    @app.route('/origin', methods=['GET'])
+    @cross_origin()
+    def page_origin():
+        return render_template('page.html')
 
+    @app.route('/', methods=['GET'])
+    @cross_origin()
+    def page():
+        return render_template('page.html')
+else:
+    # 限制用户访问流量
+    limiter = Limiter(
+        key_func=get_client_ip,  # 根据请求的源IP地址来限制
+        default_limits=[f"{Config.IP_LIMITER_PER_DAY} per day", f"{Config.IP_LIMITER_PER_HOUR} per hour"]
+    )
+    limiter.init_app(app)
+    
+    @app.route('/', methods=['GET'])
+    @cross_origin()
+    def page():
+        return redirect('https://vote.ltsc.vip', code=302)
+# 创建后台调度器实例
+scheduler = BackgroundScheduler()
 
+# 全局变量
+mem_db:MemoryDB = DB_Init()
 operators_id_dict = Config.DICT_NAME
 operators_id_dict_length = len(operators_id_dict)
 operators_name_list = list(operators_id_dict.keys())
 
 
-# 创建后台调度器实例
-scheduler = BackgroundScheduler()
 
 # WARNING: 投票数据安全性不能保证，在进行写入数据库前不能确保数据的安全
 # 如果mem_db 非空，那么将mem_db的内容更新到数据库中
@@ -131,25 +147,6 @@ def view_final_order():
     final_score = ['%.2f'%_ for _ in final_score]
     final_rate = ['%.1f'%_ + ' %' for _ in final_rate]
     return jsonify({'name': final_name, 'rate': final_rate, 'score': final_score, 'count': '已收集数据 ' + '%.2f'%(sum(lst_win_score)) + ' 条'})
-
-# 页面
-if app.debug:
-    # 为了兼容历史版本
-    @app.route('/origin', methods=['GET'])
-    @cross_origin()
-    def page_origin():
-        return render_template('page.html')
-
-    @app.route('/', methods=['GET'])
-    @cross_origin()
-    def page():
-        return render_template('page.html')
-else:
-    @app.route('/', methods=['GET'])
-    @cross_origin()
-    def page():
-        return redirect('https://vote.ltsc.vip', code=302)
-
 
 @app.route('/upload', methods=['POST'])
 @cross_origin()
