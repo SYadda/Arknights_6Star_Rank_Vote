@@ -14,6 +14,8 @@ from threading import Lock
 from concurrent.futures import ThreadPoolExecutor
 from orm import MemoryDB, Archive, DB_Init, dump_vote_records
 from utils import ThreadSafeOrderedDict, get_client_ip
+import atexit
+
 mem_db = DB_Init()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
@@ -240,6 +242,15 @@ def verify_code(code, win_name, lose_name):
 
 # 启动调度器
 scheduler.start()
+
+# 处理termination信号
+def handle_exit_signal():
+    app.logger.info("Received termination signal. Dumping vote records and shutting down.")
+    Memory_DB_Dump()
+    scheduler.shutdown()
+    app.logger.info("Scheduler shut down. Exiting application.")
+    exit(0)
+atexit.register(handle_exit_signal)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=9876)
