@@ -4,10 +4,11 @@ import hashlib
 import hmac
 import random, pickle
 import time
-import json
+import uuid
 from lzpy import LZString
 from flask import Flask, redirect, url_for, render_template, request, jsonify
 from flask_cors import CORS, cross_origin
+from flask_limiter import Limiter
 from apscheduler.schedulers.background import BackgroundScheduler
 from threading import Lock
 from concurrent.futures import ThreadPoolExecutor
@@ -17,7 +18,13 @@ mem_db = DB_Init()
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
-# app.debug = True
+
+# 限制用户访问流量
+limiter = Limiter(
+    key_func=get_client_ip,  # 根据请求的源IP地址来限制
+    default_limits=["5000 per day", "1000 per hour"]  # 默认限制: 每天5000次，每小时1000次
+)
+limiter.init_app(app)
 
 if app.debug:
     from config import DevelopmentConfig as Config
@@ -186,16 +193,6 @@ def compare(a:int, b:int):
 
     return lst_name[a] + ' ' + lst_name[b] + ' ' + str(code_random)
 
-def get_client_ip():
-    try:
-        real_ip = request.headers.get('X_FORWARDED_FOR', type=str)
-        client_ip = real_ip.split(",")[0]
-    except:
-        try:
-            client_ip = request.headers.get('X-Real-IP', type=str)
-        except:
-            client_ip = request.remote_addr
-    return client_ip
 
 def verify_ip():
     # code不对，请求非法，verify() == 0
