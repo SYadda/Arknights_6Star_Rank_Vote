@@ -52,11 +52,16 @@ else:
 scheduler = BackgroundScheduler()
 
 # 全局变量
-mem_db:MemoryDB = DB_Init()
+mem_db:VoteRecordDB = DB_Init()
 operators_id_dict = Config.DICT_NAME
 operators_id_dict_length = len(operators_id_dict)
 operators_name_list = list(operators_id_dict.keys())
 
+# 存储选票id
+# TODO: 没有过期时间，很容易爆内存的，而且不安全
+# TODO: Lock -> MQ
+ballot_id_set = set()
+ballot_id_set_Lock = Lock()
 
 
 # WARNING: 投票数据安全性不能保证，在进行写入数据库前不能确保数据的安全
@@ -66,9 +71,7 @@ def _process_score(id, scores, locks):
     # with locks[id]: # 不需要强一致性
     tmp_val = scores[id]
     # ...
-    if tmp_val != 0:
-        return (tmp_val, id)
-    return None
+    return (tmp_val, id)
 
 def _process_scores_concurrently(scores, locks):
     result_list = []
@@ -123,8 +126,8 @@ def save_score():
         return '', 400
     vrf = verify_code(code, win_name, lose_name)
     if vrf is None:
-        return '', 400
-    if vrf:
+        return '', 429
+    elif vrf:
         win_operator_id = operators_id_dict[win_name]
         lose_operator_id = operators_id_dict[lose_name]
         with mem_db.lock_score_win[win_operator_id]:
@@ -193,9 +196,12 @@ def compare(a:int, b:int):
     # 存在一致性问题，仍然不确保code_random会不会撞
     code_random = uuid.uuid4().int
     code = code_random + a + b
-    set_code.add(code)
-
-    return lst_name[a] + ' ' + lst_name[b] + ' ' + str(code_random)
+    if ballot_id_set_Lock.acquire(timeout=4):
+        ballot_id_set.add(code)
+        ballot_id_set_Lock.release()
+    else:
+        app.logger.error("ballot_id_set.add 超时")
+    return operators_name_list[a] + ' ' + operators_name_list[b] + ' ' + str(code_random)
 
 
 def verify_ip():
@@ -230,19 +236,24 @@ def verify_ip():
             pickle.dump(ip_dict, f)
         return 1
 
+# TODO: Lock -> MQ
 def verify_code(code, win_name, lose_name):
     # code不对，请求非法，verify() == 0
     # code对，此ip投票 <= 50 次，verify() == 1
     # code对，此ip投票 > 50 次，每票权重降为0.01票，verify() == 0.01
-    global set_code
     code = int(code) + operators_id_dict[win_name] + operators_id_dict[lose_name]
-    if code in set_code:
-        set_code.remove(code)
-        return verify_ip()
+    if ballot_id_set_Lock.acquire(timeout=5):
+        if code in ballot_id_set:
+            ballot_id_set.remove(code)
+            ballot_id_set_Lock.release()
+            return verify_ip()
+        else:
+            ballot_id_set_Lock.release()
+            return 0
     else:
-        app.logger.info(f"verify_code fail. code={code}")
-        return 0
-
+        app.logger.info(f"verify_code fail. ballot_id_set_Lock acquire fail.")
+        return None
+    
 # 启动调度器
 scheduler.start()
 
