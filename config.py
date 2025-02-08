@@ -23,7 +23,7 @@ class Config(object):
     
 
 class ProductionConfig(Config):
-    SERVER_ADDRESS = "http://localhost:9876"
+    SERVER_ADDRESS = "https://vote.ltsc.vip"
     
     # IP limit
     IP_LIMITER_PER_DAY = 50000
