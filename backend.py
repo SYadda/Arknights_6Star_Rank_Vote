@@ -20,31 +20,21 @@ import atexit
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
 
-# app.debug = True
+# 1.4.0 服务器逻辑修改，唯一的服务器就是localhost
+from config import ProductionConfig as Config
 
-if app.debug:
-    from config import DevelopmentConfig as Config
-else:
-    from config import ProductionConfig as Config
-# web页面
-if app.debug:
-    # 为了兼容历史版本
-    @app.route('/', methods=['GET'])
-    @cross_origin()
-    def page():
-        return render_template('page.html')
-else:
-    # 限制用户访问流量
-    limiter = Limiter(
-        key_func=get_client_ip,  # 根据请求的源IP地址来限制
-        default_limits=[f"{Config.IP_LIMITER_PER_DAY} per day", f"{Config.IP_LIMITER_PER_HOUR} per hour"]
-    )
-    limiter.init_app(app)
-    
-    @app.route('/', methods=['GET'])
-    @cross_origin()
-    def page():
-        return redirect('https://vote.ltsc.vip', code=302)
+# 限制用户访问流量
+limiter = Limiter(
+    key_func=get_client_ip,  # 根据请求的源IP地址来限制
+    default_limits=[f"{Config.IP_LIMITER_PER_DAY} per day", f"{Config.IP_LIMITER_PER_HOUR} per hour"]
+)
+limiter.init_app(app)
+
+@app.route('/', methods=['GET'])
+@cross_origin()
+def page():
+    return render_template('page.html')
+
 # 创建后台调度器实例
 scheduler = BackgroundScheduler()
 
