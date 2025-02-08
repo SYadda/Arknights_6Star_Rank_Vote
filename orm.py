@@ -1,3 +1,4 @@
+import os
 import datetime
 from peewee import Model, CharField, IntegerField, FloatField, DateTimeField, TextField
 from playhouse.pool import PooledSqliteDatabase, PooledCSqliteExtDatabase
@@ -9,6 +10,11 @@ from collections import OrderedDict
 from flask import current_app
 operators_id_dict = Config.DICT_NAME
 operators_id_dict_length = len(operators_id_dict)
+
+# 创建SQLite存储目录
+dirname = os.path.dirname(Config.ARCHIVE_DB_URL)
+if not os.path.exists(dirname):
+    os.makedirs(dirname)
 
 archive_db = PooledSqliteDatabase(Config.ARCHIVE_DB_URL, max_connections=Config.ARCHIVE_DB_MAX_CONNECTION, stale_timeout=Config.ARCHIVE_DB_TIMEOUT)
 operators_vote_records_db = PooledSqliteDatabase(
