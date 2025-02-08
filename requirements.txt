@@ -1,2 +1,6 @@
 Flask
 Flask-Cors
+peewee
+APScheduler
+locust
+Flask-Limiter
