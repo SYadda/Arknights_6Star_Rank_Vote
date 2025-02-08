@@ -20,6 +20,8 @@ import atexit
 app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
 
+# app.debug = True
+
 if app.debug:
     from config import DevelopmentConfig as Config
 else:
@@ -27,11 +29,6 @@ else:
 # web页面
 if app.debug:
     # 为了兼容历史版本
-    @app.route('/origin', methods=['GET'])
-    @cross_origin()
-    def page_origin():
-        return render_template('page.html')
-
     @app.route('/', methods=['GET'])
     @cross_origin()
     def page():
