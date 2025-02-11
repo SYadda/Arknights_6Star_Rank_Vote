@@ -72,13 +72,13 @@ def _process_scores_concurrently(scores, locks):
 
 # 添加作业到调度器，每隔Config.OPERATORS_VOTE_RECORDS_DB_DUMP_INTERVAL分钟执行一次Memory_DB_Dump函数
 # 持久化投票分数到OPERATORS_VOTE_RECORDS_DB
+# WARNING: 此处出现竞态，不过确保最终一致就行，没必要强一致，所以就不加锁了
 @scheduler.scheduled_job('interval', minutes=Config.OPERATORS_VOTE_RECORDS_DB_DUMP_INTERVAL)
 def Memory_DB_Dump():
-    global mem_db
     win_list =  _process_scores_concurrently(mem_db.score_win, mem_db.lock_score_win)
     lose_list = _process_scores_concurrently(mem_db.score_lose, mem_db.lock_score_lose)
     app.logger.info("dump_vote_records start.")
-    dump_vote_records(win_list, lose_list)
+    dump_vote_records(win_list, lose_list, mem_db.operators_vote_matrix)
     app.logger.info("dump_vote_records fin.")
 
 @app.route('/new_compare', methods=['POST'])
@@ -119,13 +119,19 @@ def save_score():
         lose_operator_id = operators_id_dict[lose_name]
         with mem_db.lock_score_win[win_operator_id]:
             mem_db.score_win[win_operator_id] += vrf
+            mem_db.operators_vote_matrix[win_operator_id][lose_operator_id] += vrf
         with mem_db.lock_score_lose[lose_operator_id]:
             mem_db.score_lose[lose_operator_id] += vrf
+            mem_db.operators_vote_matrix[lose_operator_id][win_operator_id] -= vrf
     return 'success'
 
 @app.route('/view_final_order', methods=['GET'])
 @cross_origin()
 def view_final_order():
+    # lst_rate 计算胜率，公式是 (胜利分数 / (胜利分数 + 失败分数)) * 100
+    # lst_score 计算净胜分，公式是 胜利分数 - 失败分数。
+    # TODO: 简化代码逻辑，把sort丢到前端去
+    # TODO: 修复除以0的bug
     lst_win_score = list(mem_db.score_win.values())
     lst_lose_score = list(mem_db.score_lose.values())
     
@@ -173,6 +179,13 @@ def sync():
         return jsonify({'error': '秘钥不存在'})
     result = LZString.compressToUTF16(archive.data)
     return jsonify({'data': result, "vote_times": archive.vote_times, "updated_at": archive.updated_at})
+
+@app.route('/get_operators_1v1_matrix', methods=['POST'])
+@cross_origin()
+@limiter.limit("600 per hour")
+def get_operators_1v1_matrix():
+    # 没必要强一致性，最终一致就行
+    return jsonify({"operators_1v1_matrix": mem_db.operators_vote_matrix})
 
 # 流量控制返回结果
 @app.errorhandler(429)
