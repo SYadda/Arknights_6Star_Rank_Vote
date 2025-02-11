@@ -1,4 +1,5 @@
 import os
+import json
 import datetime
 from peewee import Model, CharField, IntegerField, FloatField, DateTimeField, TextField
 from playhouse.pool import PooledSqliteDatabase, PooledCSqliteExtDatabase
@@ -13,6 +14,9 @@ operators_id_dict_length = len(operators_id_dict)
 
 # 创建SQLite存储目录
 dirname = os.path.dirname(Config.ARCHIVE_DB_URL)
+if not os.path.exists(dirname):
+    os.makedirs(dirname)
+dirname = os.path.dirname(Config.OPERATORS_VOTE_RECORDS_DB_URL)
 if not os.path.exists(dirname):
     os.makedirs(dirname)
 
@@ -41,6 +45,7 @@ class Archive(Model):
         database = archive_db
         db_table = "archive"
 
+# TODO: 初始化为1的操作是错的，以前的代码为了不让'/view_final_order'接口报错
 class OperatorsVoteRecords(Model):
     operator_id = IntegerField(null=False, primary_key=True)
     score_win = FloatField(null=False, default=1)
@@ -67,8 +72,10 @@ def DB_Init():
         score_lose = OrderedDict((id, 1) for id in range(operators_id_dict_length)),
         lock_score_win = [Lock() for _ in range(operators_id_dict_length)],
         lock_score_lose = [Lock() for _ in range(operators_id_dict_length)],
+        operators_vote_matrix = [[0 for _ in range(operators_id_dict_length)] for _ in range(operators_id_dict_length)] # 才存储106*106个数据，查询/赋值速度还真不一定比numpy慢
     )
 
+    # 加载SQLite的投票数据到内存
     with operators_vote_records_db.atomic():
         # 获取所有已存在的记录
         existing_records = {record.operator_id: record for record in OperatorsVoteRecords.select()}
@@ -82,15 +89,31 @@ def DB_Init():
         for i in range(len(Config.DICT_NAME)):
             mem_db.score_win[i] = all_records[i].score_win
             mem_db.score_lose[i] = all_records[i].score_lose
+    
+    # 加载干员对位击杀矩阵
+    # TODO: 数据持久化到sqlite，而不是存储到文件
+    #   比如：'''CREATE TABLE IF NOT EXISTS matrix_table (operator_id INTEGER PRIMARY KEY, key TEXT, matrix_data TEXT)'''
+    if os.path.exists(Config.OPERATORS_VOTE_MATRIX_PATH):
+        with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'r', encoding="utf8") as f:
+            mem_db.operators_vote_matrix = json.load(f)
+    else:
+        if not os.path.exists(os.path.dirname(Config.OPERATORS_VOTE_MATRIX_PATH)):
+            os.makedirs(os.path.dirname(Config.OPERATORS_VOTE_MATRIX_PATH))
+        with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'w', encoding="utf8") as f:
+            json.dump(mem_db.operators_vote_matrix, f)
     return mem_db
 
-def dump_vote_records(win_update_list: List[Tuple[float, int]], lose_update_list: List[Tuple[float, int]]):
+def dump_vote_records(win_update_list: List[Tuple[float, int]], lose_update_list: List[Tuple[float, int]], operator_1v1_matrix: List[List]):
     try:
+        # 存储分数记录
         win_update_instances = [OperatorsVoteRecords(operator_id=id, score_win=score) for score, id in win_update_list]
         lose_update_instances = [OperatorsVoteRecords(operator_id=id, score_lose=score) for score, id in lose_update_list]
         with operators_vote_records_db.atomic():
             OperatorsVoteRecords.bulk_update(win_update_instances, fields=["score_win"])
             OperatorsVoteRecords.bulk_update(lose_update_instances, fields=["score_lose"])
+        # 存储干员对位记录
+        with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'w') as f:
+            json.dump(operator_1v1_matrix, f)
     except Exception as e:
         current_app.logger.error(f"An error occurred when dump_vote_records: {e}")
         # TODO: 其他处理

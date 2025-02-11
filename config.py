@@ -21,6 +21,8 @@ class Config(object):
     OPERATORS_VOTE_RECORDS_DB_STABLE_TIMEOUT = 300  # second
     OPERATORS_VOTE_RECORDS_DB_DUMP_INTERVAL = 10  # min
     
+    # OPERATOR VOTE MATRIX
+    OPERATORS_VOTE_MATRIX_PATH = "./db/operator_vote_matrix.json"
 
 class ProductionConfig(Config):
     SERVER_ADDRESS = "https://vote.ltsc.vip"
