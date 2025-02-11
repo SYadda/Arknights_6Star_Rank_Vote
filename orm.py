@@ -94,12 +94,12 @@ def DB_Init():
     # TODO: 数据持久化到sqlite，而不是存储到文件
     #   比如：'''CREATE TABLE IF NOT EXISTS matrix_table (operator_id INTEGER PRIMARY KEY, key TEXT, matrix_data TEXT)'''
     if os.path.exists(Config.OPERATORS_VOTE_MATRIX_PATH):
-        with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'r') as f:
+        with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'r', encoding="utf8") as f:
             mem_db.operators_vote_matrix = json.load(f)
     else:
         if not os.path.exists(os.path.dirname(Config.OPERATORS_VOTE_MATRIX_PATH)):
             os.makedirs(os.path.dirname(Config.OPERATORS_VOTE_MATRIX_PATH))
-        with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'w') as f:
+        with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'w', encoding="utf8") as f:
             json.dump(mem_db.operators_vote_matrix, f)
     return mem_db
 

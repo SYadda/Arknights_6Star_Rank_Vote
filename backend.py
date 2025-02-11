@@ -62,12 +62,11 @@ def _process_score(id, scores, locks):
 
 def _process_scores_concurrently(scores, locks):
     result_list = []
-    with ThreadPoolExecutor() as executor:
-        futures = [executor.submit(_process_score, id, scores, locks) for id in range(len(locks))]
-        for future in futures:
-            result = future.result()
-            if result is not None:
-                result_list.append(result)
+    # 测试了一下，好像并行更慢，才106个数据确实没必要并发优化
+    for id in range(len(locks)):
+        result = _process_score(id, scores, locks)
+        if result is not None:
+            result_list.append(result)
     return result_list
 
 # 添加作业到调度器，每隔Config.OPERATORS_VOTE_RECORDS_DB_DUMP_INTERVAL分钟执行一次Memory_DB_Dump函数
@@ -263,7 +262,6 @@ def handle_exit_signal():
     Memory_DB_Dump()
     scheduler.shutdown()
     app.logger.info("Scheduler shut down. Exiting application.")
-    exit(0)
 atexit.register(handle_exit_signal)
 
 if __name__ == '__main__':
