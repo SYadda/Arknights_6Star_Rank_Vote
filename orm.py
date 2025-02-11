@@ -97,7 +97,8 @@ def DB_Init():
         with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'r') as f:
             mem_db.operators_vote_matrix = json.load(f)
     else:
-        os.makedirs(os.path.dirname(Config.OPERATORS_VOTE_MATRIX_PATH))
+        if not os.path.exists(os.path.dirname(Config.OPERATORS_VOTE_MATRIX_PATH)):
+            os.makedirs(os.path.dirname(Config.OPERATORS_VOTE_MATRIX_PATH))
         with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'w') as f:
             f.write('')
     return mem_db
