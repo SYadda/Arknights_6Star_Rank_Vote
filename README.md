@@ -36,6 +36,8 @@
 
    `flask --app backend.py run --debug --host=0.0.0.0 --port 9876`
 
+   （debug环境将导致关闭/重载应用时，数据库写入功能失效，详见[pr39](https://github.com/SYadda/Arknights_6Star_Rank_Vote/pull/39)）
+
 1. 用浏览器打开： http://127.0.0.1:9876
 
 ## 计分规则
