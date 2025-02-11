@@ -15,6 +15,9 @@ operators_id_dict_length = len(operators_id_dict)
 dirname = os.path.dirname(Config.ARCHIVE_DB_URL)
 if not os.path.exists(dirname):
     os.makedirs(dirname)
+dirname = os.path.dirname(Config.OPERATORS_VOTE_RECORDS_DB_URL)
+if not os.path.exists(dirname):
+    os.makedirs(dirname)
 
 archive_db = PooledSqliteDatabase(Config.ARCHIVE_DB_URL, max_connections=Config.ARCHIVE_DB_MAX_CONNECTION, stale_timeout=Config.ARCHIVE_DB_TIMEOUT)
 operators_vote_records_db = PooledSqliteDatabase(
