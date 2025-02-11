@@ -72,7 +72,7 @@ def DB_Init():
         score_lose = OrderedDict((id, 1) for id in range(operators_id_dict_length)),
         lock_score_win = [Lock() for _ in range(operators_id_dict_length)],
         lock_score_lose = [Lock() for _ in range(operators_id_dict_length)],
-        operators_vote_matrix = [[0 for _ in range(106)] for _ in range(106)] # 才存储106*106个数据，查询/赋值速度还真不一定比numpy慢
+        operators_vote_matrix = [[0 for _ in range(operators_id_dict_length)] for _ in range(operators_id_dict_length)] # 才存储106*106个数据，查询/赋值速度还真不一定比numpy慢
     )
 
     # 加载SQLite的投票数据到内存
@@ -100,7 +100,7 @@ def DB_Init():
         if not os.path.exists(os.path.dirname(Config.OPERATORS_VOTE_MATRIX_PATH)):
             os.makedirs(os.path.dirname(Config.OPERATORS_VOTE_MATRIX_PATH))
         with open(Config.OPERATORS_VOTE_MATRIX_PATH, 'w') as f:
-            f.write('')
+            json.dump(mem_db.operators_vote_matrix, f)
     return mem_db
 
 def dump_vote_records(win_update_list: List[Tuple[float, int]], lose_update_list: List[Tuple[float, int]], operator_1v1_matrix: List[List]):
