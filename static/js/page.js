@@ -531,3 +531,26 @@ function formatTime(timestamp) {
 
 //     reader.readAsText(file);
 // }
+
+// 获取干员1v1投票矩阵
+// [POST]
+// 接口:/get_operators_1v1_matrix
+async function get_operators_1v1_matrix() {
+    xhr = new XMLHttpRequest();
+    xhr.open('POST', `${SERVER_ADDRESS}/get_operators_1v1_matrix`, true);
+    xhr.send();
+
+    return new Promise((resolve, reject) => {
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    let operator_matrix = JSON.parse(xhr.responseText);
+                    console.log(operator_matrix);
+                    resolve(operator_matrix);
+                } else {
+                    reject(new Error('请求失败'));
+                }
+            }
+        };
+    })
+}
