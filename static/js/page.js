@@ -621,3 +621,15 @@ function clear_operators_1v1_matrix(){
     targetData = transferData.target
     tableComponent.updateData([], []);
 }
+
+// 血狼打灰歌
+const audio = document.getElementById('audio');
+const playPauseBtn = document.getElementById('playPauseBtn');
+
+playPauseBtn.addEventListener('click', () => {
+    if (audio.paused) {
+        audio.play();
+    } else {
+        audio.pause();
+    }
+});
