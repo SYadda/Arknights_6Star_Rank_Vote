@@ -8,6 +8,8 @@
     <link rel="stylesheet" type="text/css" href="../static/css/base.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/compare.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/transfer.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/table.css" />
+    
 </head>
 
 <body onload="new_compare();">
@@ -168,6 +170,9 @@
         <!-- 不可见数据部分，在获取1v1投票矩阵后展示 -->
         <div id="vote_1v1_matrix_container" class="footer">
             <div id="operators-1v1-transfer"></div>
+            <input class="operators-1v1-button" type="button" onclick="calculate_operators_1v1_matrix()" value="查看所选对位数据" />
+            <input class="operators-1v1-button" type="button" onclick="clear_operators_1v1_matrix()" value="清空全部数据" />
+            <div id="operators-1v1-table"></div>
         </div>
 
         <img id="mouse_follower" src='../static/img/夕trans.gif' alt="夕trans">
@@ -312,6 +317,7 @@
     <script type="text/javascript" src="../static/js/geostats.min.js"></script>
     <script type="text/javascript" src="../static/js/palette.min.js"></script>
     <script type="text/javascript" src="../static/js/transfer.js"></script>
+    <script type="text/javascript" src="../static/js/table.js"></script>
     <script type="text/javascript" src="../static/js/page.js"></script>
 </body>
 
