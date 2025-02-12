@@ -1,0 +1,101 @@
+[project]
+name = "arknights-6star-rank-vote"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "advanced-alchemy>=0.30.3",
+    "aiosqlite>=0.21.0",
+    "apscheduler>=3.11.0",
+    "cython>=3.0.12",
+    "litestar[jinja,standard]>=2.14.0",
+    "loguru>=0.7.3",
+    "redis[hiredis]>=5.2.1",
+    "rtoml>=0.12.0",
+    "setuptools>=75.8.0",
+    "sqlalchemy[asyncio]>=2.0.38",
+]
+
+[dependency-groups]
+test = [
+    "pytest",
+    "pytest-asyncio"
+]
+
+[tool.pytest.ini_options]
+addopts = "--strict-markers --strict-config --dist=loadgroup -m 'not server_integration'"
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+
+[tool.pyright]
+disableBytesTypePromotions = true
+typeCheckingMode = "standard"
+include = ["app", "tests"]
+pythonVersion = "3.12"
+
+[tool.ruff]
+include = [
+  "app",
+  "tests",
+  "pyproject.toml"
+]
+
+lint.select = [
+  "A", # flake8-builtins
+  "B", # flake8-bugbear
+  "BLE", # flake8-blind-except
+  "C4", # flake8-comprehensions
+  "C90", # mccabe
+  "DJ", # flake8-django
+  "DTZ", # flake8-datetimez
+  "E", # pycodestyle errors
+  "ERA", # eradicate
+  "EXE", # flake8-executable
+  "F", # pyflakes
+  "G", # flake8-logging-format
+  "I", # isort
+  "ICN", # flake8-import-conventions
+  "ISC", # flake8-implicit-str-concat
+  "N", # pep8-naming
+  "PIE", # flake8-pie
+  "PLC", # pylint - convention
+  "PLE", # pylint - error
+  "PLW", # pylint - warning
+  "PTH", # flake8-use-pathlib
+  "Q", # flake8-quotes
+  "RET", # flake8-return
+  "RUF", # Ruff-specific rules
+  "S", # flake8-bandit
+  "SIM", # flake8-simplify
+  "T10", # flake8-debugger
+  "T20", # flake8-print
+  "TC", # flake8-type-checking
+  "TID", # flake8-tidy-imports
+  "UP", # pyupgrade
+  "W", # pycodestyle - warning
+  "YTT", # flake8-2020
+]
+lint.ignore = [
+  "A003", # flake8-builtins - class attribute {name} is shadowing a python builtin
+  "B010", # flake8-bugbear - do not call setattr with a constant attribute value
+  "E501", # pycodestyle line too long, handled by ruff format
+  "PLW2901", # pylint - for loop variable overwritten by assignment target
+  "RUF012", # Ruff-specific rule - annotated with classvar
+  "ISC001", # Ruff formatter incompatible
+  "CPY001", # ruff - copyright notice at the top of the file
+]
+
+line-length = 120
+src = ["app", "tests"]
+target-version = "py312"
+
+[tool.ruff.lint.isort]
+case-sensitive = true
+force-sort-within-sections = true
+extra-standard-library = ["typing_extensions"]
+combine-as-imports = true
+order-by-type = true
+relative-imports-order = "closest-to-furthest"
+section-order = ["future", "standard-library", "first-party", "third-party", "local-folder"]
