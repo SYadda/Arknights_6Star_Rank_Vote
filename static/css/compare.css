@@ -149,7 +149,7 @@ body {
 
 /* 比较核心中其他功能按钮设计 */
 .compare_block .function {
-    margin-top: 30px;
+    margin-top: 14.5px;
 }
 
 /* 比较核心中跳过按钮设计 */
@@ -355,4 +355,35 @@ body {
         transform: translateY(0); /* 最终位置：垂直方向不移动 */
         opacity: 1; /* 最终透明度为1 */
     }
+}
+
+
+/* 1v1 matrix */
+#vote_1v1_matrix_container {
+    display: none;
+    width: 80vw;
+    min-width: 723px;
+    overflow: auto;
+}
+
+#operators-1v1-transfer{
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.operators-1v1-button{
+    width: 200px;
+    font-size: 20px;
+    margin: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 5px 15px;
+    transition: all 0.5s ease;
+}
+
+.operators-1v1-button:hover {
+    background-color: #ccc;
 }

@@ -7,6 +7,9 @@
     <link rel="icon" type="image/x-icon" href="../static/img/favicon.ico">
     <link rel="stylesheet" type="text/css" href="../static/css/base.css" />
     <link rel="stylesheet" type="text/css" href="../static/css/compare.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/transfer.css" />
+    <link rel="stylesheet" type="text/css" href="../static/css/table.css" />
+    
 </head>
 
 <body onload="new_compare();">
@@ -22,7 +25,7 @@
                                 <div class="zh" id="left_png_name"></div>
                             </div>
                         </td>
-    
+
                         <!-- 比较核心区域 -->
                         <td>
                             <!-- 标题 -->
@@ -43,9 +46,12 @@
                                     <input class="result" id="self_rst_button" type="button" value="查看您的投票结果"
                                         onclick="view_self()">
                                 </div>
+                                <div class="function">
+                                    <input class="result" id="vote_1v1_matrix_trigger" type="button" value="查看1v1对位矩阵"
+                                        onclick="trigger_vote_1v1_matrix_visible()">
+                                </div>
                             </div>
                         </td>
-    
                         <!-- 右侧干员图片 -->
                         <td>
                             <div class="operator-container" onclick="save_score_right()">
@@ -56,7 +62,6 @@
                     </tr>
                 </table>
             </div>
-    
             <!-- footer部分 -->
             <div class="footer">
                 <h3 class="move-up-animation red_text">目前仅单机投票开放</h3>
@@ -161,6 +166,15 @@
                 </table>
             </div>
         </div>
+
+        <!-- 不可见数据部分，在获取1v1投票矩阵后展示 -->
+        <div id="vote_1v1_matrix_container" class="footer">
+            <div id="operators-1v1-transfer"></div>
+            <input class="operators-1v1-button" type="button" onclick="calculate_operators_1v1_matrix()" value="查看所选对位数据" />
+            <input class="operators-1v1-button" type="button" onclick="clear_operators_1v1_matrix()" value="清空全部数据" />
+            <div id="operators-1v1-table"></div>
+        </div>
+
         <img id="mouse_follower" src='../static/img/夕trans.gif' alt="夕trans">
         <div class="nclassesInput">
             <label for="nclassesInput">分层数：</label>
@@ -302,6 +316,8 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
     <script type="text/javascript" src="../static/js/geostats.min.js"></script>
     <script type="text/javascript" src="../static/js/palette.min.js"></script>
+    <script type="text/javascript" src="../static/js/transfer.js"></script>
+    <script type="text/javascript" src="../static/js/table.js"></script>
     <script type="text/javascript" src="../static/js/page.js"></script>
 </body>
 
