@@ -6,7 +6,7 @@ list/
 archive.db
 operators_vote_records.
 data.sqlite
-snowflake/snowflake.c
+app/snowflake/snowflake.c
 
 nohup.out
 .vscode/
