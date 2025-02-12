@@ -1,6 +1,7 @@
 // const SERVER_ADDRESS = `http://${DATA_DICT['SERVER_IP']}:${DATA_DICT['SERVER_PORT']}`;
 const SERVER_ADDRESS = DATA_DICT['SERVER_ADDRESS'];
 const DICT_PIC_URL = DATA_DICT['DICT_PIC_URL'];
+const OPERATOR_NAMES = Object.keys(DICT_PIC_URL).reverse();
 
 class Hero {
     constructor(name, data = {win_times: 0, lose_times: 0, scores:  0, vote_times:  0, win_rate: -1}) {
