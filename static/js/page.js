@@ -263,8 +263,10 @@ function new_compare() {
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            const name = xhr.responseText.split(' ');
-            [left_name, right_name, code] = name;
+            const data = JSON.parse(xhr.responseText);
+            left_name = data.left;
+            right_name = data.right;
+            code = data.code;
             const left_png = document.getElementById("left_png");
             const right_png = document.getElementById("right_png");
             left_png.src = DICT_PIC_URL[left_name];

@@ -10,7 +10,8 @@ import math
 
 keyStrBase64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/="
 keyStrUriSafe = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+-$"
-baseReverseDic = {};
+baseReverseDic = {}
+
 
 class Object(object):
     def __init__(self, **kwargs):
@@ -27,15 +28,15 @@ def getBaseValue(alphabet, character):
 
 
 def _compress(uncompressed, bitsPerChar, getCharFromInt):
-    if (uncompressed is None):
+    if uncompressed is None:
         return ""
 
     context_dictionary = {}
-    context_dictionaryToCreate= {}
+    context_dictionaryToCreate = {}
     context_c = ""
     context_wc = ""
     context_w = ""
-    context_enlargeIn = 2 # Compensate for the first entry which should not count
+    context_enlargeIn = 2  # Compensate for the first entry which should not count
     context_dictSize = 3
     context_numBits = 2
     context_data = []
@@ -56,8 +57,8 @@ def _compress(uncompressed, bitsPerChar, getCharFromInt):
             if context_w in context_dictionaryToCreate:
                 if ord(context_w[0]) < 256:
                     for i in range(context_numBits):
-                        context_data_val = (context_data_val << 1)
-                        if context_data_position == bitsPerChar-1:
+                        context_data_val = context_data_val << 1
+                        if context_data_position == bitsPerChar - 1:
                             context_data_position = 0
                             context_data.append(getCharFromInt(context_data_val))
                             context_data_val = 0
@@ -116,7 +117,7 @@ def _compress(uncompressed, bitsPerChar, getCharFromInt):
             if context_enlargeIn == 0:
                 context_enlargeIn = math.pow(2, context_numBits)
                 context_numBits += 1
-            
+
             # Add wc to the dictionary.
             context_dictionary[context_wc] = context_dictSize
             context_dictSize += 1
@@ -127,8 +128,8 @@ def _compress(uncompressed, bitsPerChar, getCharFromInt):
         if context_w in context_dictionaryToCreate:
             if ord(context_w[0]) < 256:
                 for i in range(context_numBits):
-                    context_data_val = (context_data_val << 1)
-                    if context_data_position == bitsPerChar-1:
+                    context_data_val = context_data_val << 1
+                    if context_data_position == bitsPerChar - 1:
                         context_data_position = 0
                         context_data.append(getCharFromInt(context_data_val))
                         context_data_val = 0
@@ -201,12 +202,12 @@ def _compress(uncompressed, bitsPerChar, getCharFromInt):
 
     # Flush the last char
     while True:
-        context_data_val = (context_data_val << 1)
+        context_data_val = context_data_val << 1
         if context_data_position == bitsPerChar - 1:
             context_data.append(getCharFromInt(context_data_val))
             break
         else:
-           context_data_position += 1
+            context_data_position += 1
 
     return "".join(context_data)
 
@@ -219,11 +220,7 @@ def _decompress(length, resetValue, getNextValue):
     entry = ""
     result = []
 
-    data = Object(
-        val=getNextValue(0),
-        position=resetValue,
-        index=1
-    )
+    data = Object(val=getNextValue(0), position=resetValue, index=1)
 
     for i in range(3):
         dictionary[i] = i
@@ -241,7 +238,7 @@ def _decompress(length, resetValue, getNextValue):
             data.index += 1
 
         bits |= power if resb > 0 else 0
-        power <<= 1;
+        power <<= 1
 
     next = bits
     if next == 0:
@@ -266,7 +263,7 @@ def _decompress(length, resetValue, getNextValue):
             resb = data.val & data.position
             data.position >>= 1
             if data.position == 0:
-                data.position = resetValue;
+                data.position = resetValue
                 data.val = getNextValue(data.index)
                 data.index += 1
             bits |= power if resb > 0 else 0
@@ -292,7 +289,7 @@ def _decompress(length, resetValue, getNextValue):
             resb = data.val & data.position
             data.position >>= 1
             if data.position == 0:
-                data.position = resetValue;
+                data.position = resetValue
                 data.val = getNextValue(data.index)
                 data.index += 1
             bits |= power if resb > 0 else 0
@@ -325,7 +322,7 @@ def _decompress(length, resetValue, getNextValue):
                 resb = data.val & data.position
                 data.position >>= 1
                 if data.position == 0:
-                    data.position = resetValue;
+                    data.position = resetValue
                     data.val = getNextValue(data.index)
                     data.index += 1
                 bits |= power if resb > 0 else 0
@@ -336,7 +333,6 @@ def _decompress(length, resetValue, getNextValue):
             enlargeIn -= 1
         elif c == 2:
             return "".join(result)
-
 
         if enlargeIn == 0:
             enlargeIn = math.pow(2, numBits)
@@ -371,7 +367,7 @@ class LZString(object):
     def compressToUTF16(uncompressed):
         if uncompressed is None:
             return ""
-        return _compress(uncompressed, 15, lambda a: chr(a+32)) + " "
+        return _compress(uncompressed, 15, lambda a: chr(a + 32)) + " "
 
     @staticmethod
     def compressToBase64(uncompressed):
@@ -380,9 +376,9 @@ class LZString(object):
         res = _compress(uncompressed, 6, lambda a: keyStrBase64[a])
         # To produce valid Base64
         end = len(res) % 4
-        print (end)
+        print(end)
         if end > 0:
-            res += "="*(4 - end)
+            res += "=" * (4 - end)
         return res
 
     @staticmethod
@@ -405,7 +401,9 @@ class LZString(object):
             return ""
         if compressed == "":
             return None
-        return _decompress(len(compressed), 16384, lambda index: ord(compressed[index]) - 32)
+        return _decompress(
+            len(compressed), 16384, lambda index: ord(compressed[index]) - 32
+        )
 
     @staticmethod
     def decompressFromBase64(compressed):
@@ -413,7 +411,11 @@ class LZString(object):
             return ""
         if compressed == "":
             return None
-        return _decompress(len(compressed), 32, lambda index: getBaseValue(keyStrBase64, compressed[index]))
+        return _decompress(
+            len(compressed),
+            32,
+            lambda index: getBaseValue(keyStrBase64, compressed[index]),
+        )
 
     @staticmethod
     def decompressFromEncodedURIComponent(compressed):
@@ -422,15 +424,19 @@ class LZString(object):
         if compressed == "":
             return None
         compressed = compressed.replace(" ", "+")
-        return _decompress(len(compressed), 32, lambda index: getBaseValue(keyStrUriSafe, compressed[index]))
-    
+        return _decompress(
+            len(compressed),
+            32,
+            lambda index: getBaseValue(keyStrUriSafe, compressed[index]),
+        )
+
     @staticmethod
     def decompressFromUint8Array(compressed):
-        length_compressed = len(compressed)//2
-        buf=[]
+        length_compressed = len(compressed) // 2
+        buf = []
         for i in range(length_compressed):
-            buf.append(compressed[i*2]*256+compressed[i*2+1])
-        result=[]
+            buf.append(compressed[i * 2] * 256 + compressed[i * 2 + 1])
+        result = []
         for i in buf:
-            result.append(chr(i & 0xffff))
-        return decompress(''.join(result))
+            result.append(chr(i & 0xFFFF))
+        return decompress("".join(result))
