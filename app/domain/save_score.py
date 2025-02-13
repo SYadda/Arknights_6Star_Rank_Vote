@@ -75,5 +75,6 @@ async def save_score(
     if int(time.time()) - record_cache.last_save > 10:
         batch = await record_cache.swap_batches()
         await save_batch(db_session, batch)
+        record_cache.last_save = int(time.time())
 
     return Response(status_code=200, content="success")

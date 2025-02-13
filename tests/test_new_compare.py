@@ -1,7 +1,9 @@
 from litestar import Litestar
 from litestar.status_codes import HTTP_200_OK
 from litestar.testing import AsyncTestClient
+import pytest
 
+pytestmark = pytest.mark.anyio
 
 async def test_new_compare(test_client: AsyncTestClient[Litestar]):
     response = await test_client.get("/new_compare")
