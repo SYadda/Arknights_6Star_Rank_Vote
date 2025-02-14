@@ -1,13 +1,12 @@
-import time
 from typing import Any
-
-from app.cache import record_cache, save_batch
-from app.data import operators_id_dict, reverse_operators_id_dict
 
 from litestar import Request, Response, post
 from litestar.types import Scope
 from msgspec import Struct
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.data import operators_id_dict, reverse_operators_id_dict
+from app.lib.cache import record_cache
 
 
 class SaveScoreReq(Struct):
@@ -71,10 +70,5 @@ async def save_score(
         operators_id_dict[lose_name],
         multiplier,
     )
-
-    if int(time.time()) - record_cache.last_save > 10:
-        batch = await record_cache.swap_batches()
-        await save_batch(db_session, batch)
-        record_cache.last_save = int(time.time())
 
     return Response(status_code=200, content="success")

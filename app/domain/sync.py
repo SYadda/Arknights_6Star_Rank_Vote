@@ -1,8 +1,8 @@
-from app.lzpy import LZString
-from app.model import Archive
-
+import zstd
 from litestar import Response, get
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db.model import Archive
 
 
 @get("/sync")
@@ -16,7 +16,7 @@ async def sync(key: str, db_session: AsyncSession) -> Response:
     if archive is None:
         return Response(status_code=400, content={"error": "秘钥不存在"})
 
-    result = LZString.compressToUTF16(archive.data)
+    result = zstd.compress(archive.data.encode()).decode()
     return Response(
         status_code=200,
         content={

@@ -1,11 +1,11 @@
 import random
 
-from app.data import operators_id_list, reverse_operators_id_dict
-from app.snowflake import snowflake_instance
-
 from litestar import post
 from litestar.types import Scope
 from msgspec import Struct
+
+from app.data import operators_id_list, reverse_operators_id_dict
+from app.snowflake import snowflake_instance
 
 
 class NewCompareResponse(Struct):
