@@ -1,0 +1,27 @@
+[app]
+url = "http://localhost:8080"
+debug = false
+
+[db]
+database_url = "sqlite+aiosqlite:///./db/data.sqlite"
+echo = false
+echo_pool = false
+pool_size = 5
+pool_timeout = 30
+pool_recycle = 900
+
+[server]
+host = "127.0.0.1"
+port = 8000
+reload = false
+
+[log]
+log_level = "INFO"
+
+[redis]
+host = "redis://localhost:6379"
+db = 0
+
+[rate_limit]
+rate_limit = 50000
+rate_limit_period = "day"
