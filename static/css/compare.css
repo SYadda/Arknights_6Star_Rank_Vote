@@ -205,12 +205,18 @@ body {
     font-size: 19px;
 }
 
-.footer a {
-    display: inline-block;
-    text-align: center;
-    font-size: 19px;
-    font-weight: 700;
+
+.link-container { 
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex; 
+    overflow-wrap: break-word; /*使得文本在单词之间换行*/
+    word-wrap: breakword; /*这种写法兼容更广*/
+    white-space: normal; /*防止因为缩进导致的换行*/
+    max-width: 100%;/*设置一个最大宽度，防止过长*/
+    justify-content: center;
 }
+
 
 .final {
     display: none;

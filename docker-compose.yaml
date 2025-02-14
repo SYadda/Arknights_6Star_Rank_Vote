@@ -1,0 +1,29 @@
+# docker compose up -d
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    networks:
+      - app-network
+
+  app:
+    image: arkvotes:v0.1
+    ports:
+      - "8000:8000"
+    command: [ "uv", "run", "litestar", "run", "--host", "0.0.0.0", "--port", "8000"]
+    networks:
+      - app-network
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - DATABASE_URL=sqlite+aiosqlite:///db/data.sqlite
+    volumes:
+      - ./db:/workspace/db
+      - ./config.toml:/workspace/config.toml
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+networks:
+  app-network:
+    internal: true
