@@ -11,7 +11,7 @@ pool_timeout = 30
 pool_recycle = 900
 
 [server]
-host = "127.0.0.1"
+host = "0.0.0.0"
 port = 8000
 reload = false
 
@@ -19,7 +19,7 @@ reload = false
 log_level = "INFO"
 
 [redis]
-host = "redis://localhost:6379"
+redis_url = "redis://redis:6379"
 db = 0
 
 [rate_limit]
