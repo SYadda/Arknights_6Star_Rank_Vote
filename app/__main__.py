@@ -11,6 +11,8 @@ def setup_environment() -> None:
 
     os.environ.setdefault("LITESTAR_APP", "app.asgi:create_app")
     os.environ.setdefault("LITESTAR_APP_NAME", conf.app.name)
+    os.environ.setdefault("LITESTAR_HOST", conf.server.host)
+    os.environ.setdefault("LITESTAR_PORT", str(conf.server.port))
 
 
 def run_cli() -> NoReturn:

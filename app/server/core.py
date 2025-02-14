@@ -1,15 +1,47 @@
 from litestar.config.app import AppConfig
+from litestar.di import Provide
 from litestar.openapi.config import OpenAPIConfig
 from litestar.openapi.plugins import ScalarRenderPlugin
 from litestar.plugins import CLIPluginProtocol, InitPluginProtocol
 from litestar.plugins.sqlalchemy import base
 from litestar.stores.redis import RedisStore
-from redis.asyncio import Redis
+from redis.asyncio import ConnectionPool, Redis, RedisError
 from sqlalchemy import select
 
+from app.config import conf
 from app.data import operators_id_dict
 from app.db.model import OperatorsVoteRecords, sqlalchemy_config
-from app.lib.cache import record_cache, save_batch
+
+_redis_pool: ConnectionPool | None = None
+_redis_instance: Redis | None = None
+
+
+def setup_redis_pool() -> ConnectionPool:
+    global _redis_pool  # noqa: PLW0603
+    if _redis_pool is None:
+        _redis_pool = ConnectionPool.from_url(
+            conf.redis.redis_url,
+            max_connections=200,
+            socket_connect_timeout=5,
+            socket_keepalive=True,
+            decode_responses=True,
+        )
+    return _redis_pool
+
+
+async def redis_provider() -> Redis:
+    global _redis_instance  # noqa: PLW0603
+    if _redis_instance is None:
+        pool = setup_redis_pool()
+        _redis_instance = Redis(connection_pool=pool)
+
+    try:
+        if not await _redis_instance.ping():
+            raise ConnectionError("Redis ping failed")
+    except (ConnectionError, RedisError):
+        _redis_instance = Redis(connection_pool=setup_redis_pool())
+
+    return _redis_instance
 
 
 class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
@@ -18,12 +50,10 @@ class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
     app_slug: str
 
     def on_app_init(self, app_config: AppConfig) -> AppConfig:
-
         from advanced_alchemy.exceptions import RepositoryError
 
         from app.__about__ import __version__ as current_version
         from app.config import app as app_conf
-        from app.config import conf
         from app.domain import root_handler
         from app.lib.exceptions import ApplicationError, exception_to_http_response
         from app.server import plugins
@@ -67,15 +97,17 @@ class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
             RepositoryError: exception_to_http_response,
         }
         app_config.stores = {
-            "ballot": self.redis_store_factory("ballot"),
-            "ip_mul_limiter": self.redis_store_factory("ip_mul_limiter"),
+            "ballot": RedisStore(self.redis, "ballot"),
         }
-        app_config.on_startup.append(on_startup)
+
+        # dependencies
+        dependencies = {"redis": Provide(redis_provider, use_cache=True)}
+        app_config.dependencies.update(dependencies)
+
+        app_config.on_startup.append(on_startup) # type: ignore[attr-defined]
         app_config.on_shutdown.append([on_shutdown, self.redis.aclose])  # type: ignore[attr-defined]
         return app_config
 
-    def redis_store_factory(self, name: str) -> RedisStore:
-        return RedisStore(self.redis, namespace=f"{self.app_slug}:{name}")
 
 async def on_startup() -> None:
     async with sqlalchemy_config.get_engine().begin() as conn:
@@ -96,8 +128,25 @@ async def on_startup() -> None:
         await session.commit()
         await session.flush()
 
+    # add to redis
+    redis = conf.redis.get_client()
+    pipeline = redis.pipeline()
+    for oid in operators_id_dict.values():
+        pipeline.exists(f"{oid}:win")
+        pipeline.exists(f"{oid}:lose")
+    exists_results = await pipeline.execute()
+
+    pipeline = redis.pipeline()
+    for idx, oid in enumerate(operators_id_dict.values()):
+        if not exists_results[idx * 2]:
+            pipeline.set(f"{oid}:win", 0)
+        if not exists_results[idx * 2 + 1]:
+            pipeline.set(f"{oid}:lose", 0)
+    await pipeline.execute()
+
 
 async def on_shutdown() -> None:
-    async with sqlalchemy_config.get_session() as session:
-        batch = await record_cache.swap_batches()
-        await save_batch(session, batch)
+    if _redis_instance:
+        await _redis_instance.close()
+    if _redis_pool:
+        await _redis_pool.disconnect()

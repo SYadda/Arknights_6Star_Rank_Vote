@@ -2,23 +2,29 @@ import structlog
 from saq.types import Context
 from sqlalchemy import select
 
+from app.config import conf
+from app.data import operators_id_list
 from app.db.model import OperatorsVoteRecords, sqlalchemy_config
-from app.lib.cache import record_cache
 
 logger = structlog.get_logger()
 
+
 async def database_save_task(_: Context):
-    logger.info("database_save_task start")
-    batch = await record_cache.swap_batches()
-    print(batch)
-    win_updates = {oid: value for oid, value in batch.score_win.items() if value > 0}
-    lose_updates = {oid: value for oid, value in batch.score_lose.items() if value > 0}
+    redis = conf.redis.get_client()
+    logger.info("Database update task started")
 
-    if not win_updates and not lose_updates:
-        logger.info("database_save_task done")
-        return
+    # collect all updates from redis
+    keys = [f"{operator_id}:win" for operator_id in operators_id_list] + [
+        f"{operator_id}:lose" for operator_id in operators_id_list
+    ]
+    values = await redis.mget(*keys)
 
-    logger.info("database_save_task update")
+    win_updates = {operator_id: int(values[i]) for i, operator_id in enumerate(operators_id_list)}
+    lose_updates = {
+        operator_id: int(values[i + len(operators_id_list)]) for i, operator_id in enumerate(operators_id_list)
+    }
+
+    logger.info("Redis data collected")
 
     async with sqlalchemy_config.get_session() as session:
         result = (
@@ -32,12 +38,11 @@ async def database_save_task(_: Context):
 
         for oid, value in win_updates.items():
             if oid in records:
-                records[oid].score_win += value / 100
+                records[oid].score_win = value / 100
         for oid, value in lose_updates.items():
             if oid in records:
-                records[oid].score_lose += value / 100
+                records[oid].score_lose = value / 100
 
         await session.commit()
         await session.flush()
-
-    logger.info("database_save_task done")
+    logger.info("Database updated")
