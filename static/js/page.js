@@ -102,13 +102,34 @@ key_input.addEventListener('blur', function () {
 })
 
 // 跟随鼠标的夕龙泡泡
-let currentMouseTop, currentScrollTop;
+let currentMouseTop, currentScrollTop, currentScrollWidth, currentScrollHeight;
+
+// 获取pic_mouse的宽度和高度
 const pic_mouse = document.querySelector('#mouse_follower');
+const picMouseWidth = pic_mouse.offsetWidth;
+const picMouseHeight = pic_mouse.offsetHeight;
+
 document.addEventListener('mousemove', function (e) {
     currentMouseTop = e.pageY;
     currentScrollTop = document.documentElement.scrollTop;
-    pic_mouse.style.left = `${e.pageX}px`;
-    pic_mouse.style.top = `${e.pageY}px`;
+    currentScrollWidth = document.documentElement.scrollWidth;
+    currentScrollHeight = document.documentElement.scrollHeight;
+
+    // 计算pic_mouse的左边和顶部位置
+    let left = e.pageX;
+    let top = e.pageY;
+
+    // 确保pic_mouse不会超出视窗
+    if (left + picMouseWidth + 21 > currentScrollWidth) {
+        left = e.pageX - picMouseWidth - 21;
+    }
+    if (top + picMouseHeight + 21 > currentScrollHeight) {
+        top = e.pageY - picMouseHeight - 21;
+        currentMouseTop = top;
+    }
+
+    pic_mouse.style.left = `${left}px`;
+    pic_mouse.style.top = `${top}px`;
 })
 
 // 当页面向下滚动一定距离时，显示回到顶部按钮
@@ -625,9 +646,20 @@ function clear_operators_1v1_matrix(){
 // 血狼打灰歌
 const audio = document.getElementById('audio');
 const playPauseBtn = document.getElementById('playPauseBtn');
+const playList = [
+    { src: "../static/mp3/xuelangdahui.mp3", type: "audio/mpeg" },
+    { src: "../static/mp3/tongtong.mp3", type: "audio/mpeg" }
+]
+let currentTrackIndex = -1;
 
 playPauseBtn.addEventListener('click', () => {
     if (audio.paused) {
+        let nextTrackIndex;
+        do {
+            nextTrackIndex = Math.floor(Math.random() * playList.length);
+        } while (nextTrackIndex === currentTrackIndex);
+        currentTrackIndex = nextTrackIndex;
+        audio.src = playList[currentTrackIndex].src;
         audio.play();
     } else {
         audio.pause();
