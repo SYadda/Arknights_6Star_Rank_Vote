@@ -78,9 +78,17 @@ async def get_client_identifier(request: Request) -> str:
 
 
 async def validate_ballot(code: str, ballot_store: Store) -> tuple[int, int]:
-    ballot_info = await ballot_store.get(code)
+    ballot_info = None
+    for _ in range(10):
+        ballot_info = await ballot_store.get(code)
+        if ballot_info:
+            break
+        await asyncio.sleep(0.1)
+
     if not ballot_info:
         raise HTTPException(detail="Invalid ballot code", status_code=HTTP_400_BAD_REQUEST)
+
+    await ballot_store.delete(code)
 
     try:
         decoded = ballot_info.decode()
@@ -126,7 +134,6 @@ async def save_score(
         left_name, right_name = await validate_ballot(data.code, ballot_store)
     except HTTPException as e:
         return Response(status_code=e.status_code, content=e.detail)
-    await ballot_store.delete(data.code)
 
     if not {win_id, lose_id} <= {left_name, right_name}:
         return Response(status_code=HTTP_400_BAD_REQUEST, content="Invalid match participants")
