@@ -2,12 +2,12 @@ import hashlib
 import hmac
 import time
 
-from app.lzpy import LZString
-from app.model import Archive
-
+import zstd
 from litestar import Request, Response, post
 from msgspec import Struct
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.db.model import Archive
 
 
 class UploadData(Struct):
@@ -37,13 +37,15 @@ async def upload(
             identifier.encode(), timestamp.encode(), hashlib.sha1
         ).hexdigest()
 
-    result = LZString.decompressFromUTF16(result)
+    result = zstd.decompress(result.encode()).decode()
     archive = Archive(key=key, data=result, ip=identifier, vote_times=vote_times)
 
     if is_create:
         db_session.add(archive)
     else:
         await db_session.merge(archive)
+
+    await db_session.commit()
 
     return Response(
         status_code=200,

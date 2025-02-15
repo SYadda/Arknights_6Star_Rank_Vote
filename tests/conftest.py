@@ -1,6 +1,6 @@
 from collections.abc import AsyncIterator
 
-from app.app import app
+from app.asgi import app
 
 from litestar.app import Litestar
 from litestar.testing import AsyncTestClient

@@ -285,11 +285,13 @@ function new_compare() {
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
             const data = JSON.parse(xhr.responseText);
-            left_name = data.left;
-            right_name = data.right;
+            left_id = data.left;
+            right_id = data.right;
             code = data.code;
             const left_png = document.getElementById("left_png");
             const right_png = document.getElementById("right_png");
+            left_name = Object.keys(ID_NAME_DICT).find(key => ID_NAME_DICT[key] === left_id);
+            right_name = Object.keys(ID_NAME_DICT).find(key => ID_NAME_DICT[key] === right_id);
             left_png.src = DICT_PIC_URL[left_name];
             left_png.alt = DICT_PIC_URL[left_name].split('/').at(-1);
             right_png.src = DICT_PIC_URL[right_name];
@@ -313,11 +315,17 @@ function save_score(win_name, lose_name) {
     xhr = new XMLHttpRequest();
     xhr.open('POST', `${SERVER_ADDRESS}/save_score`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.send(JSON.stringify({
+    //     win_name: win_name,
+    //     lose_name: lose_name,
+    //     code: code
+    // }));
     xhr.send(JSON.stringify({
-        win_name: win_name,
-        lose_name: lose_name,
+        win_id: ID_NAME_DICT[win_name],
+        lose_id: ID_NAME_DICT[lose_name],
         code: code
     }));
+
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
