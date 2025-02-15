@@ -313,11 +313,17 @@ function save_score(win_name, lose_name) {
     xhr = new XMLHttpRequest();
     xhr.open('POST', `${SERVER_ADDRESS}/save_score`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.send(JSON.stringify({
+    //     win_name: win_name,
+    //     lose_name: lose_name,
+    //     code: code
+    // }));
     xhr.send(JSON.stringify({
-        win_name: win_name,
-        lose_name: lose_name,
+        win_id: ID_NAME_DICT[win_name],
+        lose_id: ID_NAME_DICT[lose_name],
         code: code
     }));
+
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
