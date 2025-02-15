@@ -22,4 +22,4 @@ with Path.open(get_resource_path("operators_6star_pic.json"), encoding="utf8") a
     operators_6star_pic = json.load(f)
 
 reverse_operators_id_dict = {v: k for k, v in operators_id_dict.items()}
-operators_id_list = list(operators_id_dict.values())
+operator_ids = list(operators_id_dict.values())

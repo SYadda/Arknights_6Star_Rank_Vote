@@ -1,37 +1,53 @@
-from litestar import Response, get
-from sqlalchemy import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from litestar import get
+from msgspec import Struct
+from redis.asyncio import Redis
 
-from app.data import reverse_operators_id_dict
-from app.db.model import OperatorsVoteRecords
+from app.data import operator_ids, reverse_operators_id_dict
 
 
-@get("/view_final_order")
-async def view_final_order(db_session: AsyncSession) -> Response:
-    result = (await db_session.stream(select(OperatorsVoteRecords))).scalars()
-    records = {r.operator_id: r async for r in result}
+class ViewFinalOrderResponse(Struct):
+    name: list[str]
+    score: list[str]
+    rate: list[str]
+    count: str
 
-    win_score = {oid: record.score_win for oid, record in records.items()}
-    lose_score = {oid: record.score_lose for oid, record in records.items()}
 
-    rate = {
-        oid: win_score[oid] / (win_score[oid] + lose_score[oid]) * 100
-        for oid in win_score
+@get("/view_final_order", status_code=200, cache=10)
+async def view_final_order(
+    redis: Redis,
+) -> ViewFinalOrderResponse:
+    num_operators = len(operator_ids)
+
+    win_keys = [f"{oid}:win" for oid in operator_ids]
+    lose_keys = [f"{oid}:lose" for oid in operator_ids]
+    all_keys = win_keys + lose_keys
+
+    values = await redis.mget(*all_keys)
+    win_counts = [int(v) if v is not None else 0 for v in values[:num_operators]]
+    lose_counts = [int(v) if v is not None else 0 for v in values[num_operators:]]
+
+    operators_data = {
+        oid: {"win": win_counts[i], "lose": lose_counts[i], "name": reverse_operators_id_dict[oid]}
+        for i, oid in enumerate(operator_ids)
     }
-    score = {oid: win_score[oid] - lose_score[oid] for oid in win_score}
 
-    final_order = sorted(score.items(), key=lambda x: x[1], reverse=True)
-    final_order = [
-        (reverse_operators_id_dict[oid], score, f"{rate:.1f} %")
-        for oid, score in final_order
-    ]
+    total_data = await redis.zcard("req_index:by_time")
 
-    return Response(
-        status_code=200,
-        content={
-            "name": [name for name, _, _ in final_order],
-            "score": [f"{score:.2f}" for _, score, _ in final_order],
-            "rate": [rate for _, _, rate in final_order],
-            "count": f"已收集数据 {sum(win_score.values())} 条",
-        },
+    results = []
+    for oid, data in operators_data.items():
+        win: int = data["win"]
+        lose: int = data["lose"]
+
+        total_games = win + lose
+        rate = (win / total_games * 100) if total_games else 0.0
+
+        results.append({"name": data["name"], "score": (win - lose) / 100, "rate": rate, "oid": oid})
+
+    sorted_results = sorted(results, key=lambda x: x["score"], reverse=True)
+
+    return ViewFinalOrderResponse(
+        name=[item["name"] for item in sorted_results],
+        score=[f"{item['score']:.2f}" for item in sorted_results],
+        rate=[f"{item['rate']:.1f}%" for item in sorted_results],
+        count=f"已收集数据 {total_data} 条",
     )

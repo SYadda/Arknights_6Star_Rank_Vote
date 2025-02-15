@@ -12,8 +12,6 @@ from litestar.types import Scope
 from msgspec import Struct, msgpack
 from redis.asyncio import Redis, RedisError
 
-from app.data import operators_id_dict
-
 MAX_IP_LIMIT = 100
 BASE_MULTIPLIER = 100
 LOW_MULTIPLIER = 1
@@ -60,8 +58,8 @@ class RedisLock:
 
 
 class SaveScoreReq(Struct):
-    win_name: str
-    lose_name: str
+    win_id: int
+    lose_id: int
     code: str
     timestamp: float = time.time()
 
@@ -124,18 +122,18 @@ async def save_score(
     data: SaveScoreReq,
     redis: Redis,
 ) -> Response[Any]:
-    win_id = operators_id_dict[data.win_name]
-    lose_id = operators_id_dict[data.lose_name]
+    win_id = data.win_id
+    lose_id = data.lose_id
 
     app = scope["app"]
 
     ballot_store = app.stores.get("ballot")
     try:
-        left_name, right_name = await validate_ballot(data.code, ballot_store)
+        left_id, right_id = await validate_ballot(data.code, ballot_store)
     except HTTPException as e:
         return Response(status_code=e.status_code, content=e.detail)
 
-    if not {win_id, lose_id} <= {left_name, right_name}:
+    if not {win_id, lose_id} <= {left_id, right_id}:
         return Response(status_code=HTTP_400_BAD_REQUEST, content="Invalid match participants")
 
     if win_id == lose_id:
