@@ -1,11 +1,19 @@
 import json
 from pathlib import Path
 
-from app.data_store import get_res_path
+root_path = Path(__file__).parent.parent
 
+
+def get_res_path(_path: str | list | None = None) -> Path:
+    path = (root_path / _path if isinstance(_path, str) else root_path.joinpath(*_path)) if _path else root_path
+
+    if not path.exists():
+        path.mkdir(parents=True)
+
+    return path
 
 def get_resource_path(filename: str) -> Path:
-    return get_res_path(f"./resources/{filename}")
+    return get_res_path("resources") / filename
 
 with Path.open(get_resource_path("operators_6star_id.json"), encoding="utf8") as f:
     operators_id_dict: dict[str, int] = json.load(f)

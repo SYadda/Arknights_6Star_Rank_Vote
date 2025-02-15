@@ -1,9 +1,9 @@
-from app.data import reverse_operators_id_dict
-from app.model import OperatorsVoteRecords
-
 from litestar import Response, get
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.data import reverse_operators_id_dict
+from app.db.model import OperatorsVoteRecords
 
 
 @get("/view_final_order")

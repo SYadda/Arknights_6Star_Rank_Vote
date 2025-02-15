@@ -1,4 +1,5 @@
 [app]
+name = "arknights-6star-rank-vote"
 url = "http://localhost:8080"
 debug = false
 
@@ -11,17 +12,27 @@ pool_timeout = 30
 pool_recycle = 900
 
 [server]
-host = "0.0.0.0"
-port = 8000
+host = "127.0.0.1"
+port = 8080
 reload = false
 
 [log]
 log_level = "INFO"
+saq_level = "INFO"
+sqlalchemy_level = "INFO"
 
 [redis]
-redis_url = "redis://redis:6379"
-db = 0
+redis_url = "redis://localhost:6379/0"
+socket_connect_timeout = 5
+health_check_interval = 5
+socket_keepalive = true
 
 [rate_limit]
 rate_limit = 50000
 rate_limit_period = "day"
+
+[saq]
+processes = 1
+concurrency = 10
+web_enabled = true
+use_server_lifespan = true

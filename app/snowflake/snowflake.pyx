@@ -41,7 +41,7 @@ cdef extern from *:
     #else
       #include <sys/time.h>
       inline uint64_t get_milliseconds() {
-        timespec ts;
+        struct timespec ts;
         clock_gettime(CLOCK_REALTIME, &ts);
         return (uint64_t)ts.tv_sec * 1000 + ts.tv_nsec / 1000000;
       }
