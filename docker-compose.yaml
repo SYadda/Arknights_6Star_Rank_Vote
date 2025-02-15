@@ -6,17 +6,21 @@ services:
     image: redis:7-alpine
     networks:
       - app-network
+    volumes:
+      - ./db:/data
+    command: redis-server --appendonly yes --appendfsync everysec --save ""
 
   app:
     image: arkvotes:v0.1
     ports:
-      - "8000:8000"
-    command: [ "uv", "run", "litestar", "run", "--host", "0.0.0.0", "--port", "8000"]
+      - "8080:8080"
+    command: [ "uv", "run", "app", "run", "--host", "0.0.0.0", "--port", "8080"]
     networks:
       - app-network
     environment:
-      - REDIS_URL=redis://redis:6379
-      - DATABASE_URL=sqlite+aiosqlite:///db/data.sqlite
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite+aiosqlite:///./db/data.sqlite
+      - ARKVOTES_MAX_IP_LIMIT=50
     volumes:
       - ./db:/workspace/db
       - ./config.toml:/workspace/config.toml

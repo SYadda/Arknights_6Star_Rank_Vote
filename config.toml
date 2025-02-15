@@ -22,7 +22,7 @@ saq_level = "INFO"
 sqlalchemy_level = "INFO"
 
 [redis]
-redis_url = "redis://localhost:6379/0"
+redis_url = "redis://redis:6379/0"
 socket_connect_timeout = 5
 health_check_interval = 5
 socket_keepalive = true
