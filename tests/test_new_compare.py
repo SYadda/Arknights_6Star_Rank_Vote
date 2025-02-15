@@ -6,7 +6,7 @@ import pytest
 pytestmark = pytest.mark.anyio
 
 async def test_new_compare(test_client: AsyncTestClient[Litestar]):
-    response = await test_client.get("/new_compare")
+    response = await test_client.post("/new_compare")
     assert response.status_code == HTTP_200_OK
 
     data = response.json()
