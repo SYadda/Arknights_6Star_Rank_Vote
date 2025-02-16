@@ -8,6 +8,10 @@ from app.data import operator_ids
 from app.snowflake import snowflake_instance
 
 
+class NewCompareRequest(Struct):
+    code: str
+
+
 class NewCompareResponse(Struct):
     left: int
     right: int
@@ -15,11 +19,12 @@ class NewCompareResponse(Struct):
 
 
 @post("/new_compare", status_code=200)
-async def new_compare(scope: Scope) -> NewCompareResponse:
-    a, b = random.sample(operator_ids, 2)
-
-    code = str(snowflake_instance.next_value())
+async def new_compare(scope: Scope, data: NewCompareRequest) -> NewCompareResponse:
     ballot_store = scope["app"].stores.get("ballot")
+    await ballot_store.delete(data.code)
+
+    a, b = random.sample(operator_ids, 2)
+    code = str(snowflake_instance.next_value())
     await ballot_store.set(code, f"{a},{b}", expires_in=3600)
 
     return NewCompareResponse(
