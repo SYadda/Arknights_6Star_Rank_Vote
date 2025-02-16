@@ -1,7 +1,6 @@
 // const SERVER_ADDRESS = `http://${DATA_DICT['SERVER_IP']}:${DATA_DICT['SERVER_PORT']}`;
 const SERVER_ADDRESS = DATA_DICT['SERVER_ADDRESS'];
 const DICT_PIC_URL = DATA_DICT['DICT_PIC_URL'];
-const OPERATOR_NAMES = Object.keys(DICT_PIC_URL).reverse();
 
 class Hero {
     constructor(name, data = {win_times: 0, lose_times: 0, scores:  0, vote_times:  0, win_rate: -1}) {
@@ -566,17 +565,16 @@ function formatTime(timestamp) {
 // 获取干员1v1投票矩阵
 // [POST]
 // 接口:/get_operators_1v1_matrix
-async function get_operators_1v1_matrix() {
+async function get_operators_1v1_matrix(array) {
     xhr = new XMLHttpRequest();
     xhr.open('POST', `${SERVER_ADDRESS}/get_operators_1v1_matrix`, true);
-    xhr.send();
+    xhr.send(JSON.stringify(array));
 
     return new Promise((resolve, reject) => {
         xhr.onreadystatechange = function () {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     let operator_matrix = JSON.parse(xhr.responseText);
-                    console.log(operator_matrix);
                     resolve(operator_matrix);
                 } else {
                     reject(new Error('请求失败'));
@@ -607,10 +605,11 @@ function trigger_vote_1v1_matrix_visible() {
 }
 
 // 干员1v1对位穿梭框配置
-const OPERATOR_NAMES_KEY_LABEL = OPERATOR_NAMES.map((name, index) => ({
-    key: index,
-    label: name
+const OPERATOR_NAMES_KEY_LABEL = Object.entries(ID_NAME_DICT).map(([name, oid]) => ({
+    key: oid,
+    label: name,
 }));
+
 let sourceData = [...OPERATOR_NAMES_KEY_LABEL];
 let targetData = [];
 const transferComponent = new TransferComponent(sourceData, targetData, '干员列表', '选中列表');
@@ -618,7 +617,6 @@ transferComponent.mount(document.getElementById('operators-1v1-transfer'));
 
 // 干员1v1对位展示表格配置
 let table_labels = [];
-// table data as a two-dimensional array with performance comparisons
 let table_Data = [];
 
 const tableComponent = new TableComponent(table_Data, table_labels);
@@ -629,20 +627,13 @@ tableComponent.mount(operators_1v1_table);
 // 计算1v1对表格
 async function calculate_operators_1v1_matrix(){
     operators_1v1_table.style.display = "block";
-    let matrix = await get_operators_1v1_matrix()
-    matrix = matrix.operators_1v1_matrix
     let transferData = transferComponent.getSourceAndTarget()
     sourceData = transferData.source
     targetData = transferData.target
-
     const selectedIndices = targetData.map(item => item.key);
     const selectedNames = targetData.map(item => item.label);
-    console.log(selectedIndices)
-    console.log(selectedNames)
-    const subMatrix = selectedIndices.map(rowIndex => 
-        selectedIndices.map(colIndex => matrix[rowIndex][colIndex])
-    );
-    tableComponent.updateData(subMatrix, selectedNames);
+    let matrix = await get_operators_1v1_matrix(selectedIndices)
+    tableComponent.updateData(matrix, selectedNames);
 }
 
 function clear_operators_1v1_matrix(){
