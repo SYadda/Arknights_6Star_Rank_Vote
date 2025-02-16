@@ -165,6 +165,8 @@ async def save_score(
                 pipe.multi()
                 pipe.incr(f"{win_id}:win", multiplier)
                 pipe.incr(f"{lose_id}:lose", multiplier)
+                pipe.incr(f"op_matrix:{win_id}:{lose_id}", multiplier)
+                pipe.decr(f"op_matrix:{lose_id}:{win_id}", multiplier)
                 await pipe.execute()
 
         return Response(status_code=200, content="success")
