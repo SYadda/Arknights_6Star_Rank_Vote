@@ -7,6 +7,8 @@ from app.snowflake import snowflake_instance
 from litestar import Request, post
 from redis.asyncio import Redis, RedisError
 
+CACHE_INTERVAL_SECOND = 300 
+
 async def vaildRequestOperatorsId(id_need_check: list[int]):
     if id_need_check is None or len(id_need_check) == 0:
         return None
@@ -14,10 +16,11 @@ async def vaildRequestOperatorsId(id_need_check: list[int]):
         if oid not in operator_ids:
             return None
     return id_need_check
-        
 
-@post("/get_operators_1v1_matrix", status_code=200)
-async def get_operators_1v1_matrix(scope: Scope,
+
+@post("/get_operators_1v1_matrix", status_code=200, cache=CACHE_INTERVAL_SECOND)
+async def get_operators_1v1_matrix(
+    scope: Scope,
     request: Request[Any, Any, Any], 
     data: list[int],
     redis: Redis) -> list[list]:
