@@ -76,9 +76,11 @@
 
 [@SkadiD](https://github.com/SkadiD)：前端CDN加速和服务器赞助
 
-[@hLdont](https://github.com/hLdont)：后端优化
+[@hLdont](https://github.com/hLdont)：后端开发
 
 [b站@理性蒸发人](https://space.bilibili.com/22799131)：背景音乐 血狼打灰歌
+
+[b站@埃里克茨威格](https://space.bilibili.com/441494429)：背景音乐 兔头兔头张开嘴
 
 ## 版权及鸣谢
 
