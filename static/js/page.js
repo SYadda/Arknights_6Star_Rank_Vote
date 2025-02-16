@@ -279,7 +279,10 @@ function close_or_view() {
 function new_compare() {
     xhr = new XMLHttpRequest();
     xhr.open('POST', `${SERVER_ADDRESS}/new_compare`, true);
-    xhr.send();
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify({
+        code: code
+    }));
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
