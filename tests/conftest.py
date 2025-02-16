@@ -1,13 +1,13 @@
 from collections.abc import AsyncIterator
 
-from app.asgi import app
-
+import pytest
 from litestar.app import Litestar
 from litestar.testing import AsyncTestClient
-import pytest
+
+from app.asgi import create_app
 
 
 @pytest.fixture(scope="function")
 async def test_client() -> AsyncIterator[AsyncTestClient[Litestar]]:
-    async with AsyncTestClient(app=app) as client:
+    async with AsyncTestClient(app=create_app()) as client:
         yield client

@@ -1,86 +1,111 @@
 import asyncio
-import aiohttp
-import random
 import time
-from typing import Any, Dict
+from typing import Any
+
+import aiohttp
 
 BASE_URL = "http://127.0.0.1:8080"
 CONCURRENCY = 1000
-TEST_TIMES = 10
+TOTAL_REQUESTS = 100000
 
-HEADERS = {
-    "Content-Type": "application/json",
-}
-
-error_count = 0
+HEADERS = {"Content-Type": "application/json"}
+REQUEST_TIMEOUT = 10
+SYSTEM_MAX_CONNECTIONS = 5000
 
 
-async def call_new_compare(session: aiohttp.ClientSession) -> Dict[str, Any]:
+class ErrorCounter:
+    def __init__(self):
+        self.count = 0
+        self.lock = asyncio.Lock()
+
+    async def increment(self):
+        async with self.lock:
+            self.count += 1
+
+
+error_counter = ErrorCounter()
+
+
+async def call_new_compare(session: aiohttp.ClientSession) -> dict[str, Any]:
     url = f"{BASE_URL}/new_compare"
-    async with session.post(url, headers=HEADERS) as response:
-        if response.status != 200:
-            print(f"Error calling /new_compare: {response.status}")
-            global error_count
-            error_count += 1
-            return {}
-        return await response.json()
-
-
-async def call_save_score(session: aiohttp.ClientSession, data: Dict[str, Any]) -> None:
-    url = f"{BASE_URL}/save_score"
-    async with session.post(url, json=data, headers=HEADERS) as response:
-        if response.status != 200:
-            print(f"Error calling /save_score: {response.status}")
-            global error_count
-            error_count += 1
-
-
-async def test_qps(session: aiohttp.ClientSession):
-    """单次测试 QPS 的任务"""
     try:
+        async with session.post(url, headers=HEADERS) as response:
+            if response.status != 200:
+                await error_counter.increment()
+                return {}
+            return await response.json()
+    except Exception as e:
+        await error_counter.increment()
+        return {}
+
+
+async def call_save_score(session: aiohttp.ClientSession, data: dict[str, Any]) -> None:
+    url = f"{BASE_URL}/save_score"
+    try:
+        async with session.post(url, json=data, headers=HEADERS) as response:
+            if response.status != 200:
+                await error_counter.increment()
+    except Exception as e:
+        await error_counter.increment()
+
+
+async def worker(session: aiohttp.ClientSession, sem: asyncio.Semaphore):
+    async with sem:
+        start_time = time.monotonic()
+
         compare_result = await call_new_compare(session)
         if not compare_result:
             return
 
-        left = compare_result.get("left")
-        right = compare_result.get("right")
-        code = compare_result.get("code")
-
-        if not all([left, right, code]):
-            print("Invalid response from /new_compare")
+        if not all([compare_result.get("left"), compare_result.get("right"), compare_result.get("code")]):
+            await error_counter.increment()
             return
 
-        win_id, lose_id = (left, right) if random.random() > 0.5 else (right, left)
-        save_score_data = {
-            "win_id": win_id,
-            "lose_id": lose_id,
-            "code": code,
+        save_data = {
+            "win_id": compare_result["left"],
+            "lose_id": compare_result["right"],
+            "code": compare_result["code"],
         }
 
-        await call_save_score(session, save_score_data)
+        await call_save_score(session, save_data)
 
-    except Exception as e:
-        print(f"Exception in test_qps: {e}")
+        latency = (time.monotonic() - start_time) * 1000
+        if latency > 1000:
+            pass
 
 
 async def main():
-    global error_count
-    total_requests = 0
-    start_time = time.time()
+    connector = aiohttp.TCPConnector(limit=SYSTEM_MAX_CONNECTIONS, force_close=True, enable_cleanup_closed=True)
 
-    async with aiohttp.ClientSession() as session:
-        for _ in range(TEST_TIMES):
-            tasks = [test_qps(session) for _ in range(CONCURRENCY)]
-            await asyncio.gather(*tasks)
+    async with aiohttp.ClientSession(
+        connector=connector, timeout=aiohttp.ClientTimeout(total=REQUEST_TIMEOUT)
+    ) as session:
+        sem = asyncio.Semaphore(CONCURRENCY)
+        tasks = [worker(session, sem) for _ in range(TOTAL_REQUESTS)]
 
-            total_requests += CONCURRENCY
-            elapsed_time = time.time() - start_time
-            qps = total_requests / elapsed_time
+        start_time = time.perf_counter()
+        await asyncio.gather(*tasks)
+        total_time = time.perf_counter() - start_time
 
-            print(
-                f"Elapsed: {elapsed_time:.2f}s | Total Requests: {total_requests} | QPS: {qps:.2f} | Errors: {error_count}"
-            )
+    qps = TOTAL_REQUESTS / total_time
+    error_rate = (error_counter.count / TOTAL_REQUESTS) * 100
+
+    print(f"\n{' Benchmark Results ':=^40}")
+    print(f"Total Requests: {TOTAL_REQUESTS}")
+    print(f"Total Time: {total_time:.2f}s")
+    print(f"QPS: {qps:.2f}")
+    print(f"Errors: {error_counter.count}")
+    print(f"Error Rate: {error_rate:.2f}%")
+    print("=" * 40)
 
 
 if __name__ == "__main__":
+    try:
+        import uvloop
+
+        uvloop.install()
+        print("Using uvloop for better performance")
+    except ImportError:
+        print("Using standard asyncio event loop")
+
     asyncio.run(main())

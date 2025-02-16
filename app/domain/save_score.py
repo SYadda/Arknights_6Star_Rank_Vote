@@ -1,5 +1,5 @@
-import os
 import asyncio
+import os
 import time
 import uuid
 from contextlib import asynccontextmanager
@@ -13,7 +13,7 @@ from litestar.types import Scope
 from msgspec import Struct, msgpack
 from redis.asyncio import Redis, RedisError
 
-MAX_IP_LIMIT = int(os.getenv("ARKVOTES_MAX_IP_LIMIT", 100))
+MAX_IP_LIMIT = int(os.getenv("ARKVOTES_MAX_IP_LIMIT", "100"))
 BASE_MULTIPLIER = 100
 LOW_MULTIPLIER = 1
 LOCK_TIMEOUT = 10
