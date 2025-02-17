@@ -4,7 +4,7 @@
 
 净罪作战来啦！请各位依据干员近期在战场上的风采(尤其是新合约)投票~
 
-前端JS，后端Python Flask，数据全部来自网友投票，仅供娱乐，准确度可能很低，求轻喷。有好点子欢迎直接提issue或者Pull requests！
+前端JS，后端Python Litestar，数据全部来自网友投票，仅供娱乐，准确度可能很低，求轻喷。有好点子欢迎直接提issue或者Pull requests！
 
 ## 直接访问：[https://vote.ltsc.vip](https://vote.ltsc.vip)
 
@@ -22,23 +22,17 @@
 
    ```powershell
    cd .\Arknights_6Star_Rank_Vote\
-   # 创建虚拟环境
-   python -m venv venv
-   # 激活该环境
-   .\venv\Scripts\activate
-   # (可选) 更新 pip
-   python -m pip install -U pip
-   # 安装依赖
-   pip install -r requirements.txt
+
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+
+   uv sync
    ```
 
 1. 运行应用：
 
-   `flask --app backend.py run --debug --host=0.0.0.0 --port 9876`
+   `uv run app run`
 
-   （debug环境将导致关闭/重载应用时，数据库自动写入功能失效，详见[pr39](https://github.com/SYadda/Arknights_6Star_Rank_Vote/pull/39)）
-
-1. 用浏览器打开： http://127.0.0.1:9876
+1. 用浏览器打开： http://127.0.0.1:8080
 
 ## 计分规则
 
@@ -48,7 +42,7 @@
 
 如果你认为两位干员实力不相上下，可以点击 **跳过，换一组** 按钮，感谢你认真、负责地进行干员评价！
 
-最后，程序将统计所有干员的胜率和得分，以胜率排名。(为避免恶意刷票，每个ip只能投50票，自第51票起，每票按0.01票计算权重。)
+最后，程序将统计所有干员的胜率和得分，以胜率排名。(为避免恶意刷票，每个ip只能投100票，自第101票起，每票按0.01票计算权重。)
 
 ## 结果展示
 
@@ -77,6 +71,8 @@
 [@SkadiD](https://github.com/SkadiD)：前端CDN加速和服务器赞助
 
 [@hLdont](https://github.com/hLdont)：后端开发
+
+[@baiqwerdvd](https://github.com/baiqwerdvd)：后端重构
 
 [b站@理性蒸发人](https://space.bilibili.com/22799131)：背景音乐 血狼打灰歌
 
