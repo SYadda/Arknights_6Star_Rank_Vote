@@ -11,6 +11,7 @@ TOTAL_REQUESTS = 100000
 HEADERS = {"Content-Type": "application/json"}
 REQUEST_TIMEOUT = 10
 SYSTEM_MAX_CONNECTIONS = 5000
+new_compare_data = {"code": "000"}
 
 
 class ErrorCounter:
@@ -29,7 +30,7 @@ error_counter = ErrorCounter()
 async def call_new_compare(session: aiohttp.ClientSession) -> dict[str, Any]:
     url = f"{BASE_URL}/new_compare"
     try:
-        async with session.post(url, headers=HEADERS) as response:
+        async with session.post(url, headers=HEADERS, json=new_compare_data) as response:
             if response.status != 200:
                 await error_counter.increment()
                 return {}

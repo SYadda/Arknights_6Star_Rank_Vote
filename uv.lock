@@ -164,6 +164,7 @@ dev = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "ruff" },
+    { name = "viztracer" },
 ]
 linting = [
     { name = "ruff" },
@@ -172,6 +173,7 @@ test = [
     { name = "aiohttp" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+    { name = "viztracer" },
 ]
 
 [package.metadata]
@@ -196,12 +198,14 @@ dev = [
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "ruff" },
+    { name = "viztracer" },
 ]
 linting = [{ name = "ruff" }]
 test = [
     { name = "aiohttp" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
+    { name = "viztracer" },
 ]
 
 [[package]]
@@ -787,6 +791,15 @@ wheels = [
 ]
 
 [[package]]
+name = "objprint"
+version = "0.3.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/81/b8/c10e96120f1585824a1992655334b49da3924edfb364e84a26cc0ecdb89b/objprint-0.3.0.tar.gz", hash = "sha256:b5d83f9d62db5b95353bb42959106e1cd43010dcaa3eed1ad8d7d0b2df9b2d5a", size = 47481 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ec/af/572825252f16f36eeecbc8e3b721913d2640d69b984fdb8907aa8b4b0975/objprint-0.3.0-py3-none-any.whl", hash = "sha256:489083bfc8baf0526f8fd6af74673799511532636f0ce4141133255ded773405", size = 41619 },
+]
+
+[[package]]
 name = "packaging"
 version = "24.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1236,6 +1249,38 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/d2/19/f5b78616566ea68edd42aacaf645adbf71fbd83fc52281fba555dc27e3f1/uvloop-0.21.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f3df876acd7ec037a3d005b3ab85a7e4110422e4d9c1571d4fc89b0fc41b6816", size = 4701068 },
     { url = "https://files.pythonhosted.org/packages/47/57/66f061ee118f413cd22a656de622925097170b9380b30091b78ea0c6ea75/uvloop-0.21.0-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "sha256:bd53ecc9a0f3d87ab847503c2e1552b690362e005ab54e8a48ba97da3924c0dc", size = 4454428 },
     { url = "https://files.pythonhosted.org/packages/63/9a/0962b05b308494e3202d3f794a6e85abe471fe3cafdbcf95c2e8c713aabd/uvloop-0.21.0-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "sha256:a5c39f217ab3c663dc699c04cbd50c13813e31d917642d459fdcec07555cc553", size = 4660018 },
+]
+
+[[package]]
+name = "viztracer"
+version = "1.0.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "objprint" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ab/20/c699e4c355fc63fa9a3516c000e6e0ea1fc12a8ac1fef3ccceeb4b4acc04/viztracer-1.0.2.tar.gz", hash = "sha256:83f3fbc9530808ac048942acaa684ffca3a850de0b098783f67de059bf460764", size = 14270242 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/76/fc/5d32541bc6b758fccf59642103e29b9f039dd34c53b1c213eecba86bfbe1/viztracer-1.0.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:37f9bcc2bd42cde5c4b4fb1ee4c65b795a1c4ed2636876abb49cc6e67721d72e", size = 14437011 },
+    { url = "https://files.pythonhosted.org/packages/68/ed/63d051ffb12db1cf659e5ca5a0373b9d471c7d5525f763e0f59e9689db6f/viztracer-1.0.2-cp312-cp312-macosx_11_0_x86_64.whl", hash = "sha256:01feb66558942c6ac21d07400c95a6254709d5e050bb2cd9ace6bee989da413f", size = 14436844 },
+    { url = "https://files.pythonhosted.org/packages/c4/e3/7de2b047e27f4d98e04504654b63c24b878ede178e6631d5c81248336668/viztracer-1.0.2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:5d7964ae404427c6feea6460a1bccd88fd9898b36bf256fd0a3b20c3ec556e92", size = 14556048 },
+    { url = "https://files.pythonhosted.org/packages/7e/cb/37863d6efdc65e89ab89e92a559c6c2736a7a5fe60d094175d17d407c4bf/viztracer-1.0.2-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:d2680b2bda7b8c42a1a32b391034d58e7ace81a4c601c727a333598bf70df794", size = 14552601 },
+    { url = "https://files.pythonhosted.org/packages/f3/e3/25f5ade889c92440cf279bd66e32965523513642a0e5f8ed58eb087e17ce/viztracer-1.0.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8d5c412c2f3bf6d05a0bc5f50e4bce3642a863a001f0d3b290c6bd7085f045ca", size = 14564496 },
+    { url = "https://files.pythonhosted.org/packages/8d/b1/60ef00a773c631a068f3ef53a7d598408cce4bd60f19e8ef355a9012e77d/viztracer-1.0.2-cp312-cp312-win32.whl", hash = "sha256:f0ba07dff91cdb7a489376f35206594c90b211367abfcb109c7c59f5b6691c18", size = 14600798 },
+    { url = "https://files.pythonhosted.org/packages/5d/45/a53c0fe058780c8262c09a3c8279974e31cc54bc9aaa7d026c4a2f0289d2/viztracer-1.0.2-cp312-cp312-win_amd64.whl", hash = "sha256:0c114f56839e78113f3721e013a6742aca74acfef987eae2ba7c670533950c82", size = 14603623 },
+    { url = "https://files.pythonhosted.org/packages/ba/07/ee99dcc1d567ecb331dbb697cb83e7bedfc9f4851b75b88731898e7ffef4/viztracer-1.0.2-cp313-cp313-macosx_11_0_arm64.whl", hash = "sha256:88b0370ef122bee7cd8f0a984aa0eea8cb0e155bc2ebcf2f5f62e51ff234eb36", size = 14437022 },
+    { url = "https://files.pythonhosted.org/packages/33/7f/66173a4b76de1f01964c9667ebcca715982c76771f9e185757e0f74429cb/viztracer-1.0.2-cp313-cp313-macosx_11_0_x86_64.whl", hash = "sha256:105ad6ead0bad92ee5f626ea074fc6d5136f3c61e619eb10dcd80a062bafd751", size = 14436882 },
+    { url = "https://files.pythonhosted.org/packages/96/ca/4cb125bceb070c7af6c83146dca6d4fc9fe91964386e6576a77c13408df4/viztracer-1.0.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:7bb501611557c17763ae3125305eedf5bc1fb248d8fea905e4ec823d260909d9", size = 14556102 },
+    { url = "https://files.pythonhosted.org/packages/4c/f9/7587c9475ad3475e64f2d780210d3ddcb78e2bbd94f0edf207f2b856b9d3/viztracer-1.0.2-cp313-cp313-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:7b4991549a5b6ab7d8c234e1eb2e6aea32b1a9dc29d0fb7a18404c9876d8dc4b", size = 14552474 },
+    { url = "https://files.pythonhosted.org/packages/f6/b7/b15b7c8b377bda35d29368059b2f5aa598af528cf73fcef238e421884e09/viztracer-1.0.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e3e5f3bb880f52042783576538a21654b16fd3224754844d0fcf5875ca7de144", size = 14564529 },
+    { url = "https://files.pythonhosted.org/packages/45/b1/b54236d0cc8d7eb35f3606bacb6858cb62b44ececc782c7d45f135039f2b/viztracer-1.0.2-cp313-cp313-win32.whl", hash = "sha256:d0a1dee9aa3b275696fd1ace221c1b9f349233c48e12b298c1e5a1ef3d1a2e92", size = 14600837 },
+    { url = "https://files.pythonhosted.org/packages/d8/2e/2bcdfc26d40c32395169ce7d0a28ca81d624705ed30b4926b8a03f1a1b37/viztracer-1.0.2-cp313-cp313-win_amd64.whl", hash = "sha256:8ce63e45642fdf7e46e5c143929272de6b40c7c38a6a5be02169729e8b215c14", size = 14603447 },
+    { url = "https://files.pythonhosted.org/packages/28/a2/7a3948f27d92556afa301a068e39e0f522e9b1c5843db992635f59834fac/viztracer-1.0.2-cp313-cp313t-macosx_11_0_arm64.whl", hash = "sha256:f158a2a1aeb5d14f2413d222db63124dd422d91cdeb6affa1a108950738f8f02", size = 14439740 },
+    { url = "https://files.pythonhosted.org/packages/32/aa/1850a00322aac804dd2bc0d673177635e1416fb6c264239c21b1fe2f7868/viztracer-1.0.2-cp313-cp313t-macosx_11_0_x86_64.whl", hash = "sha256:a53ef805e306a3b77901dbad7a2f2fa7e47339b0fc0703dccd3cd8100676c234", size = 14439550 },
+    { url = "https://files.pythonhosted.org/packages/3a/75/d252920778d7a8c999d0d6f5d0b95479a406667f48dc7cd4baa292a3dab9/viztracer-1.0.2-cp313-cp313t-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0b74ebbe396f2f7a327f08abb1aa2d719436bb144443fa31c01cf37dd6242739", size = 14604114 },
+    { url = "https://files.pythonhosted.org/packages/f3/a9/d3c73d34a1eed08640b01eb31cd288eba9a6fd2d9bc48d53d7072ef73124/viztracer-1.0.2-cp313-cp313t-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:c056a9c2902027b9e4b5b732b646f164d954c4f4d9a8e766b793d9a59efd7f20", size = 14595017 },
+    { url = "https://files.pythonhosted.org/packages/85/f7/bb892175744bc87a20e1d716220e82fee1474c2f42ed078f72560eb5573e/viztracer-1.0.2-cp313-cp313t-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:8df898910342766cdb0e29fc95c3c144b68cc924a54c79f00032e5ae5e862885", size = 14606580 },
+    { url = "https://files.pythonhosted.org/packages/b7/77/25f1d0259f2db2009bd1deb98d70b63557924fbd79f5629dc1d88c649d29/viztracer-1.0.2-cp313-cp313t-win32.whl", hash = "sha256:34340b27079ae39ac47b7d8be982c6e9b4f00d7f8366e7d5de4801fb53d7dce4", size = 14604824 },
+    { url = "https://files.pythonhosted.org/packages/17/fa/01d1d685588f1ad4e826c4516b370739c73c6ae7d47c61718cc5a9f4e249/viztracer-1.0.2-cp313-cp313t-win_amd64.whl", hash = "sha256:75b92ec1fa28a885dc9d31d128212782f68352f492b503d9715d81052ba04142", size = 14608042 },
 ]
 
 [[package]]

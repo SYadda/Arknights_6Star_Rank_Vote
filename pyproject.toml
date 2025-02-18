@@ -28,6 +28,7 @@ test = [
     "pytest",
     "pytest-asyncio",
     "aiohttp",
+    "viztracer"
 ]
 linting = ["ruff"]
 

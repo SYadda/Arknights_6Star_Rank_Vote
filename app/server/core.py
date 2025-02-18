@@ -85,7 +85,7 @@ class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
             ],
         )
         # compression
-        app_config.compression_config = app_conf.compression
+        # app_config.compression_config = app_conf.compression  # noqa: ERA001
         # middleware
         app_config.middleware.append(app_conf.rate_limit.middleware)
 
