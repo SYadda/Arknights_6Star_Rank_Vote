@@ -59,7 +59,7 @@
                     <td>
                         <img id="playPauseBtn" src="../assets/xuelangdahui.jpg" alt="播放/暂停" style="cursor: pointer; width: 100px; height: auto;" @click="music">
                         <!-- <audio id="audio" loop></audio> -->
-                        <audio id="audio" loop ref="audio" :src="playSrc" ></audio>
+                        <audio id="audio" loop ref="audio" :src="playSrc" preload="none"></audio>
                     </td>
                 </tr></table>
             </div>
