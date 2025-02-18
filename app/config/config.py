@@ -13,6 +13,7 @@ with Path.open(CONFIG_PATH, encoding="UTF-8") as f:
 
 DurationUnit = Literal["second", "minute", "hour", "day"]
 
+
 class AppSettings(Struct):
     name: str = field(default="arknights-6star-rank-vote")
     url: str = field(default="http://localhost:8000")
@@ -66,6 +67,7 @@ class RedisSettings(Struct):
             socket_keepalive=self.socket_keepalive,
             health_check_interval=self.health_check_interval,
         )
+
 
 class RateLimitSettings(Struct):
     rate_limit: int = field(default=50000)

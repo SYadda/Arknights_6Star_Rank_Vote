@@ -47,6 +47,7 @@ class ApplicationError(Exception):
 class ApplicationClientError(ApplicationError):
     pass
 
+
 class _HTTPConflictException(HTTPException):
     status_code = HTTP_409_CONFLICT
 
