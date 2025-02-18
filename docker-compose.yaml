@@ -1,33 +1,70 @@
-# docker compose up -d
 version: '3.8'
 
 services:
   redis:
     image: redis:7-alpine
     networks:
-      - app-network
+      - internal-network
     volumes:
       - ./db:/data
     command: redis-server --appendonly yes --appendfsync everysec --save ""
 
+  redis-exporter:
+    image: oliver006/redis_exporter:v1.45.0
+    networks:
+      - internal-network
+    volumes:
+      - ./db_analyze/redis-exporter:/data
+    command: ["--redis.addr", "redis://redis:6379"]
+
+  prometheus:
+    image: prom/prometheus:v2.42.0
+    networks:
+      - internal-network
+    user: "root"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml 
+      - ./db_analyze/prometheus:/prometheus:Z 
+    depends_on:
+      - redis-exporter
+
+  grafana:
+    image: grafana/grafana:9.5.6
+    networks:
+      - internal-network
+      - external-network
+    ports:
+      - "9877:3000"
+    user: "root"
+    volumes:
+      - ./db_analyze/grafana/data:/var/lib/grafana
+      - ./db_analyze/grafana/datasources:/etc/grafana/provisioning/datasources
+    depends_on:
+      - prometheus
+
   app:
     image: arkvotes:v0.1
-    ports:
-      - "8080:8080"
-    command: [ "uv", "run", "app", "run", "--host", "0.0.0.0", "--port", "8080"]
     networks:
-      - app-network
+      - internal-network
+      - external-network
+    ports:
+      - "9876:8080"
+    command: [ "uv", "run", "app", "run", "--host", "0.0.0.0", "--port", "8080" ]
     environment:
       - REDIS_URL=redis://redis:6379/0
       - DATABASE_URL=sqlite+aiosqlite:///./db/data.sqlite
-      - ARKVOTES_MAX_IP_LIMIT=50
+      - ARKVOTES_MAX_IP_LIMIT=100
     volumes:
       - ./db:/workspace/db
       - ./config.toml:/workspace/config.toml
+      - ./templates:/workspace/templates
+      - ./static:/workspace/static
     depends_on:
       - redis
     restart: unless-stopped
 
 networks:
-  app-network:
+  internal-network:
     internal: true
+  external-network:
+    internal: false
