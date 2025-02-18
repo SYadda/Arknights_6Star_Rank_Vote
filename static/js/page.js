@@ -638,7 +638,7 @@ async function calculate_operators_1v1_matrix(){
     const selectedNames = targetData.map(item => item.label);
     let matrix = await get_operators_1v1_matrix()
     const subMatrix = selectedIndices.map(rowIndex => 
-        selectedIndices.map(colIndex => matrix[rowIndex][colIndex])
+        selectedIndices.map(colIndex => matrix[rowIndex][colIndex] / 100)
     );
     tableComponent.updateData(subMatrix, selectedNames);
 }
