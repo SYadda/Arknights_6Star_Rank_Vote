@@ -1,6 +1,6 @@
 [project]
 name = "arknights-6star-rank-vote"
-version = "0.1.0"
+version = "0.2.0"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -11,7 +11,7 @@ dependencies = [
     "cython>=3.0.12",
     "litestar-granian>=0.10.0",
     "litestar-saq>=0.5.0",
-    "litestar[jinja,standard,structlog]>=2.14.0",
+    "litestar[jinja,prometheus,standard,structlog]>=2.14.0",
     "redis[hiredis]>=5.2.1",
     "rtoml>=0.12.0",
     "setuptools>=75.8.0",

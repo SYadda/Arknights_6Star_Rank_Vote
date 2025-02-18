@@ -100,7 +100,7 @@ async def validate_ballot(code: str, ballot_store: Store) -> tuple[int, int]:
 async def calculate_multiplier(identifier: str, redis: Redis) -> int:
     counter_key = f"ip_counter:{identifier}"
     current = await redis.incr(counter_key)
-    return BASE_MULTIPLIER if current <= MAX_IP_LIMIT or MAX_IP_LIMIT<0 else LOW_MULTIPLIER
+    return BASE_MULTIPLIER if current <= MAX_IP_LIMIT or MAX_IP_LIMIT < 0 else LOW_MULTIPLIER
 
 
 async def save_request_to_redis(ballot: Ballot, timestamp: float, redis: Redis):
