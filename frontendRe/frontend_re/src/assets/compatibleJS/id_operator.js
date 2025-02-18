@@ -1,4 +1,4 @@
-{
+export const ID_NAME_DICT = {
     "凯尔希": 3,
     "陈": 10,
     "煌": 17,

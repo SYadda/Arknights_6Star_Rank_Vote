@@ -38,10 +38,10 @@
                                 <div class="function">
                                     <input class="skip" type="button" value="跳过，换一组" onclick="new_compare()">
                                 </div>
-                                <!-- <div class="function">
+                                <div class="function">
                                     <input class="result" type="button" value="查看总投票结果" onclick="close_or_view()">
                                     <input class="close" type="button" value="关闭总投票结果" onclick="close_or_view()">
-                                </div> -->
+                                </div>
                                 <div class="function">
                                     <input class="result" id="self_rst_button" type="button" value="查看您的投票结果"
                                         onclick="view_self()">
@@ -66,34 +66,37 @@
             <div class="footer">
                 <table style="width: 100%"><tr>
                     <td>
-                        <h3 class="move-up-animation red_text">目前仅单机投票开放</h3>
-                        <h3 class="move-up-animation red_text">正式投票将在净罪作战结束后，即02月19日05:00开启</h3>
+                        <h3 class="move-up-animation red_text">净罪作战正式投票 2月19日05:00~2月26日04:59</h3>
+                        <h3 class="move-up-animation red_text">新增随机血狼金曲！按一下随机播放/停止 → </h3>
                     </td>
                     <td>
                         <img id="playPauseBtn" src="../static/img/xuelangdahui.jpg" alt="播放/暂停" style="cursor: pointer; width: 100px; height: auto;">
-                        <audio id="audio" loop>
-                            <source src="../static/mp3/xuelangdahui.mp3" type="audio/mpeg">
+                        <audio id="audio" preload="none" loop>
+
                         </audio>
                     </td>
                 </tr></table>
             </div>
 
             <div class="footer">
-                <h3>投票箱唯一网址:
-                    <a href="https://vote.ltsc.vip">
-                        https://vote.ltsc.vip
-                    </a>
-                </h3>
+                <div class="link-container">
+                    <h3>投票箱唯一网址:
+                        <a href="https://vote.ltsc.vip">
+                            https://vote.ltsc.vip
+                        </a>
+                    </h3>
+                </div>
+
                 <br>
 
-                <h4>V1.4.1 净罪作战 新增血狼打灰歌！按一下播放/暂停</h4>
+                <h4>V2.0.0 净罪作战 网站完全重构！投票更流畅了！！ </h4>
+                <h4>特别感谢 @qwerdvd 做出了巨大的贡献，巨大的carry </h4>
 
                 <br>
-                <h4>作者：董杭杭, @blackwang08, @lengyanyu258, @lpdink, @hLdont, @理性蒸发人</h4>
+                <h4>作者：董杭杭, @blackwang08, @lengyanyu258, @lpdink, @hLdont, @qwerdvd</h4>
+                <h4>bgm作者: <a href="https://space.bilibili.com/22799131">@理性蒸发人</a>, <a href="https://space.bilibili.com/441494429">@埃里克茨威格</a></h4>
                 <h4>服务器赞助：@不会偏微分的fw, 阿里云高校计划, @SkadiD</h4>
             </div>
-        </div>
-        <div class="block">
             <div class="footer">
                 <!-- 这里增加了动画效果，类和style的效果如下：
                      red_text：原有的类，令文字呈红色
@@ -101,8 +104,13 @@
                      animation-delay：对动画的延时，用于使文字展示成从上往下依次出现的效果
                      如果需要修改文字，增加行数，请对应修改延时描述并加上动画类   -->
                 <h2 class="move-up-animation" style="animation-delay: 0s;">规则：每次投票，得票+1分，未得票-1分，最后统计所有干员的胜率和得分，以胜率排名。</h2>
-                <h2 class="move-up-animation" style="animation-delay: 0.2s;">每个ip只能投50票，自第51票起，每票按0.01票计算权重。</h2>
-                <h2 class="move-up-animation" style="animation-delay: 0.4s;">自己的投票结果，不受50票限制，但网页刷新/关闭时会清零。</h2>
+                <h2 class="move-up-animation" style="animation-delay: 0.2s;">每个ip只能投100票，自第101票起，每票按0.01票计算权重。</h2>
+                <h2 class="move-up-animation" style="animation-delay: 0.4s;">自己的投票结果，不受100票限制，但网页刷新/关闭时会清零。</h2>
+            </div>
+        </div>
+        <div class="block">
+            <div class="footer">
+                <!-- 这里增加了动画效果 如果需要修改文字，增加行数，请对应修改延时描述并加上动画类   -->
                 <h2 class="move-up-animation red_text" style="animation-delay: 0.6s;">警告：由于干员随机抽取，次数并不完全一样，且数据全部来源于网友投票，结果可能存在不少谬误。</h2>
                 <h2 class="move-up-animation red_text" style="animation-delay: 0.8s;">仅供娱乐，请勿用作抽卡建议和TTK工具！</h2>
                 <h2 class="move-up-animation" style="animation-delay: 0.8s;">出于服务器资源管理考虑，实时投票结果并不会实时存储，刷票等行为导致服务器崩溃将丢失投票结果。</h2>
@@ -111,30 +119,48 @@
                 <h4 class="move-up-animation" style="animation-delay: 1.4s;">“自定义聚类数目”功能：聚类数目越多，区分度越高(图中以颜色区分) 默认区分度为 80%</h3>
                     <h4 class="move-up-animation" style="animation-delay: 1.6s;">若要尝试不同的聚类数目，可以在右下方的“分层数”中调整。</h4>
                         <br>
-                        <h3 class="move-up-animation" style="animation-delay: 1.8s;">本项目已开源至GitHub仓库：</h3>
-                        <a href="https://github.com/SYadda/Arknights_6Star_Rank_Vote" class="move-up-animation" style="animation-delay: 1.8s;">
-                            https://github.com/SYadda/Arknights_6Star_Rank_Vote
-                        </a>
-                        <h3 class="move-up-animation" style="animation-delay: 2s;">第三次6星强度投票结果：(截至艾拉)</h3>
-                        <a href="https://github.com/SYadda/Arknights_6Star_Rank_Vote/blob/main/result_V1.3.jpeg" class="move-up-animation" style="animation-delay: 2.2s;">
-                            https://github.com/SYadda/Arknights_6Star_Rank_Vote/<br>blob/main/result_V1.3.jpeg
-                        </a>
-                        <h3 class="move-up-animation" style="animation-delay: 2.2s;">6星厨力投票结果：</h3>
-                        <a href="https://nga.178.com/read.php?tid=39828466" class="move-up-animation" style="animation-delay: 2s;">
-                            https://nga.178.com/read.php?tid=39828466
-                        </a>
-                        <h3 class="move-up-animation" style="animation-delay: 2.4s;">第二次6星强度投票结果：(截至锏)</h3>
-                        <a href="https://nga.178.com/read.php?tid=38662591" class="move-up-animation" style="animation-delay: 2.2s;">
-                            https://nga.178.com/read.php?tid=38662591
-                        </a>
-                        <h3 class="move-up-animation" style="animation-delay: 2.6s;">第一次6星强度投票结果：(截至涤火杰西卡)</h3>
-                        <a href="https://nga.178.com/read.php?tid=38050985" class="move-up-animation" style="animation-delay: 2.4s;">
-                            https://nga.178.com/read.php?tid=38050985
-                        </a>
-                        <h3 class="move-up-animation" style="animation-delay: 2.8s;">萨米收藏品投票结果：(不含DLC)</h3>
-                        <a href="https://nga.178.com/read.php?tid=38174026" class="move-up-animation" style="animation-delay: 2.6s;">
-                            https://nga.178.com/read.php?tid=38174026
-                        </a>
+                        
+                            <div class="link-container">
+                                <h3 class="move-up-animation" style="animation-delay: 1.8s;">本项目已开源至GitHub仓库：
+                                    <a href="https://github.com/SYadda/Arknights_6Star_Rank_Vote" class="move-up-animation" style="animation-delay: 1.8s;">https://github.com/SYadda/Arknights_6Star_Rank_Vote</a>
+                                </h3>
+                            </div>
+
+                            <div class="link-container">
+                                <h3 class="move-up-animation" style="animation-delay: 2s;">第三次6星强度投票结果：(截至艾拉)
+                                    <a href="https://github.com/SYadda/Arknights_6Star_Rank_Vote/blob/main/result_V1.3.jpeg" class="move-up-animation" style="animation-delay: 2.2s;">https://github.com/SYadda/Arknights_6Star_Rank_Vote/<br>blob/main/result_V1.3.jpeg</a>
+                                </h3>                                
+                            </div>
+
+                        
+                            <div class="link-container">
+                                <h3 class="move-up-animation" style="animation-delay: 2.2s;">6星厨力投票结果：
+                                    <a href="https://nga.178.com/read.php?tid=39828466" class="move-up-animation" style="animation-delay: 2s;">https://nga.178.com/read.php?tid=39828466</a>
+                                </h3> 
+                            </div>
+
+                            
+                            <div class="link-container">
+                                <h3 class="move-up-animation" style="animation-delay: 2.4s;">第二次6星强度投票结果：(截至锏)
+                                    <a href="https://nga.178.com/read.php?tid=38662591" class="move-up-animation" style="animation-delay: 2.4s;">https://nga.178.com/read.php?tid=38662591</a>
+                                </h3>
+                            </div>
+
+                            
+                            <div class="link-container">
+                                <h3 class="move-up-animation" style="animation-delay: 2.6s;">第一次6星强度投票结果：(截至涤火杰西卡)
+                                    <a href="https://nga.178.com/read.php?tid=38050985" class="move-up-animation" style="animation-delay: 2.6s;">https://nga.178.com/read.php?tid=38050985</a>
+                                </h3>
+                            </div>
+
+                            <div class="link-container">
+                                <h3 class="move-up-animation" style="animation-delay: 2.8s;">萨米收藏品投票结果：(不含DLC)
+                                    <a href="https://nga.178.com/read.php?tid=38174026" class="move-up-animation" style="animation-delay: 2.8s;">https://nga.178.com/read.php?tid=38174026</a>
+                                </h3>
+                            </div>
+                            
+                        
+                        
             </div>
         </div>
         
@@ -189,16 +215,16 @@
         <div class="nclassesInput">
             <label for="nclassesInput">分层数：</label>
             <input id="nclassesInput" style="font-size: medium;" type="number" min="1" max="9" value="6">
-            <br>
-            <label for="tokenInput">存档秘钥：</label>
-            <input id="tokenInput" style="font-size: medium;">
+            <!-- <br> -->
+            <!-- <label for="tokenInput">存档秘钥：</label> -->
+            <!-- <input id="tokenInput" style="font-size: medium;"> -->
             <br>
             <label for="GVF">区分度:</label>
             <label id="GVF"></label>
-            <br>
-            <input type="button" class="ioport" onclick="upload()" value="上传个人结果">
-            <br>
-            <input type="button" class="ioport" onclick="sync()" value="同步个人结果">
+            <!-- <br> -->
+            <!-- <input type="button" class="ioport" onclick="upload()" value="上传个人结果"> -->
+            <!-- <br> -->
+            <!-- <input type="button" class="ioport" onclick="sync()" value="同步个人结果"> -->
             <!-- <br>
             <input type="button" class="ioport" onclick="export_rst()" value="导出个人结果">
             <br>
@@ -207,123 +233,14 @@
                 accept=".json" multiple="false"> -->
         </div>
         <button id="topBtn" onclick="scrollToTop()">回到顶部</button>
+        <button id="refreshBtn" onclick="view_final_order()">刷新总榜数据</button>
         <div class="background"></div>
     </div>
 
-    <script type="text/javascript">
-        const DATA_DICT = {
-            'SERVER_ADDRESS': "https://vote.ltsc.vip", 
-            'DICT_PIC_URL': {
-                "余":"https://media.prts.wiki/7/73/半身像_余_1.png",
-                "烛煌":"https://media.prts.wiki/8/89/半身像_烛煌_1.png",
-                "引星棘刺": "https://media.prts.wiki/d/d7/半身像_引星棘刺_1.png",
-                "荒芜拉普兰德": "https://media.prts.wiki/a/ac/半身像_荒芜拉普兰德_1.png",
-                "忍冬": "https://media.prts.wiki/b/b5/半身像_忍冬_1.png",
-                "弑君者": "https://media.prts.wiki/e/e9/半身像_弑君者_1.png",
-                "维娜·维多利亚": "https://media.prts.wiki/1/16/半身像_维娜·维多利亚_1.png",
-                "玛露西尔": "https://media.prts.wiki/1/13/半身像_玛露西尔_1.png",
-                "佩佩": "https://media.prts.wiki/2/24/半身像_佩佩_1.png",
-                "娜仁图亚": "https://media.prts.wiki/3/3c/半身像_娜仁图亚_1.png",
-                "妮芙": "https://media.prts.wiki/4/49/半身像_妮芙_1.png",
-                "乌尔比安": "https://media.prts.wiki/2/20/半身像_乌尔比安_1.png",
-                "维什戴尔": "https://media.prts.wiki/5/5a/半身像_维什戴尔_1.png",
-                "逻各斯": "https://media.prts.wiki/0/0a/半身像_逻各斯_1.png",
-                "魔王": "https://media.prts.wiki/8/8c/半身像_魔王_1.png",
-                "阿斯卡纶": "https://media.prts.wiki/0/08/半身像_阿斯卡纶_1.png",
-                "艾拉": "https://media.prts.wiki/1/12/半身像_艾拉_1.png",
-                "黍": "https://media.prts.wiki/5/52/半身像_黍_1.png",
-                "左乐": "https://media.prts.wiki/9/93/半身像_左乐_1.png",
-                "莱伊": "https://media.prts.wiki/c/c8/半身像_莱伊_1.png",
-                "锏": "https://media.prts.wiki/7/72/半身像_锏_1.png",
-                "塑心": "https://media.prts.wiki/7/7e/半身像_塑心_1.png",
-                "薇薇安娜": "https://media.prts.wiki/5/5d/半身像_薇薇安娜_1.png",
-                "止颂": "https://media.prts.wiki/4/49/半身像_止颂_1.png",
-                "赫德雷": "https://media.prts.wiki/b/b4/半身像_赫德雷_1.png",
-                "涤火杰西卡": "https://media.prts.wiki/1/1e/半身像_涤火杰西卡_1.png",
-                "纯烬艾雅法拉": "https://media.prts.wiki/b/bd/半身像_纯烬艾雅法拉_1.png",
-                "琳琅诗怀雅": "https://media.prts.wiki/9/99/半身像_琳琅诗怀雅_1.png",
-                "提丰": "https://media.prts.wiki/5/51/半身像_提丰_1.png",
-                "圣约送葬人": "https://media.prts.wiki/7/71/半身像_圣约送葬人_1.png",
-                "缪尔赛思": "https://media.prts.wiki/4/4a/半身像_缪尔赛思_1.png",
-                "霍尔海雅": "https://media.prts.wiki/5/5a/半身像_霍尔海雅_1.png",
-                "淬羽赫默": "https://media.prts.wiki/5/54/半身像_淬羽赫默_1.png",
-                "伊内丝": "https://media.prts.wiki/5/59/半身像_伊内丝_1.png",
-                "麒麟R夜刀": "https://media.prts.wiki/1/16/半身像_麒麟R夜刀_1.png",
-                "仇白": "https://media.prts.wiki/4/40/半身像_仇白_1.png",
-                "重岳": "https://media.prts.wiki/e/e5/半身像_重岳_1.png",
-                "林": "https://media.prts.wiki/7/75/半身像_林_1.png",
-                "焰影苇草": "https://media.prts.wiki/a/ae/半身像_焰影苇草_1.png",
-                "缄默德克萨斯": "https://media.prts.wiki/0/0d/半身像_缄默德克萨斯_1.png",
-                "斥罪": "https://media.prts.wiki/e/e7/半身像_斥罪_1.png",
-                "伺夜": "https://media.prts.wiki/f/fc/半身像_伺夜_1.png",
-                "白铁": "https://media.prts.wiki/e/e5/半身像_白铁_1.png",
-                "玛恩纳": "https://media.prts.wiki/b/b1/半身像_玛恩纳_1.png",
-                "百炼嘉维尔": "https://media.prts.wiki/e/ed/半身像_百炼嘉维尔_1.png",
-                "鸿雪": "https://media.prts.wiki/4/4d/半身像_鸿雪_1.png",
-                "多萝西": "https://media.prts.wiki/0/04/半身像_多萝西_1.png",
-                "黑键": "https://media.prts.wiki/e/e6/半身像_黑键_1.png",
-                "归溟幽灵鲨": "https://media.prts.wiki/f/f7/半身像_归溟幽灵鲨_1.png",
-                "艾丽妮": "https://media.prts.wiki/b/bd/半身像_艾丽妮_1.png",
-                "流明": "https://media.prts.wiki/9/9f/半身像_流明_1.png",
-                "号角": "https://media.prts.wiki/8/85/半身像_号角_1.png",
-                "菲亚梅塔": "https://media.prts.wiki/f/f8/半身像_菲亚梅塔_1.png",
-                "澄闪": "https://media.prts.wiki/1/17/半身像_澄闪_1.png",
-                "令": "https://media.prts.wiki/d/d6/半身像_令_1.png",
-                "老鲤": "https://media.prts.wiki/e/e8/半身像_老鲤_1.png",
-                "灵知": "https://media.prts.wiki/a/a9/半身像_灵知_1.png",
-                "耀骑士临光": "https://media.prts.wiki/d/db/半身像_耀骑士临光_1.png",
-                "焰尾": "https://media.prts.wiki/9/92/半身像_焰尾_1.png",
-                "远牙": "https://media.prts.wiki/4/4f/半身像_远牙_1.png",
-                "琴柳": "https://media.prts.wiki/2/28/半身像_琴柳_1.png",
-                "假日威龙陈": "https://media.prts.wiki/5/51/半身像_假日威龙陈_1.png",
-                "水月": "https://media.prts.wiki/2/22/半身像_水月_1.png",
-                "帕拉斯": "https://media.prts.wiki/7/72/半身像_帕拉斯_1.png",
-                "卡涅利安": "https://media.prts.wiki/3/36/半身像_卡涅利安_1.png",
-                "浊心斯卡蒂": "https://media.prts.wiki/7/7f/半身像_浊心斯卡蒂_1.png",
-                "凯尔希": "https://media.prts.wiki/c/c0/半身像_凯尔希_1.png",
-                "歌蕾蒂娅": "https://media.prts.wiki/3/33/半身像_歌蕾蒂娅_1.png",
-                "异客": "https://media.prts.wiki/d/d3/半身像_异客_1.png",
-                "灰烬": "https://media.prts.wiki/f/fa/半身像_灰烬_1.png",
-                "夕": "https://media.prts.wiki/f/f2/半身像_夕_1.png",
-                "嵯峨": "https://media.prts.wiki/a/a4/半身像_嵯峨_1.png",
-                "空弦": "https://media.prts.wiki/8/86/半身像_空弦_1.png",
-                "山": "https://media.prts.wiki/7/7b/半身像_山_1.png",
-                "迷迭香": "https://media.prts.wiki/9/9a/半身像_迷迭香_1.png",
-                "泥岩": "https://media.prts.wiki/0/08/半身像_泥岩_1.png",
-                "瑕光": "https://media.prts.wiki/a/a6/半身像_瑕光_1.png",
-                "史尔特尔": "https://media.prts.wiki/5/58/半身像_史尔特尔_1.png",
-                "森蚺": "https://media.prts.wiki/4/4a/半身像_森蚺_1.png",
-                "棘刺": "https://media.prts.wiki/0/08/半身像_棘刺_1.png",
-                "铃兰": "https://media.prts.wiki/f/fe/半身像_铃兰_1.png",
-                "早露": "https://media.prts.wiki/9/92/半身像_早露_1.png",
-                "W": "https://media.prts.wiki/4/45/半身像_W_1.png",
-                "温蒂": "https://media.prts.wiki/5/5f/半身像_温蒂_1.png",
-                "傀影": "https://media.prts.wiki/a/ad/半身像_傀影_1.png",
-                "风笛": "https://media.prts.wiki/e/ea/半身像_风笛_1.png",
-                "刻俄柏": "https://media.prts.wiki/6/69/半身像_刻俄柏_1.png",
-                "年": "https://media.prts.wiki/4/4d/半身像_年_1.png",
-                "阿": "https://media.prts.wiki/7/72/半身像_阿_1.png",
-                "煌": "https://media.prts.wiki/1/1c/半身像_煌_1.png",
-                "莫斯提马": "https://media.prts.wiki/f/fc/半身像_莫斯提马_1.png",
-                "麦哲伦": "https://media.prts.wiki/c/c7/半身像_麦哲伦_1.png",
-                "赫拉格": "https://media.prts.wiki/8/82/半身像_赫拉格_1.png",
-                "黑": "https://media.prts.wiki/2/23/半身像_黑_1.png",
-                "陈": "https://media.prts.wiki/e/e1/半身像_陈_1.png",
-                "斯卡蒂": "https://media.prts.wiki/a/a5/半身像_斯卡蒂_1.png",
-                "银灰": "https://media.prts.wiki/9/90/半身像_银灰_1.png",
-                "塞雷娅": "https://media.prts.wiki/4/44/半身像_塞雷娅_1.png",
-                "星熊": "https://media.prts.wiki/2/22/半身像_星熊_1.png",
-                "夜莺": "https://media.prts.wiki/e/e9/半身像_夜莺_1.png",
-                "闪灵": "https://media.prts.wiki/d/d6/半身像_闪灵_1.png",
-                "安洁莉娜": "https://media.prts.wiki/3/30/半身像_安洁莉娜_1.png",
-                "艾雅法拉": "https://media.prts.wiki/3/36/半身像_艾雅法拉_1.png",
-                "伊芙利特": "https://media.prts.wiki/2/23/半身像_伊芙利特_1.png",
-                "推进之王": "https://media.prts.wiki/9/98/半身像_推进之王_1.png",
-                "能天使": "https://media.prts.wiki/2/2e/半身像_能天使_1.png"
-            }
-        };
-    </script>
-    <script src="https://cdn.bootcdn.net/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
+    <script type="text/javascript" src="../static/js/datadict.js"></script>
+    <script type="text/javascript" src="../static/js/id_operator.js"></script>
+    <!-- <script src="https://cdn.bootcdn.net/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script> -->
+    <!-- <script src="https://cdn.jsdelivr.net/npm/fzstd/umd/index.js"></script> -->
     <script type="text/javascript" src="../static/js/geostats.min.js"></script>
     <script type="text/javascript" src="../static/js/palette.min.js"></script>
     <script type="text/javascript" src="../static/js/transfer.js"></script>

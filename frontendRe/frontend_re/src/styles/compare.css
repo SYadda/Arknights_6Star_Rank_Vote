@@ -24,7 +24,7 @@ body {
     right: 0;
     width: 300px; /* 设置背景图片宽度 */
     height: 200px; /* 设置背景图片高度 */
-    background-image: url('../img/keobeCG.png');
+    background-image: url('../assets/keobeCG.png');
     background-repeat: no-repeat;
     background-size: cover;
     z-index: -1; /* 使背景图片处于内容下方 */
@@ -326,25 +326,6 @@ body {
 }
 
 #topBtn:hover {
-    background-color: #ccc;
-}
-
-#refreshBtn {
-    display: none;
-    /* 默认情况下隐藏按钮 */
-    position: fixed;
-    bottom: 50px;
-    right: 100px;
-    background-color: #dddddd;
-    color: #000;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    padding: 10px 20px;
-    transition: all 0.5s ease;
-}
-
-#refreshBtn:hover {
     background-color: #ccc;
 }
 

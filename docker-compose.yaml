@@ -1,0 +1,33 @@
+# docker compose up -d
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    networks:
+      - app-network
+    volumes:
+      - ./db:/data
+    command: redis-server --appendonly yes --appendfsync everysec --save ""
+
+  app:
+    image: arkvotes:v0.1
+    ports:
+      - "8080:8080"
+    command: [ "uv", "run", "app", "run", "--host", "0.0.0.0", "--port", "8080"]
+    networks:
+      - app-network
+    environment:
+      - REDIS_URL=redis://redis:6379/0
+      - DATABASE_URL=sqlite+aiosqlite:///./db/data.sqlite
+      - ARKVOTES_MAX_IP_LIMIT=50
+    volumes:
+      - ./db:/workspace/db
+      - ./config.toml:/workspace/config.toml
+    depends_on:
+      - redis
+    restart: unless-stopped
+
+networks:
+  app-network:
+    internal: true

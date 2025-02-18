@@ -4,10 +4,16 @@ list/
 
 # 1.3.2版本 将个人榜保存在服务器上的数据库文件
 archive.db
-operators_vote_records.db
+operators_vote_records.
+data.sqlite
+app/snowflake/snowflake.c
+db
 
 nohup.out
 .vscode/
+.ruff_cache/
+
+test.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -25,7 +31,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/

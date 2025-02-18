@@ -1,7 +1,6 @@
 // const SERVER_ADDRESS = `http://${DATA_DICT['SERVER_IP']}:${DATA_DICT['SERVER_PORT']}`;
 const SERVER_ADDRESS = DATA_DICT['SERVER_ADDRESS'];
 const DICT_PIC_URL = DATA_DICT['DICT_PIC_URL'];
-const OPERATOR_NAMES = Object.keys(DICT_PIC_URL).reverse();
 
 class Hero {
     constructor(name, data = {win_times: 0, lose_times: 0, scores:  0, vote_times:  0, win_rate: -1}) {
@@ -94,21 +93,42 @@ nclasses_input.addEventListener('input', function () {
     });
 });
 
-const key_input = document.getElementById('tokenInput');
-key_input.value = localStorage.getItem('key') || '';
-key_input.addEventListener('blur', function () {
-    localStorage.setItem('key', key_input.value);
-    alert('上传密钥保存成功');
-})
+// const key_input = document.getElementById('tokenInput');
+// key_input.value = localStorage.getItem('key') || '';
+// key_input.addEventListener('blur', function () {
+//     localStorage.setItem('key', key_input.value);
+//     alert('上传密钥保存成功');
+// })
 
 // 跟随鼠标的夕龙泡泡
-let currentMouseTop, currentScrollTop;
+let currentMouseTop, currentScrollTop, currentScrollWidth, currentScrollHeight;
+
+// 获取pic_mouse的宽度和高度
 const pic_mouse = document.querySelector('#mouse_follower');
+const picMouseWidth = pic_mouse.offsetWidth;
+const picMouseHeight = pic_mouse.offsetHeight;
+
 document.addEventListener('mousemove', function (e) {
     currentMouseTop = e.pageY;
     currentScrollTop = document.documentElement.scrollTop;
-    pic_mouse.style.left = `${e.pageX}px`;
-    pic_mouse.style.top = `${e.pageY}px`;
+    currentScrollWidth = document.documentElement.scrollWidth;
+    currentScrollHeight = document.documentElement.scrollHeight;
+
+    // 计算pic_mouse的左边和顶部位置
+    let left = e.pageX;
+    let top = e.pageY;
+
+    // 确保pic_mouse不会超出视窗
+    if (left + picMouseWidth + 21 > currentScrollWidth) {
+        left = e.pageX - picMouseWidth - 21;
+    }
+    if (top + picMouseHeight + 21 > currentScrollHeight) {
+        top = e.pageY - picMouseHeight - 21;
+        currentMouseTop = top;
+    }
+
+    pic_mouse.style.left = `${left}px`;
+    pic_mouse.style.top = `${top}px`;
 })
 
 // 当页面向下滚动一定距离时，显示回到顶部按钮
@@ -233,11 +253,13 @@ function view_self() {
 function close_or_view() {
     const close = document.getElementsByClassName('close');
     const result = document.getElementsByClassName('result');
+    const refresh = document.getElementById('refreshBtn');
     if (close_or_view_flag) {
         close_or_view_flag = false;
         view_final_order();
         close[0].style.display = 'inline';
         result[0].style.display = 'none';
+        refresh.style.display = 'inline';
     } else {
         close_or_view_flag = true;
         document.getElementById("已收集数据量").innerText = '';
@@ -250,6 +272,7 @@ function close_or_view() {
         }
         close[0].style.display = 'none';
         result[0].style.display = 'inline';
+        refresh.style.display = 'none';
     }
 }
 
@@ -259,20 +282,30 @@ function close_or_view() {
 function new_compare() {
     xhr = new XMLHttpRequest();
     xhr.open('POST', `${SERVER_ADDRESS}/new_compare`, true);
-    xhr.send();
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.send(JSON.stringify({
+        code: code
+    }));
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
-            const name = xhr.responseText.split(' ');
-            [left_name, right_name, code] = name;
+            const data = JSON.parse(xhr.responseText);
+            left_id = data.left;
+            right_id = data.right;
+            code = data.code;
             const left_png = document.getElementById("left_png");
             const right_png = document.getElementById("right_png");
+            left_name = Object.keys(ID_NAME_DICT).find(key => ID_NAME_DICT[key] === left_id);
+            right_name = Object.keys(ID_NAME_DICT).find(key => ID_NAME_DICT[key] === right_id);
             left_png.src = DICT_PIC_URL[left_name];
             left_png.alt = DICT_PIC_URL[left_name].split('/').at(-1);
             right_png.src = DICT_PIC_URL[right_name];
             right_png.alt = DICT_PIC_URL[right_name].split('/').at(-1);
             document.getElementById("left_png_name").innerText = left_name;
             document.getElementById("right_png_name").innerText = right_name;
+        }
+        else if (xhr.status === 400) {
+            new_compare();
         }
     }
 }
@@ -290,11 +323,17 @@ function save_score(win_name, lose_name) {
     xhr = new XMLHttpRequest();
     xhr.open('POST', `${SERVER_ADDRESS}/save_score`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
+    // xhr.send(JSON.stringify({
+    //     win_name: win_name,
+    //     lose_name: lose_name,
+    //     code: code
+    // }));
     xhr.send(JSON.stringify({
-        win_name: win_name,
-        lose_name: lose_name,
+        win_id: ID_NAME_DICT[win_name],
+        lose_id: ID_NAME_DICT[lose_name],
         code: code
     }));
+
 
     xhr.onreadystatechange = function () {
         if (xhr.readyState === 4 && xhr.status === 200) {
@@ -413,62 +452,62 @@ function get_SDCM(cluster_list) {
 }
 
 // 上传同步
-function upload() {
-    const key = localStorage.getItem('key') || "";
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${SERVER_ADDRESS}/upload`, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    console.log(LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))))
-    console.log(LZString.compress(JSON.stringify(Object.fromEntries(hero_dict))))
-    xhr.send(JSON.stringify({
-        key: key, 
-        data: LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))), 
-        vote_times: vote_times
-    }));
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const result = JSON.parse(xhr.responseText); 
-            if (result?.error) {
-                alert('上传失败：' + result?.error);
-                return;
-            }
-            if (result?.key) {
-                alert('上传成功：' + formatTime(result?.updated_at));
-                localStorage.setItem('key', result?.key);
-                const key_input = document.getElementById('tokenInput');
-                key_input.value = result?.key;
-            } else {
-                alert('上传失败');
-            }
-        }
-    }
-}
-function sync() {
-    const key = localStorage.getItem('key') || "";
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', `${SERVER_ADDRESS}/sync?key=${key}`, true);
-    xhr.send();
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const result = JSON.parse(xhr.responseText); 
-            if (result?.error) {
-                alert('同步失败：' + result?.error);
-                return;
-            }
-            if (result?.data) {
-                const data = LZString.decompressFromUTF16(result?.data);
-                console.log(result?.data, data)
-                localStorage.setItem('hero_dict', data);
-                localStorage.setItem('vote_times', result?.vote_times);
-                alert('同步数据成功：' + formatTime(result?.updated_at));
-                location.reload();
-            } else {
-                alert('同步失败');
-            }
-        }
-    }
+// function upload() {
+//     const key = localStorage.getItem('key') || "";
+//     const xhr = new XMLHttpRequest();
+//     xhr.open('POST', `${SERVER_ADDRESS}/upload`, true);
+//     xhr.setRequestHeader("Content-Type", "application/json");
+//     console.log(LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))))
+//     console.log(LZString.compress(JSON.stringify(Object.fromEntries(hero_dict))))
+//     xhr.send(JSON.stringify({
+//         key: key, 
+//         data: LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))), 
+//         vote_times: vote_times
+//     }));
+//     xhr.onreadystatechange = function () {
+//         if (xhr.readyState === 4 && xhr.status === 200) {
+//             const result = JSON.parse(xhr.responseText); 
+//             if (result?.error) {
+//                 alert('上传失败：' + result?.error);
+//                 return;
+//             }
+//             if (result?.key) {
+//                 alert('上传成功：' + formatTime(result?.updated_at));
+//                 localStorage.setItem('key', result?.key);
+//                 const key_input = document.getElementById('tokenInput');
+//                 key_input.value = result?.key;
+//             } else {
+//                 alert('上传失败');
+//             }
+//         }
+//     }
+// }
+// function sync() {
+//     const key = localStorage.getItem('key') || "";
+//     const xhr = new XMLHttpRequest();
+//     xhr.open('GET', `${SERVER_ADDRESS}/sync?key=${key}`, true);
+//     xhr.send();
+//     xhr.onreadystatechange = function () {
+//         if (xhr.readyState === 4 && xhr.status === 200) {
+//             const result = JSON.parse(xhr.responseText); 
+//             if (result?.error) {
+//                 alert('同步失败：' + result?.error);
+//                 return;
+//             }
+//             if (result?.data) {
+//                 const data = LZString.decompressFromUTF16(result?.data);
+//                 console.log(result?.data, data)
+//                 localStorage.setItem('hero_dict', data);
+//                 localStorage.setItem('vote_times', result?.vote_times);
+//                 alert('同步数据成功：' + formatTime(result?.updated_at));
+//                 location.reload();
+//             } else {
+//                 alert('同步失败');
+//             }
+//         }
+//     }
+// }
 
-}
 function formatTime(timestamp) {
     if (typeof timestamp === 'string') return timestamp;
     var date = new Date(timestamp * 1000);
@@ -545,7 +584,6 @@ async function get_operators_1v1_matrix() {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
                     let operator_matrix = JSON.parse(xhr.responseText);
-                    console.log(operator_matrix);
                     resolve(operator_matrix);
                 } else {
                     reject(new Error('请求失败'));
@@ -576,10 +614,12 @@ function trigger_vote_1v1_matrix_visible() {
 }
 
 // 干员1v1对位穿梭框配置
-const OPERATOR_NAMES_KEY_LABEL = OPERATOR_NAMES.map((name, index) => ({
-    key: index,
-    label: name
+const OPERATOR_NAMES_KEY_LABEL = Object.entries(ID_NAME_DICT).map(([name, oid], index) => ({
+    key: oid,
+    label: name,
+    index: index
 }));
+
 let sourceData = [...OPERATOR_NAMES_KEY_LABEL];
 let targetData = [];
 const transferComponent = new TransferComponent(sourceData, targetData, '干员列表', '选中列表');
@@ -587,7 +627,6 @@ transferComponent.mount(document.getElementById('operators-1v1-transfer'));
 
 // 干员1v1对位展示表格配置
 let table_labels = [];
-// table data as a two-dimensional array with performance comparisons
 let table_Data = [];
 
 const tableComponent = new TableComponent(table_Data, table_labels);
@@ -598,18 +637,14 @@ tableComponent.mount(operators_1v1_table);
 // 计算1v1对表格
 async function calculate_operators_1v1_matrix(){
     operators_1v1_table.style.display = "block";
-    let matrix = await get_operators_1v1_matrix()
-    matrix = matrix.operators_1v1_matrix
     let transferData = transferComponent.getSourceAndTarget()
     sourceData = transferData.source
     targetData = transferData.target
-
-    const selectedIndices = targetData.map(item => item.key);
+    const selectedIndices = targetData.map(item => item.index);
     const selectedNames = targetData.map(item => item.label);
-    console.log(selectedIndices)
-    console.log(selectedNames)
+    let matrix = await get_operators_1v1_matrix()
     const subMatrix = selectedIndices.map(rowIndex => 
-        selectedIndices.map(colIndex => matrix[rowIndex][colIndex])
+        selectedIndices.map(colIndex => matrix[rowIndex][colIndex] / 100)
     );
     tableComponent.updateData(subMatrix, selectedNames);
 }
@@ -625,9 +660,20 @@ function clear_operators_1v1_matrix(){
 // 血狼打灰歌
 const audio = document.getElementById('audio');
 const playPauseBtn = document.getElementById('playPauseBtn');
+const playList = [
+    { src: "../static/mp3/xuelangdahui.mp3", type: "audio/mpeg" },
+    { src: "../static/mp3/tongtong.mp3", type: "audio/mpeg" }
+]
+let currentTrackIndex = -1;
 
 playPauseBtn.addEventListener('click', () => {
     if (audio.paused) {
+        let nextTrackIndex;
+        do {
+            nextTrackIndex = Math.floor(Math.random() * playList.length);
+        } while (nextTrackIndex === currentTrackIndex);
+        currentTrackIndex = nextTrackIndex;
+        audio.src = playList[currentTrackIndex].src;
         audio.play();
     } else {
         audio.pause();
