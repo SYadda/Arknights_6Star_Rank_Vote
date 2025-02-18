@@ -1,5 +1,6 @@
-import structlog
 from itertools import product
+
+import structlog
 from saq.types import Context
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
@@ -56,6 +57,7 @@ async def database_save_task(_: Context):
     finally:
         logger.info("Database update task completed")
 
+
 async def redis_op_matrix_update_task(_: Context):
     try:
         logger.info("redis_op_matrix_update_task started.")
@@ -63,9 +65,10 @@ async def redis_op_matrix_update_task(_: Context):
         values = await task_redis.mget(*redis_keys)
         op_length = len(operator_ids)
         values = [[int(values[i * op_length + j]) for j in range(op_length)] for i in range(op_length)]
-        async with task_redis.lock('lock:op_matrix', timeout=5, blocking_timeout=3):
+        async with task_redis.lock("lock:op_matrix", timeout=5, blocking_timeout=3):
             await task_redis.set("op_matrix", str(values))
-    except Exception as e:
+
+    except Exception as e:  # noqa: BLE001
         logger.error("redis_op_matrix_update_task fail.", error=str(e))
     finally:
         logger.info("redis_op_matrix_update_task completed")
