@@ -2,6 +2,7 @@
 name = "arknights-6star-rank-vote"
 url = "http://localhost:8080"
 debug = false
+allowed_cors_origins = ["http://localhost", "http://localhost:8080", "http://127.0.0.1", "http://127.0.0.1:8080", "http://vote.ltsc.vip/", "https://vote.ltsc.vip"]
 
 [db]
 database_url = "sqlite+aiosqlite:///./db/data.sqlite"
