@@ -60,6 +60,7 @@ static_files = StaticFilesConfig(path="/static", directories=["static"])
 prometheus_config = PrometheusConfig(
     app_name="arknights-6star-rank-vote",
     prefix="vote",
+    exclude=["/metrics", "/img/*", "/static/*", "/favicon.ico", "/js/*", "/css/*"],
 )
 
 
