@@ -253,11 +253,13 @@ function view_self() {
 function close_or_view() {
     const close = document.getElementsByClassName('close');
     const result = document.getElementsByClassName('result');
+    const refresh = document.getElementById('refreshBtn');
     if (close_or_view_flag) {
         close_or_view_flag = false;
         view_final_order();
         close[0].style.display = 'inline';
         result[0].style.display = 'none';
+        refresh.style.display = 'inline';
     } else {
         close_or_view_flag = true;
         document.getElementById("已收集数据量").innerText = '';
@@ -270,6 +272,7 @@ function close_or_view() {
         }
         close[0].style.display = 'none';
         result[0].style.display = 'inline';
+        refresh.style.display = 'none';
     }
 }
 
@@ -300,6 +303,9 @@ function new_compare() {
             right_png.alt = DICT_PIC_URL[right_name].split('/').at(-1);
             document.getElementById("left_png_name").innerText = left_name;
             document.getElementById("right_png_name").innerText = right_name;
+        }
+        else if (xhr.status === 400) {
+            new_compare();
         }
     }
 }
