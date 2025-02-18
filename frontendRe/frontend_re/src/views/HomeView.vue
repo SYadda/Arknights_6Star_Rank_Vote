@@ -202,16 +202,16 @@
         <div class="nclassesInput">
             <label for="nclassesInput">分层数：</label>
             <input id="nclassesInput" style="font-size: medium;" type="number" min="1" max="9" value="6">
-            <br>
+            <!-- <br>
             <label for="tokenInput">存档秘钥：</label>
-            <input id="tokenInput" style="font-size: medium;">
+            <input id="tokenInput" style="font-size: medium;"> -->
             <br>
             <label for="GVF">区分度:</label>
             <label id="GVF"></label>
-            <br>
+            <!-- <br>
             <input type="button" class="ioport" @click="upload()" value="上传个人结果">
             <br>
-            <input type="button" class="ioport" @click="sync()" value="同步个人结果">
+            <input type="button" class="ioport" @click="sync()" value="同步个人结果"> -->
             <!-- <br>
             <input type="button" class="ioport" onclick="export_rst()" value="导出个人结果">
             <br>
@@ -236,7 +236,7 @@ import { Hero } from '@/assets/compatibleJS/page.js';
 // import { TableComponent } from '@/assets/compatibleJS/table.js';
 const TransferComponent = require('@/assets/compatibleJS/transfer.js');
 const TableComponent = require('@/assets/compatibleJS/table.js');
-import LZString from 'lz-string';
+// import LZString from 'lz-string';
 // @ is an alias to /src
 export default {
   data() {
@@ -312,12 +312,12 @@ export default {
     }
     this.nclasses_input = document.getElementById('nclassesInput');
     this.nclasses_input.addEventListener('input', this.nclassesListener);
-    const key_input = document.getElementById('tokenInput');
-    key_input.value = localStorage.getItem('key') || '';
-    key_input.addEventListener('blur', function () {
-        localStorage.setItem('key', key_input.value);
-        alert('上传密钥保存成功');
-    });
+    // const key_input = document.getElementById('tokenInput');
+    // key_input.value = localStorage.getItem('key') || '';
+    // key_input.addEventListener('blur', function () {
+    //     localStorage.setItem('key', key_input.value);
+    //     alert('上传密钥保存成功');
+    // });
     document.addEventListener('mousemove', this.mouseMoveListener )
     // 当页面向下滚动一定距离时，显示回到顶部按钮
     window.addEventListener('scroll', this.scrollListener );
@@ -712,64 +712,63 @@ export default {
       },
 
       // 上传同步
-      upload() {
-          const key = localStorage.getItem('key') || "";
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', `${this.SERVER_ADDRESS}/upload`, true);
-          xhr.setRequestHeader("Content-Type", "application/json");
-          console.log(LZString.compressToUTF16(JSON.stringify(Object.fromEntries(this.hero_dict))))
-          console.log(LZString.compress(JSON.stringify(Object.fromEntries(this.hero_dict))))
-          xhr.send(JSON.stringify({
-              key: key, 
-              data: LZString.compressToUTF16(JSON.stringify(Object.fromEntries(this.hero_dict))), 
-              vote_times: this.vote_times
-          }));
-          const self = this;
-          xhr.onreadystatechange = function () {
-              if (xhr.readyState === 4 && xhr.status === 200) {
-                  const result = JSON.parse(xhr.responseText); 
-                  if (result?.error) {
-                      alert('上传失败：' + result?.error);
-                      return;
-                  }
-                  if (result?.key) {
-                      alert('上传成功：' + self.formatTime(result?.updated_at));
-                      localStorage.setItem('key', result?.key);
-                      const key_input = document.getElementById('tokenInput');
-                      key_input.value = result?.key;
-                  } else {
-                      alert('上传失败');
-                  }
-              }
-          }
-      },
-      sync() {
-          const key = localStorage.getItem('key') || "";
-          const xhr = new XMLHttpRequest();
-          xhr.open('GET', `${this.SERVER_ADDRESS}/sync?key=${key}`, true);
-          xhr.send();
-          const self = this;
-          xhr.onreadystatechange = function () {
-              if (xhr.readyState === 4 && xhr.status === 200) {
-                  const result = JSON.parse(xhr.responseText); 
-                  if (result?.error) {
-                      alert('同步失败：' + result?.error);
-                      return;
-                  }
-                  if (result?.data) {
-                      const data = LZString.decompressFromUTF16(result?.data);
-                      console.log(result?.data, data)
-                      localStorage.setItem('hero_dict', data);
-                      localStorage.setItem('vote_times', result?.vote_times);
-                      alert('同步数据成功：' + self.formatTime(result?.updated_at));
-                      location.reload();
-                  } else {
-                      alert('同步失败');
-                  }
-              }
-          }
-        
-      },
+    //   upload() {
+    //       const key = localStorage.getItem('key') || "";
+    //       const xhr = new XMLHttpRequest();
+    //       xhr.open('POST', `${this.SERVER_ADDRESS}/upload`, true);
+    //       xhr.setRequestHeader("Content-Type", "application/json");
+    //       console.log(LZString.compressToUTF16(JSON.stringify(Object.fromEntries(this.hero_dict))))
+    //       console.log(LZString.compress(JSON.stringify(Object.fromEntries(this.hero_dict))))
+    //       xhr.send(JSON.stringify({
+    //           key: key, 
+    //           data: LZString.compressToUTF16(JSON.stringify(Object.fromEntries(this.hero_dict))), 
+    //           vote_times: this.vote_times
+    //       }));
+    //       const self = this;
+    //       xhr.onreadystatechange = function () {
+    //           if (xhr.readyState === 4 && xhr.status === 200) {
+    //               const result = JSON.parse(xhr.responseText); 
+    //               if (result?.error) {
+    //                   alert('上传失败：' + result?.error);
+    //                   return;
+    //               }
+    //               if (result?.key) {
+    //                   alert('上传成功：' + self.formatTime(result?.updated_at));
+    //                   localStorage.setItem('key', result?.key);
+    //                   const key_input = document.getElementById('tokenInput');
+    //                   key_input.value = result?.key;
+    //               } else {
+    //                   alert('上传失败');
+    //               }
+    //           }
+    //       }
+    //   },
+    //   sync() {
+    //       const key = localStorage.getItem('key') || "";
+    //       const xhr = new XMLHttpRequest();
+    //       xhr.open('GET', `${this.SERVER_ADDRESS}/sync?key=${key}`, true);
+    //       xhr.send();
+    //       const self = this;
+    //       xhr.onreadystatechange = function () {
+    //           if (xhr.readyState === 4 && xhr.status === 200) {
+    //               const result = JSON.parse(xhr.responseText); 
+    //               if (result?.error) {
+    //                   alert('同步失败：' + result?.error);
+    //                   return;
+    //               }
+    //               if (result?.data) {
+    //                   const data = LZString.decompressFromUTF16(result?.data);
+    //                   console.log(result?.data, data)
+    //                   localStorage.setItem('hero_dict', data);
+    //                   localStorage.setItem('vote_times', result?.vote_times);
+    //                   alert('同步数据成功：' + self.formatTime(result?.updated_at));
+    //                   location.reload();
+    //               } else {
+    //                   alert('同步失败');
+    //               }
+    //           }
+    //       }
+    //   },
       formatTime(timestamp) {
           if (typeof timestamp === 'string') return timestamp;
           var date = new Date(timestamp * 1000);
