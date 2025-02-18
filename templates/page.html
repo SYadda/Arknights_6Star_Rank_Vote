@@ -108,45 +108,6 @@
                 <h2 class="move-up-animation" style="animation-delay: 0.4s;">自己的投票结果，不受100票限制，但网页刷新/关闭时会清零。</h2>
             </div>
         </div>
-        <!-- 不可见数据部分,在获取数据后展示 -->
-        <div class="final" style="display: block; overflow-y: scroll;height: 100dvh;">
-            <br>
-            <h1 id="已收集数据量">&nbsp;</h1>
-            <h1 id="您已投票">&nbsp;</h1>
-
-            <br>
-            <div class="final_table_group">
-                <table id="final_order_table" class="final_table">
-                    <caption>总投票结果</caption>
-                    <thead>
-                        <tr>
-                            <th>杯型</th>
-                            <th>排名</th>
-                            <th>干员代号</th>
-                            <th>胜率</th>
-                            <th>得分</th>
-                        </tr>
-                    </thead>
-                    <tbody id="final_order_tbody"></tbody>
-                </table>
-                <table id="self_table" class="final_table">
-                    <caption>您的投票结果</caption>
-                    <thead>
-                        <tr>
-                            <th>杯型</th>
-                            <th>排名</th>
-                            <th>干员代号</th>
-                            <th>胜率<span id="win_rate" class="sort-icon select down" onclick="sort_table(this)"></span>
-                            </th>
-                            <th>得分<span id="scores" class="sort-icon down" onclick="sort_table(this)"></span>
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody id="self_order_tbody"></tbody>
-                </table>
-            </div>
-        </div>
-        <!-- 规则补充条例 -->
         <div class="block">
             <div class="footer">
                 <!-- 这里增加了动画效果 如果需要修改文字，增加行数，请对应修改延时描述并加上动画类   -->
@@ -202,6 +163,46 @@
                         
             </div>
         </div>
+        
+        <!-- 不可见数据部分,在获取数据后展示 -->
+        <div class="final">
+            <br>
+            <h1 id="已收集数据量">&nbsp;</h1>
+            <h1 id="您已投票">&nbsp;</h1>
+
+            <br>
+            <div class="final_table_group">
+                <table id="final_order_table" class="final_table">
+                    <caption>总投票结果</caption>
+                    <thead>
+                        <tr>
+                            <th>杯型</th>
+                            <th>排名</th>
+                            <th>干员代号</th>
+                            <th>胜率</th>
+                            <th>得分</th>
+                        </tr>
+                    </thead>
+                    <tbody id="final_order_tbody"></tbody>
+                </table>
+                <table id="self_table" class="final_table">
+                    <caption>您的投票结果</caption>
+                    <thead>
+                        <tr>
+                            <th>杯型</th>
+                            <th>排名</th>
+                            <th>干员代号</th>
+                            <th>胜率<span id="win_rate" class="sort-icon select down" onclick="sort_table(this)"></span>
+                            </th>
+                            <th>得分<span id="scores" class="sort-icon down" onclick="sort_table(this)"></span>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody id="self_order_tbody"></tbody>
+                </table>
+            </div>
+        </div>
+
         <!-- 不可见数据部分，在获取1v1投票矩阵后展示 -->
         <div id="vote_1v1_matrix_container" class="footer">
             <div id="operators-1v1-transfer"></div>
