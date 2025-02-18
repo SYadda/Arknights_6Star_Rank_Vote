@@ -9,7 +9,7 @@ from redis.asyncio import ConnectionPool, Redis, RedisError
 from sqlalchemy import select
 
 from app.config import conf
-from app.data import operators_id_dict
+from app.data import operator_ids, operators_id_dict
 from app.db.model import OperatorsVoteRecords, sqlalchemy_config
 
 _redis_pool: ConnectionPool | None = None
@@ -148,6 +148,7 @@ async def on_startup() -> None:
     all_op_matrix_keys = [f"op_matrix:{i}:{j}" for i in operators_id_dict.values() for j in operators_id_dict.values()]
     for key_op in all_op_matrix_keys:
         pipeline.setnx(key_op, 0)
+    pipeline.setnx("op_matrix", str([[0] * len(operator_ids) for _ in operator_ids]))
     await pipeline.execute()
 
 

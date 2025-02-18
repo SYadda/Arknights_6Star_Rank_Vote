@@ -43,6 +43,12 @@ saq = SAQConfig(
             name="database_save_task",
             # 1 minute
             scheduled_tasks=[CronJob(function=task.database_save_task, cron="* * * * *", timeout=600, ttl=2000)],
+        ),
+        QueueConfig(
+            dsn=f"{conf.redis.redis_url}",
+            name="redis_op_matrix_update_task",
+            # 1 minute, 或者要不把redis_op_matrix_update_task()合到上面那个队列去？
+            scheduled_tasks=[CronJob(function=task.redis_op_matrix_update_task, cron="* * * * *", timeout=600, ttl=2000)],
         )
     ],
 )
