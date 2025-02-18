@@ -18,7 +18,7 @@ services:
     command: ["--redis.addr", "redis://redis:6379"]
 
   prometheus:
-    image: prom/prometheus:v2.42.0
+    image: prom/prometheus:latest
     networks:
       - internal-network
     user: "root"
@@ -29,7 +29,7 @@ services:
       - redis-exporter
 
   grafana:
-    image: grafana/grafana:9.5.6
+    image: grafana/grafana:latest
     networks:
       - internal-network
       - external-network
