@@ -25,10 +25,10 @@
                                 <div class="function">
                                     <input class="skip" type="button" value="跳过，换一组" @click="new_compare()">
                                 </div>
-                                <!-- <div class="function">
-                                    <input class="result" type="button" value="查看总投票结果" onclick="close_or_view()">
-                                    <input class="close" type="button" value="关闭总投票结果" onclick="close_or_view()">
-                                </div> -->
+                                <div class="function">
+                                    <input class="result" type="button" value="查看总投票结果" @click="close_or_view()">
+                                    <input class="close" type="button" value="关闭总投票结果" @click="close_or_view()">
+                                </div>
                                 <div class="function">
                                     <input class="result" id="self_rst_button" type="button" value="查看您的投票结果"
                                         @click="view_self()">
