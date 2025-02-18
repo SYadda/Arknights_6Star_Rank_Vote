@@ -5,3 +5,10 @@ scrape_configs:
   - job_name: 'redis'
     static_configs:
       - targets: ['redis-exporter:9121']
+
+  - job_name: 'arknights-vote'
+    static_configs:
+      - targets: ['app:8080']
+        labels:
+          app: "arknights-6star-rank-vote"
+          prefix: "vote"
