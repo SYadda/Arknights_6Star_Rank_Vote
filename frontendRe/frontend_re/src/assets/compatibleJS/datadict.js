@@ -1,5 +1,6 @@
-const DATA_DICT = {
-    // 'SERVER_ADDRESS': "http://127.0.0.1:8080", 
+export const DATA_DICT = {
+    // 'SERVER_ADDRESS': "http://127.0.0.1:8080",
+    // test server 
     'SERVER_ADDRESS': "http://43.138.42.59:32588",
     'DICT_PIC_URL': {
         "余":"https://media.prts.wiki/7/73/半身像_余_1.png",

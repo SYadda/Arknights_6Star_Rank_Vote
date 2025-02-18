@@ -93,12 +93,12 @@ nclasses_input.addEventListener('input', function () {
     });
 });
 
-const key_input = document.getElementById('tokenInput');
-key_input.value = localStorage.getItem('key') || '';
-key_input.addEventListener('blur', function () {
-    localStorage.setItem('key', key_input.value);
-    alert('上传密钥保存成功');
-})
+// const key_input = document.getElementById('tokenInput');
+// key_input.value = localStorage.getItem('key') || '';
+// key_input.addEventListener('blur', function () {
+//     localStorage.setItem('key', key_input.value);
+//     alert('上传密钥保存成功');
+// })
 
 // 跟随鼠标的夕龙泡泡
 let currentMouseTop, currentScrollTop, currentScrollWidth, currentScrollHeight;
@@ -446,62 +446,62 @@ function get_SDCM(cluster_list) {
 }
 
 // 上传同步
-function upload() {
-    const key = localStorage.getItem('key') || "";
-    const xhr = new XMLHttpRequest();
-    xhr.open('POST', `${SERVER_ADDRESS}/upload`, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    console.log(LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))))
-    console.log(LZString.compress(JSON.stringify(Object.fromEntries(hero_dict))))
-    xhr.send(JSON.stringify({
-        key: key, 
-        data: LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))), 
-        vote_times: vote_times
-    }));
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const result = JSON.parse(xhr.responseText); 
-            if (result?.error) {
-                alert('上传失败：' + result?.error);
-                return;
-            }
-            if (result?.key) {
-                alert('上传成功：' + formatTime(result?.updated_at));
-                localStorage.setItem('key', result?.key);
-                const key_input = document.getElementById('tokenInput');
-                key_input.value = result?.key;
-            } else {
-                alert('上传失败');
-            }
-        }
-    }
-}
-function sync() {
-    const key = localStorage.getItem('key') || "";
-    const xhr = new XMLHttpRequest();
-    xhr.open('GET', `${SERVER_ADDRESS}/sync?key=${key}`, true);
-    xhr.send();
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const result = JSON.parse(xhr.responseText); 
-            if (result?.error) {
-                alert('同步失败：' + result?.error);
-                return;
-            }
-            if (result?.data) {
-                const data = LZString.decompressFromUTF16(result?.data);
-                console.log(result?.data, data)
-                localStorage.setItem('hero_dict', data);
-                localStorage.setItem('vote_times', result?.vote_times);
-                alert('同步数据成功：' + formatTime(result?.updated_at));
-                location.reload();
-            } else {
-                alert('同步失败');
-            }
-        }
-    }
+// function upload() {
+//     const key = localStorage.getItem('key') || "";
+//     const xhr = new XMLHttpRequest();
+//     xhr.open('POST', `${SERVER_ADDRESS}/upload`, true);
+//     xhr.setRequestHeader("Content-Type", "application/json");
+//     console.log(LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))))
+//     console.log(LZString.compress(JSON.stringify(Object.fromEntries(hero_dict))))
+//     xhr.send(JSON.stringify({
+//         key: key, 
+//         data: LZString.compressToUTF16(JSON.stringify(Object.fromEntries(hero_dict))), 
+//         vote_times: vote_times
+//     }));
+//     xhr.onreadystatechange = function () {
+//         if (xhr.readyState === 4 && xhr.status === 200) {
+//             const result = JSON.parse(xhr.responseText); 
+//             if (result?.error) {
+//                 alert('上传失败：' + result?.error);
+//                 return;
+//             }
+//             if (result?.key) {
+//                 alert('上传成功：' + formatTime(result?.updated_at));
+//                 localStorage.setItem('key', result?.key);
+//                 const key_input = document.getElementById('tokenInput');
+//                 key_input.value = result?.key;
+//             } else {
+//                 alert('上传失败');
+//             }
+//         }
+//     }
+// }
+// function sync() {
+//     const key = localStorage.getItem('key') || "";
+//     const xhr = new XMLHttpRequest();
+//     xhr.open('GET', `${SERVER_ADDRESS}/sync?key=${key}`, true);
+//     xhr.send();
+//     xhr.onreadystatechange = function () {
+//         if (xhr.readyState === 4 && xhr.status === 200) {
+//             const result = JSON.parse(xhr.responseText); 
+//             if (result?.error) {
+//                 alert('同步失败：' + result?.error);
+//                 return;
+//             }
+//             if (result?.data) {
+//                 const data = LZString.decompressFromUTF16(result?.data);
+//                 console.log(result?.data, data)
+//                 localStorage.setItem('hero_dict', data);
+//                 localStorage.setItem('vote_times', result?.vote_times);
+//                 alert('同步数据成功：' + formatTime(result?.updated_at));
+//                 location.reload();
+//             } else {
+//                 alert('同步失败');
+//             }
+//         }
+//     }
+// }
 
-}
 function formatTime(timestamp) {
     if (typeof timestamp === 'string') return timestamp;
     var date = new Date(timestamp * 1000);
