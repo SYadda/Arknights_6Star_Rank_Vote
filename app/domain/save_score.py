@@ -69,6 +69,9 @@ class Ballot(Struct):
     code: str
     win: int
     lose: int
+    ip: str
+    user_agent: str
+    multiplier: int
 
 
 async def get_client_identifier(request: Request) -> str:
@@ -156,7 +159,16 @@ async def save_score(
     lose_lock_key = f"lock:{lose_id}:lose"
     sorted_locks = sorted([win_lock_key, lose_lock_key])
 
-    ballot = Ballot(code=data.code, win=win_id, lose=lose_id)
+    user_agent = request.headers.get("User-Agent", "unknown")
+
+    ballot = Ballot(
+        code=data.code,
+        win=win_id,
+        lose=lose_id,
+        ip=identifier,
+        user_agent=user_agent,
+        multiplier=multiplier,
+    )
 
     try:
         await save_request_to_redis(ballot, data.timestamp, redis)
