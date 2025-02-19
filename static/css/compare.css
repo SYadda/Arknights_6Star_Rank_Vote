@@ -27,7 +27,7 @@ body {
     background-image: url('../img/keobeCG.png');
     background-repeat: no-repeat;
     background-size: cover;
-    z-index: -1; /* 使背景图片处于内容下方 */
+    /* z-index: -1;  使背景图片处于内容下方 */
 }
 
 .bg {
@@ -313,6 +313,7 @@ body {
     border-radius: 5px;
     padding: 10px 20px;
     transition: all 0.5s ease;
+    z-index: 2;
 }
 
 #topBtn {
@@ -328,6 +329,7 @@ body {
     cursor: pointer;
     padding: 10px 20px;
     transition: all 0.5s ease;
+    z-index: 2;
 }
 
 #topBtn:hover {
@@ -347,6 +349,7 @@ body {
     cursor: pointer;
     padding: 10px 20px;
     transition: all 0.5s ease;
+    z-index: 2;
 }
 
 #refreshBtn:hover {
