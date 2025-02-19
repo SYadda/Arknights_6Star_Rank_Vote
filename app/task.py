@@ -1,6 +1,7 @@
 from itertools import product
 
 import structlog
+
 from saq.types import Context
 from sqlalchemy import select
 from sqlalchemy.exc import SQLAlchemyError
@@ -72,3 +73,4 @@ async def redis_op_matrix_update_task(_: Context):
         logger.error("redis_op_matrix_update_task fail.", error=str(e))
     finally:
         logger.info("redis_op_matrix_update_task completed")
+

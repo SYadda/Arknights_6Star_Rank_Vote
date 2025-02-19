@@ -12,10 +12,8 @@ def get_res_path(_path: str | list | None = None) -> Path:
 
     return path
 
-
 def get_resource_path(filename: str) -> Path:
     return get_res_path("resources") / filename
-
 
 with Path.open(get_resource_path("operators_6star_id.json"), encoding="utf8") as f:
     operators_id_dict: dict[str, int] = json.load(f)

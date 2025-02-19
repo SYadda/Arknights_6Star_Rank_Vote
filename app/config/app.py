@@ -17,6 +17,7 @@ from litestar.middleware.logging import LoggingMiddlewareConfig
 from litestar.middleware.rate_limit import RateLimitConfig
 from litestar.plugins.problem_details import ProblemDetailsConfig
 from litestar.plugins.prometheus import PrometheusConfig
+
 from litestar.plugins.structlog import StructlogConfig
 from litestar.static_files.config import StaticFilesConfig
 from litestar.template import TemplateConfig
@@ -53,6 +54,7 @@ saq = SAQConfig(
                 CronJob(function=task.redis_op_matrix_update_task, cron="* * * * *", timeout=600, ttl=2000)
             ],
         ),
+
     ],
 )
 templates = TemplateConfig(directory="templates", engine=JinjaTemplateEngine)
@@ -62,6 +64,7 @@ prometheus_config = PrometheusConfig(
     prefix="vote",
     exclude=["/metrics"],
 )
+
 
 
 @lru_cache

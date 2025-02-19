@@ -8,6 +8,7 @@ operators_vote_records.
 data.sqlite
 app/snowflake/snowflake.c
 db
+
 db_analyze/grafana/data/*
 !db_analyze/grafana/data/.gitkeep
 db_analyze/grafana/datasources/*

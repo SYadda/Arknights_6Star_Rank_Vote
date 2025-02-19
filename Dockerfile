@@ -7,6 +7,7 @@ COPY . .
 
 RUN uv sync
 
+
 RUN cd /workspace/app/snowflake \
     && mkdir -p snowflake \ 
     && uv run python setup.py build_ext --inplace \
@@ -14,3 +15,4 @@ RUN cd /workspace/app/snowflake \
 
 
 EXPOSE 8080
+

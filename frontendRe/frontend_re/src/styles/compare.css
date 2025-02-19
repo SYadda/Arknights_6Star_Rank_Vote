@@ -329,6 +329,28 @@ body {
     background-color: #ccc;
 }
 
+=======
+#refreshBtn {
+    display: none;
+    /* 默认情况下隐藏按钮 */
+    position: fixed;
+    bottom: 50px;
+    right: 100px;
+    background-color: #dddddd;
+    color: #000;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    padding: 10px 20px;
+    transition: all 0.5s ease;
+}
+
+#refreshBtn:hover {
+    background-color: #ccc;
+}
+
+
+
 #mouse_follower {
     position: absolute;
     width: 100px;
