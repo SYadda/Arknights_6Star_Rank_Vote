@@ -53,8 +53,8 @@
             <div class="footer">
                 <table style="width: 100%"><tr>
                     <td>
-                        <h3 class="move-up-animation red_text">目前仅单机投票开放</h3>
-                        <h3 class="move-up-animation red_text">正式投票将在净罪作战结束后，即02月19日05:00开启</h3>
+                        <h3 class="move-up-animation red_text">净罪作战正式投票 2月19日05:00~2月26日04:59</h3>
+                        <h3 class="move-up-animation red_text">新增随机血狼金曲！按一下随机播放/停止 → </h3>
                     </td>
                     <td>
                         <img id="playPauseBtn" src="../assets/xuelangdahui.jpg" alt="播放/暂停" style="cursor: pointer; width: 100px; height: auto;" @click="music">
@@ -75,8 +75,8 @@
 
                 <br>
 
-                <!-- <h4>V1.4.1 净罪作战 新增血狼打灰歌！按一下播放/暂停 </h4> -->
-                <h4>V1.4.2 净罪作战 新增随机血狼金曲！按一下随机播放/停止 </h4>
+                <h4>V2.0.0 净罪作战 网站完全重构！投票更流畅了！！ </h4>
+                <h4>特别感谢 @qwerdvd 做出了巨大的贡献，巨大的carry </h4>
 
 
                 <br>
@@ -220,6 +220,7 @@
                 accept=".json" multiple="false"> -->
         </div>
         <button id="topBtn" @click="scrollToTop()">回到顶部</button>
+        <button id="refreshBtn" onclick="view_final_order()">刷新总榜数据</button>
         <div class="background"></div>
     </div>
   </div>
@@ -518,11 +519,13 @@ export default {
       close_or_view() {
           const close = document.getElementsByClassName('close');
           const result = document.getElementsByClassName('result');
+          const refresh = document.getElementById('refreshBtn');
           if (this.close_or_view_flag) {
               this.close_or_view_flag = false;
               this.view_final_order();
               close[0].style.display = 'inline';
               result[0].style.display = 'none';
+              refresh.style.display = 'inline';
           } else {
               this.close_or_view_flag = true;
               document.getElementById("已收集数据量").innerText = '';
@@ -535,6 +538,7 @@ export default {
               }
               close[0].style.display = 'none';
               result[0].style.display = 'inline';
+              refresh.style.display = 'none';
           }
       },
 
@@ -565,6 +569,9 @@ export default {
                   right_png.alt = self.DICT_PIC_URL[self.right_name].split('/').at(-1);
                   document.getElementById("left_png_name").innerText = self.left_name;
                   document.getElementById("right_png_name").innerText = self.right_name;
+              }
+              else if (xhr.status === 400) {
+                  self.new_compare();
               }
           }
       },

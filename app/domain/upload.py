@@ -28,7 +28,6 @@ async def upload(request: Request, data: UploadData, db_session: AsyncSession) -
     if is_create:
         timestamp = str(time.time())
         key = hmac.new(identifier.encode(), timestamp.encode(), hashlib.sha1).hexdigest()
-
     result = zstd.decompress(result.encode()).decode()
     archive = Archive(key=key, data=result, ip=identifier, vote_times=vote_times)
 

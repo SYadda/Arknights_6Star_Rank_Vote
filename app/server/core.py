@@ -145,7 +145,6 @@ async def on_startup() -> None:
         if not exists_results[idx * 2 + 1]:
             pipeline.set(f"{oid}:lose", 0)
     await pipeline.execute()
-
     pipeline = redis.pipeline()
     all_op_matrix_keys = [f"op_matrix:{i}:{j}" for i in operators_id_dict.values() for j in operators_id_dict.values()]
     for key_op in all_op_matrix_keys:

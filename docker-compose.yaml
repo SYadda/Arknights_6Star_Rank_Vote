@@ -5,10 +5,10 @@ services:
     image: redis:7-alpine
     networks:
       - internal-network
+
     volumes:
       - ./db:/data
     command: redis-server --appendonly yes --appendfsync everysec --save ""
-
   redis-exporter:
     image: oliver006/redis_exporter:v1.45.0
     networks:
@@ -59,6 +59,7 @@ services:
       - ./config.toml:/workspace/config.toml
       - ./templates:/workspace/templates
       - ./static:/workspace/static
+
     depends_on:
       - redis
     restart: unless-stopped
