@@ -329,6 +329,7 @@ body {
     background-color: #ccc;
 }
 
+=======
 #refreshBtn {
     display: none;
     /* 默认情况下隐藏按钮 */
@@ -347,6 +348,7 @@ body {
 #refreshBtn:hover {
     background-color: #ccc;
 }
+
 
 
 #mouse_follower {

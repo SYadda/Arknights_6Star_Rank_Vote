@@ -75,6 +75,7 @@
 
                 <br>
 
+
                 <h4>V2.0.0 净罪作战 网站完全重构！投票更流畅了！！ </h4>
                 <h4>特别感谢 @qwerdvd 做出了巨大的贡献，巨大的carry </h4>
 
@@ -220,6 +221,7 @@
                 accept=".json" multiple="false"> -->
         </div>
         <button id="topBtn" @click="scrollToTop()">回到顶部</button>
+
         <button id="refreshBtn" onclick="view_final_order()">刷新总榜数据</button>
         <div class="background"></div>
     </div>
@@ -519,12 +521,14 @@ export default {
       close_or_view() {
           const close = document.getElementsByClassName('close');
           const result = document.getElementsByClassName('result');
+
           const refresh = document.getElementById('refreshBtn');
           if (this.close_or_view_flag) {
               this.close_or_view_flag = false;
               this.view_final_order();
               close[0].style.display = 'inline';
               result[0].style.display = 'none';
+
               refresh.style.display = 'inline';
           } else {
               this.close_or_view_flag = true;
@@ -538,6 +542,7 @@ export default {
               }
               close[0].style.display = 'none';
               result[0].style.display = 'inline';
+
               refresh.style.display = 'none';
           }
       },

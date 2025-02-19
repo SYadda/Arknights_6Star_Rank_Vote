@@ -16,6 +16,8 @@ from litestar.logging.config import (
 from litestar.middleware.logging import LoggingMiddlewareConfig
 from litestar.middleware.rate_limit import RateLimitConfig
 from litestar.plugins.problem_details import ProblemDetailsConfig
+from litestar.plugins.prometheus import PrometheusConfig
+
 from litestar.plugins.structlog import StructlogConfig
 from litestar.static_files.config import StaticFilesConfig
 from litestar.template import TemplateConfig
@@ -47,13 +49,22 @@ saq = SAQConfig(
         QueueConfig(
             dsn=f"{conf.redis.redis_url}",
             name="redis_op_matrix_update_task",
-            # 1 minute, 或者要不把redis_op_matrix_update_task()合到上面那个队列去？
-            scheduled_tasks=[CronJob(function=task.redis_op_matrix_update_task, cron="* * * * *", timeout=600, ttl=2000)],
-        )
+            # 1 minute, 或者要不把redis_op_matrix_update_task()合到上面那个队列去?
+            scheduled_tasks=[
+                CronJob(function=task.redis_op_matrix_update_task, cron="* * * * *", timeout=600, ttl=2000)
+            ],
+        ),
+
     ],
 )
 templates = TemplateConfig(directory="templates", engine=JinjaTemplateEngine)
 static_files = StaticFilesConfig(path="/static", directories=["static"])
+prometheus_config = PrometheusConfig(
+    app_name="arknights-6star-rank-vote",
+    prefix="vote",
+    exclude=["/metrics"],
+)
+
 
 
 @lru_cache

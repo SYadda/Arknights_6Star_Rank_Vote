@@ -69,6 +69,10 @@ class Ballot(Struct):
     code: str
     win: int
     lose: int
+    ip: str
+    user_agent: str
+    multiplier: int
+
 
 
 async def get_client_identifier(request: Request) -> str:
@@ -100,7 +104,8 @@ async def validate_ballot(code: str, ballot_store: Store) -> tuple[int, int]:
 async def calculate_multiplier(identifier: str, redis: Redis) -> int:
     counter_key = f"ip_counter:{identifier}"
     current = await redis.incr(counter_key)
-    return BASE_MULTIPLIER if current <= MAX_IP_LIMIT or MAX_IP_LIMIT<0 else LOW_MULTIPLIER
+    return BASE_MULTIPLIER if current <= MAX_IP_LIMIT or MAX_IP_LIMIT < 0 else LOW_MULTIPLIER
+
 
 
 async def save_request_to_redis(ballot: Ballot, timestamp: float, redis: Redis):
@@ -156,7 +161,17 @@ async def save_score(
     lose_lock_key = f"lock:{lose_id}:lose"
     sorted_locks = sorted([win_lock_key, lose_lock_key])
 
-    ballot = Ballot(code=data.code, win=win_id, lose=lose_id)
+    user_agent = request.headers.get("User-Agent", "unknown")
+
+    ballot = Ballot(
+        code=data.code,
+        win=win_id,
+        lose=lose_id,
+        ip=identifier,
+        user_agent=user_agent,
+        multiplier=multiplier,
+    )
+
 
     try:
         await save_request_to_redis(ballot, data.timestamp, redis)

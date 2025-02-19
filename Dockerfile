@@ -5,7 +5,8 @@ WORKDIR /workspace
 
 COPY . .
 
-RUN uv pip install --system -r pyproject.toml
+RUN uv sync
+
 
 RUN cd /workspace/app/snowflake \
     && mkdir -p snowflake \ 
@@ -13,6 +14,5 @@ RUN cd /workspace/app/snowflake \
     && cp ./snowflake/*.so ./
 
 
-CMD [ "uv", "run", "python", "main.py"]
+EXPOSE 8080
 
-EXPOSE 8000

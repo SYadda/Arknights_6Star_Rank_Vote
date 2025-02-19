@@ -9,6 +9,15 @@ data.sqlite
 app/snowflake/snowflake.c
 db
 
+db_analyze/grafana/data/*
+!db_analyze/grafana/data/.gitkeep
+db_analyze/grafana/datasources/*
+!db_analyze/grafana/datasources/.gitkeep
+db_analyze/prometheus/*
+!db_analyze/prometheus/.gitkeep
+db_analyze/redis-exporter/*
+!db_analyze/redis-exporter/.gitkeep
+
 nohup.out
 .vscode/
 .ruff_cache/
