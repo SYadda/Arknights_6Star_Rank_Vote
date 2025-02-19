@@ -43,7 +43,7 @@ async def view_final_order(
 
         results.append({"name": data["name"], "score": (win - lose) / 100, "rate": rate, "oid": oid})
 
-    sorted_results = sorted(results, key=lambda x: x["score"], reverse=True)
+    sorted_results = sorted(results, key=lambda x: x["rate"], reverse=True)
 
     return ViewFinalOrderResponse(
         name=[item["name"] for item in sorted_results],

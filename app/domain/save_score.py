@@ -74,7 +74,6 @@ class Ballot(Struct):
     multiplier: int
 
 
-
 async def get_client_identifier(request: Request) -> str:
     host = request.client.host if request.client else "anonymous"
     return request.headers.get("X-Forwarded-For") or request.headers.get("X-Real-IP") or host
@@ -105,7 +104,6 @@ async def calculate_multiplier(identifier: str, redis: Redis) -> int:
     counter_key = f"ip_counter:{identifier}"
     current = await redis.incr(counter_key)
     return BASE_MULTIPLIER if current <= MAX_IP_LIMIT or MAX_IP_LIMIT < 0 else LOW_MULTIPLIER
-
 
 
 async def save_request_to_redis(ballot: Ballot, timestamp: float, redis: Redis):
@@ -171,7 +169,6 @@ async def save_score(
         user_agent=user_agent,
         multiplier=multiplier,
     )
-
 
     try:
         await save_request_to_redis(ballot, data.timestamp, redis)

@@ -4,7 +4,6 @@ from litestar.openapi.config import OpenAPIConfig
 from litestar.openapi.plugins import ScalarRenderPlugin
 from litestar.plugins import CLIPluginProtocol, InitPluginProtocol
 from litestar.plugins.prometheus import PrometheusController
-
 from litestar.plugins.sqlalchemy import base
 from litestar.stores.redis import RedisStore
 from redis.asyncio import ConnectionPool, Redis, RedisError
@@ -94,7 +93,6 @@ class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
         # routes
         app_config.route_handlers.extend(root_handler)
         app_config.route_handlers.append(PrometheusController)
-
         # exception handling
         app_config.exception_handlers = {
             ApplicationError: exception_to_http_response,
@@ -109,7 +107,6 @@ class ApplicationCore(InitPluginProtocol, CLIPluginProtocol):
         app_config.dependencies.update(dependencies)
 
         app_config.on_startup.append(on_startup)  # type: ignore[attr-defined]
-
         app_config.on_shutdown.append([on_shutdown, self.redis.aclose])  # type: ignore[attr-defined]
         return app_config
 
@@ -148,8 +145,6 @@ async def on_startup() -> None:
         if not exists_results[idx * 2 + 1]:
             pipeline.set(f"{oid}:lose", 0)
     await pipeline.execute()
-
-
     pipeline = redis.pipeline()
     all_op_matrix_keys = [f"op_matrix:{i}:{j}" for i in operators_id_dict.values() for j in operators_id_dict.values()]
     for key_op in all_op_matrix_keys:
