@@ -7,6 +7,7 @@ from litestar.plugins.prometheus import PrometheusController
 from litestar.plugins.sqlalchemy import base
 from litestar.stores.redis import RedisStore
 from redis.asyncio import ConnectionPool, Redis, RedisError
+from redis.commands.core import AsyncScript
 from sqlalchemy import select
 
 from app.config import conf
@@ -15,6 +16,28 @@ from app.db.model import OperatorsVoteRecords, sqlalchemy_config
 
 _redis_pool: ConnectionPool | None = None
 _redis_instance: Redis | None = None
+_redis_script: AsyncScript | None = None
+lua_script = """
+local ballot_code = ARGV[1]
+local timestamp = ARGV[2]
+local data = ARGV[3]
+local win_id = tonumber(ARGV[4])
+local lose_id = tonumber(ARGV[5])
+local multiplier = tonumber(ARGV[6])
+
+redis.call("HSET", "req:" .. ballot_code, "timestamp", timestamp, "data", data)
+
+redis.call("ZADD", "req_index:by_time", timestamp, ballot_code)
+redis.call("SADD", "req_index:by_operator:win:" .. win_id, ballot_code)
+redis.call("SADD", "req_index:by_operator:lose:" .. lose_id, ballot_code)
+
+redis.call("INCRBY", win_id..":win", multiplier)
+redis.call("INCRBY", lose_id..":lose", multiplier)
+redis.call("INCRBY", "op_matrix:"..win_id..":"..lose_id, multiplier)
+redis.call("DECRBY", "op_matrix:"..lose_id..":"..win_id, multiplier)
+
+return 1
+"""
 
 
 def setup_redis_pool() -> ConnectionPool:
@@ -32,6 +55,7 @@ def setup_redis_pool() -> ConnectionPool:
 
 async def redis_provider() -> Redis:
     global _redis_instance  # noqa: PLW0603
+    global _redis_script  # noqa: PLW0603
     if _redis_instance is None:
         pool = setup_redis_pool()
         _redis_instance = Redis(connection_pool=pool)
@@ -41,6 +65,9 @@ async def redis_provider() -> Redis:
             raise ConnectionError("Redis ping failed")
     except (ConnectionError, RedisError):
         _redis_instance = Redis(connection_pool=setup_redis_pool())
+
+    if _redis_script is None:
+        _redis_script = _redis_instance.register_script(lua_script)
 
     return _redis_instance
 
