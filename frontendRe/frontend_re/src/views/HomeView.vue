@@ -545,7 +545,7 @@ export default {
       //获取本次进行比较干员的头像
       //http方法: POST
       //接口:new_compare
-      new_compare() {
+      async new_compare() {
           const xhr = new XMLHttpRequest();
           xhr.open('POST', `${this.SERVER_ADDRESS}/new_compare`, true);
           xhr.setRequestHeader("Content-Type", "application/json");
@@ -581,7 +581,7 @@ export default {
       //http方法: POST
       //接口: save_score
       //供给body: win_name, lose_name, code
-      save_score(win_name, lose_name) {
+      async save_score(win_name, lose_name) {
           this.hero_dict.get(win_name).win();
           this.hero_dict.get(lose_name).lose();
           this.vote_times++;
@@ -619,7 +619,7 @@ export default {
 
       //获取总比较结果
       //http方法: GET
-      view_final_order() {
+      async view_final_order() {
           const xhr = new XMLHttpRequest();
           xhr.open('GET', `${this.SERVER_ADDRESS}/view_final_order`, true);
           xhr.send();
