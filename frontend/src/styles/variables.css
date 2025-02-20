@@ -1,0 +1,48 @@
+/**
+ * Layout
+ */
+:root {
+  --layout-max-width: 723px;
+}
+
+/**
+ * Color
+ */
+:root {
+  --c-text-1: #000;
+  --c-text-2: #000;
+  --c-text-3: #000;
+
+  --c-bg: #fff;
+  --c-bg-alt: #f8f8f8;
+  --c-bg-elv: #ffffff;
+  --c-bg-soft: rgba(250, 250, 250, 0.87);;
+
+
+  --c-red-1: #c81623;
+}
+
+/**
+ * Image
+ */
+:root {
+  --img-bg: url('../assets/images/bg.png');
+  /* --img-bg: url('../assets/keobeCG.png'); */
+}
+
+/**
+ * Shadows
+ */
+:root {
+  --shadow-1: 0 3px 5px 1px rgba(0, 0, 0, 0.2);
+  --shadow-2: 0 3px 5px 5px rgba(0, 0, 0, 0.2);
+
+  --drop-shadow-1: drop-shadow(0 0 7px rgba(0, 0, 0, .7));
+}
+
+/**
+ * Typography
+ */
+:root {
+  --font-family-base:  Microsoft YaHei, Heiti SC, tahoma, arial, Hiragino Sans GB, "\5B8B\4F53", sans-serif;
+}
