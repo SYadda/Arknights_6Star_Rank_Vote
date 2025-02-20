@@ -279,7 +279,7 @@ function close_or_view() {
 //获取本次进行比较干员的头像
 //http方法: POST
 //接口:new_compare
-function new_compare() {
+async function new_compare() {
     xhr = new XMLHttpRequest();
     xhr.open('POST', `${SERVER_ADDRESS}/new_compare`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
@@ -315,7 +315,7 @@ function new_compare() {
 //http方法: POST
 //接口: save_score
 //供给body: win_name, lose_name, code
-function save_score(win_name, lose_name) {
+async function save_score(win_name, lose_name) {
     hero_dict.get(win_name).win();
     hero_dict.get(lose_name).lose();
     vote_times++;
@@ -353,7 +353,7 @@ function save_score_right() {
 
 //获取总比较结果
 //http方法: GET
-function view_final_order() {
+async function view_final_order() {
     xhr = new XMLHttpRequest();
     xhr.open('GET', `${SERVER_ADDRESS}/view_final_order`, true);
     xhr.send();
