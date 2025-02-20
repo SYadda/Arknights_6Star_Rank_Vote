@@ -280,16 +280,17 @@ function close_or_view() {
 //http方法: POST
 //接口:new_compare
 async function new_compare() {
-    xhr = new XMLHttpRequest();
-    xhr.open('POST', `${SERVER_ADDRESS}/new_compare`, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.send(JSON.stringify({
-        code: code
-    }));
+    try {
+        const response = await fetch(`${SERVER_ADDRESS}/new_compare`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ code: '000' })
+        });
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
+        if (response.ok) {
+            const data = await response.json();
             left_id = data.left;
             right_id = data.right;
             code = data.code;
@@ -303,12 +304,28 @@ async function new_compare() {
             right_png.alt = DICT_PIC_URL[right_name].split('/').at(-1);
             document.getElementById("left_png_name").innerText = left_name;
             document.getElementById("right_png_name").innerText = right_name;
-        }
-        else if (xhr.status === 400) {
+        } else if (response.status === 400) {
             new_compare();
         }
+    } catch (error) {
+        console.error('Error:', error);
     }
 }
+
+//webWorker优化
+const saveScoreWorker = new Worker('../static/js/saveScoreWorker.js');
+
+saveScoreWorker.onmessage = function(event) {
+    const data = event.data;
+    if (data.error) {
+        console.error('Error:', data.error);
+        return;
+    }
+
+    if (data.success) {
+        document.getElementById("toupiao_success").innerText = `成功投票给：${data.win_name}！`;
+    }
+};
 
 
 //上传本次比较结果
@@ -320,40 +337,29 @@ async function save_score(win_name, lose_name) {
     hero_dict.get(lose_name).lose();
     vote_times++;
     flush_self();
-    xhr = new XMLHttpRequest();
-    xhr.open('POST', `${SERVER_ADDRESS}/save_score`, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    // xhr.send(JSON.stringify({
-    //     win_name: win_name,
-    //     lose_name: lose_name,
-    //     code: code
-    // }));
-    xhr.send(JSON.stringify({
-        win_id: ID_NAME_DICT[win_name],
-        lose_id: ID_NAME_DICT[lose_name],
-        code: code
-    }));
-
-
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
-            new_compare();
-        }
-    }
+    // currentCode = code;
+    // console.log(currentCode);
+    saveScoreWorker.postMessage({
+        SERVER_ADDRESS,
+        win_name,
+        lose_name,
+        code,
+        ID_NAME_DICT
+    });
+    new_compare();
 }
 
-function save_score_left() {
-    save_score(left_name, right_name);
+async function save_score_left() {
+    await save_score(left_name, right_name);
 }
 
-function save_score_right() {
-    save_score(right_name, left_name);
+async function save_score_right() {
+    await save_score(right_name, left_name);
 }
 
 //获取总比较结果
 //http方法: GET
-async function view_final_order() {
+function view_final_order() {
     xhr = new XMLHttpRequest();
     xhr.open('GET', `${SERVER_ADDRESS}/view_final_order`, true);
     xhr.send();
