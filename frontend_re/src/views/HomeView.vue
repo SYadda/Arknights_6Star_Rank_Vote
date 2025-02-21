@@ -237,6 +237,7 @@ import { Hero } from '@/assets/compatibleJS/page.js';
 // import { TableComponent } from '@/assets/compatibleJS/table.js';
 const TransferComponent = require('@/assets/compatibleJS/transfer.js');
 const TableComponent = require('@/assets/compatibleJS/table.js');
+import Worker from '@/utils/saveScore.worker.js';
 // import LZString from 'lz-string';
 // @ is an alias to /src
 export default {
@@ -291,6 +292,7 @@ export default {
           { src: "xuelangdahui.mp3", type: "audio/mpeg" }
       ],
       currentTrackIndex: -1,
+      saveScoreWorker: new Worker(),
     };
   },
   mounted() {
@@ -327,7 +329,17 @@ export default {
     this.tableComponent.mount(this.operators_1v1_table);
     // 血狼打灰歌
     // this.playPauseBtn.addEventListener('click', this.music);
+    this.saveScoreWorker.onmessage = function(event) {
+    const data = event.data;
+    if (data.error) {
+        console.error('Error:', data.error);
+        return;
+    }
 
+    if (data.success) {
+        document.getElementById("toupiao_success").innerText = `成功投票给：${data.win_name}！`;
+    }
+    };
   },
   methods: {
 
@@ -550,7 +562,8 @@ export default {
           xhr.open('POST', `${this.SERVER_ADDRESS}/new_compare`, true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(JSON.stringify({
-              code: this.code
+            // TODO: 传递code
+              code: '000'
           }));
           const self = this;
           xhr.onreadystatechange = function () {
@@ -577,6 +590,8 @@ export default {
       },
 
 
+      //webWorker优化
+        
       //上传本次比较结果
       //http方法: POST
       //接口: save_score
@@ -586,27 +601,16 @@ export default {
           this.hero_dict.get(lose_name).lose();
           this.vote_times++;
           this.flush_self();
-          const xhr = new XMLHttpRequest();
-          xhr.open('POST', `${this.SERVER_ADDRESS}/save_score`, true);
-          xhr.setRequestHeader("Content-Type", "application/json");
-          // xhr.send(JSON.stringify({
-          //     win_name: win_name,
-          //     lose_name: lose_name,
-          //     code: code
-          // }));
-          xhr.send(JSON.stringify({
-              win_id: ID_NAME_DICT[win_name],
-              lose_id: ID_NAME_DICT[lose_name],
-              code: this.code
-          }));
-        
-          const self = this;
-          xhr.onreadystatechange = function () {
-              if (xhr.readyState === 4 && xhr.status === 200) {
-                  document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
-                  self.new_compare();
-              }
-          }
+          // currentCode = code;
+          // console.log(currentCode);
+          this.saveScoreWorker.postMessage({
+              SERVER_ADDRESS: this.SERVER_ADDRESS,
+              win_name,
+              lose_name,
+              code: this.code,
+              ID_NAME_DICT
+          });
+          this.new_compare();
       },
 
       save_score_left() {
