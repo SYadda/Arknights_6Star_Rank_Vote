@@ -1,39 +1,51 @@
-[app]
-name = "arknights-6star-rank-vote"
-url = "http://localhost:8080"
-debug = false
-allowed_cors_origins = ["http://localhost", "http://localhost:8080", "http://127.0.0.1", "http://127.0.0.1:8080", "http://vote.ltsc.vip/", "https://vote.ltsc.vip"]
+# [app]
+# name = "arknights-6star-rank-vote"
+# url = "http://localhost:8080"
+# debug = false
+# allowed_cors_origins = ["http://localhost", "http://localhost:8080", "http://127.0.0.1", "http://127.0.0.1:8080", "http://vote.ltsc.vip/", "https://vote.ltsc.vip"]
 
-[db]
-database_url = "sqlite+aiosqlite:///./db/data.sqlite"
-echo = false
-echo_pool = false
-pool_size = 5
-pool_timeout = 30
-pool_recycle = 900
+# [db]
+# database_url = "sqlite+aiosqlite:///./db/data.sqlite"
+# echo = false
+# echo_pool = false
+# pool_size = 5
+# pool_timeout = 30
+# pool_recycle = 900
 
-[server]
-host = "127.0.0.1"
-port = 8080
-reload = false
+# [server]
+# host = "127.0.0.1"
+# port = 8080
+# reload = false
 
-[log]
-log_level = "INFO"
-saq_level = "INFO"
-sqlalchemy_level = "INFO"
+# [log]
+# log_level = "INFO"
+# saq_level = "INFO"
+# sqlalchemy_level = "INFO"
 
-[redis]
-redis_url = "redis://redis:6379/0"
-socket_connect_timeout = 5
-health_check_interval = 5
-socket_keepalive = true
+# [redis]
+# redis_url = "redis://localhost:6379/0"
+# socket_connect_timeout = 5
+# health_check_interval = 5
+# socket_keepalive = true
 
-[rate_limit]
-rate_limit = 50000
-rate_limit_period = "day"
+# [rate_limit]
+# rate_limit = 50000
+# rate_limit_period = "day"
 
-[saq]
-processes = 1
-concurrency = 10
-web_enabled = true
-use_server_lifespan = true
+# [saq]
+# processes = 1
+# concurrency = 10
+# web_enabled = true
+# use_server_lifespan = true
+
+database_url = "postgres://localhost:5432/arkvote"
+redis_url = "redis://localhost:6379/0"
+nats_url = "nats://localhost:4222"
+max_ip_limit = 100
+server_addr = "[::1]:10000"
+worker_id = 1
+datacenter_id = 1
+max_db_connections = 5
+max_redis_connections = 5
+dlq_subject = "vote.dlq"
+max_retry_attempts = 5
