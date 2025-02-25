@@ -1,0 +1,133 @@
+syntax = "proto3";
+
+package vote;
+
+message Identity {
+    string fingerprint = 1;    // 浏览器指纹
+    string ip = 2;             // ip
+    bool is_mobile = 3;        // 是否是移动设备
+}
+
+enum BallotStatus {
+    CREATED = 0;              // 投票已创建
+    PROCESSED = 1;            // 投票已处理
+    DISCARDED = 2;            // 投票已废弃
+    INVALID = 3;              // 投票无效
+}
+
+message BallotInfo {
+    int32 topic_id = 1;          // 投票主题id
+    string topic = 2;            // 投票主题
+
+    int64 ballot_code = 3;       // snowflake id
+    Identity identity = 4;       // 投票者身份
+    BallotStatus status = 5;     // 投票状态
+    
+    repeated int32 options = 6;          // 候选项
+    repeated int32 selected_option = 7;  // 选中项
+    repeated int32 excluded_option = 8;  // 排除项
+}
+
+message CreateBallotRequest {
+    string topic = 1;          // 投票主题
+    Identity identity = 2;     // 投票者身份
+}
+
+message BallotPair {
+    int32 topic_id = 1;          // 投票主题id
+    string topic = 2;            // 投票主题
+
+    int64 ballot_code = 3;       // snowflake id
+    repeated int32 options = 4;  // 候选项
+}
+
+message SubmitVoteRequest {
+    int32 topic_id = 1;          // 投票主题id
+    string topic = 2;            // 投票主题
+    Identity identity = 3;       // 投票者身份
+    
+    int64 ballot_code = 4;               // snowflake id
+    repeated int32 selected_option = 5;  // 选中项
+    repeated int32 excluded_option = 6;  // 排除项
+}
+
+message DiscardBallotRequest {
+    int32 topic_id = 1;          // 投票主题id
+    string topic = 2;            // 投票主题
+    Identity identity = 3;       // 投票者身份
+
+    int64 ballot_code = 4;       // 要废弃的投票
+}
+
+message TransactionResponse {
+    bool acknowledged = 1;      // 操作是否被确认
+    int32 status_code = 2;      // 状态代码
+    string error_message = 3;   // 错误信息
+}
+
+enum TopicType {
+    SIX_STAR_CHARACTER = 0;  // 六星角色
+    ANY_STAR_CHARACTER = 1;  // 任意星角色
+    COLLECTION = 2;          // 收藏
+    CUSTOM = 3;              // 自定义
+}
+
+enum TopicStatus {
+    AUDIT = 0;              // 审核中
+    NORMAL = 1;             // 正常
+    DELETED = 2;            // 已删除
+    ENDED = 3;              // 已结束
+}
+
+message CreateTopicRequest {
+    string name = 1;                 // 投票主题
+    string description = 2;          // 投票描述
+    TopicType topic_type = 3;        // 投票类型
+    map<string, string> styles = 4;  // 投票样式
+    int64 start_at = 5;              // 投票开始时间
+    int64 finish_at = 6;             // 投票结束时间
+}
+
+message CreateTopicResponse {
+    int32 topic_id = 1;              // 投票主题id
+    TopicStatus status = 2;          // 投票状态
+    string error_message = 3;        // 错误信息
+}
+
+message GetTopicInfoRequest {
+    string topic = 1;                // 投票主题
+}
+
+message TopicInfo {
+    int32 topic_id = 1;              // 投票主题id
+    string name = 2;                 // 投票主题
+    string description = 3;          // 投票描述
+    TopicType topic_type = 4;        // 投票类型
+    map<string, string> styles = 5;  // 投票样式
+    TopicStatus status = 6;          // 投票状态
+    int64 start_at = 7;              // 投票开始时间
+    int64 finish_at = 8;             // 投票结束时间
+}
+
+message FetchAllActiveTopicsRequest {}
+
+message FetchAllActiveTopicsResponse {
+    repeated TopicInfo topics = 1;
+}
+
+message FetchAllTopicsRequest {}
+
+message FetchAllTopicsResponse {
+    repeated TopicInfo topics = 1;
+}
+
+service VotingService {
+    rpc CreateBallot(CreateBallotRequest) returns (BallotPair);
+    rpc SubmitVote(SubmitVoteRequest) returns (TransactionResponse);
+    // rpc DiscardBallot(DiscardBallotRequest) returns (TransactionResponse);
+
+    rpc CreateTopic(CreateTopicRequest) returns (CreateTopicResponse);
+    rpc GetTopicInfo(GetTopicInfoRequest) returns (TopicInfo);
+    rpc FetchAllActiveTopics(FetchAllActiveTopicsRequest) returns (FetchAllActiveTopicsResponse);
+    rpc FetchAllTopics(FetchAllTopicsRequest) returns (FetchAllTopicsResponse);
+}
