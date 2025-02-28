@@ -320,27 +320,32 @@ function save_score(win_name, lose_name) {
     hero_dict.get(lose_name).lose();
     vote_times++;
     flush_self();
-    xhr = new XMLHttpRequest();
-    xhr.open('POST', `${SERVER_ADDRESS}/save_score`, true);
-    xhr.setRequestHeader("Content-Type", "application/json");
+
+    // 投票结束显示数据，临时禁用向总榜投票。
+    document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
+    new_compare();
+    
+    // xhr = new XMLHttpRequest();
+    // xhr.open('POST', `${SERVER_ADDRESS}/save_score`, true);
+    // xhr.setRequestHeader("Content-Type", "application/json");
+    // // xhr.send(JSON.stringify({
+    // //     win_name: win_name,
+    // //     lose_name: lose_name,
+    // //     code: code
+    // // }));
     // xhr.send(JSON.stringify({
-    //     win_name: win_name,
-    //     lose_name: lose_name,
+    //     win_id: ID_NAME_DICT[win_name],
+    //     lose_id: ID_NAME_DICT[lose_name],
     //     code: code
     // }));
-    xhr.send(JSON.stringify({
-        win_id: ID_NAME_DICT[win_name],
-        lose_id: ID_NAME_DICT[lose_name],
-        code: code
-    }));
 
 
-    xhr.onreadystatechange = function () {
-        if (xhr.readyState === 4 && xhr.status === 200) {
-            document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
-            new_compare();
-        }
-    }
+    // xhr.onreadystatechange = function () {
+    //     if (xhr.readyState === 4 && xhr.status === 200) {
+    //         document.getElementById("toupiao_success").innerText = `成功投票给：${win_name}！`;
+    //         new_compare();
+    //     }
+    // }
 }
 
 function save_score_left() {
