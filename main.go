@@ -253,7 +253,7 @@ func vote(conn *grpc.ClientConn) error {
 		},
 	})
 	if err != nil {
-		println("CreateBallot失败: ", err)
+		println("CreateBallot失败: ", err.Error())
 		return fmt.Errorf("CreateBallot失败: %w", err)
 	}
 

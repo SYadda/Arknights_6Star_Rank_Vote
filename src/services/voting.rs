@@ -3,13 +3,11 @@ use chrono::{DateTime, Utc};
 use rand::seq::IndexedRandom;
 use redis::AsyncCommands;
 use sqlx::Row;
-use sqlx::postgres::PgPoolOptions;
 use tonic::{Request, Response, Status};
 use tracing::{info, instrument};
 
 use crate::{
     Snowflake,
-    config::AppConfig,
     error::AppError,
     get_redis_conn,
     models::{self, Topic},
@@ -23,19 +21,15 @@ pub struct VotingService {
 }
 
 impl VotingService {
-    pub async fn new(config: &AppConfig) -> Result<Self, AppError> {
-        let db_pool = PgPoolOptions::new()
-            .max_connections(config.max_db_connections)
-            .connect(&config.database_url)
-            .await?;
-
-        let nats_client = async_nats::connect(&config.nats_url).await?;
-        let jetstream = jetstream::new(nats_client);
-
+    pub async fn new(
+        jetstream: jetstream::Context,
+        db_pool: sqlx::PgPool,
+        snowflake: Snowflake,
+    ) -> Result<Self, AppError> {
         Ok(Self {
             db_pool,
             jetstream,
-            snowflake: Snowflake::new(config.worker_id, config.datacenter_id)?,
+            snowflake,
         })
     }
 

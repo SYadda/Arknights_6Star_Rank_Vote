@@ -72,10 +72,10 @@ end
 return #selected * #excluded  -- 返回操作组合数
 "#;
 
-const REDIS_SINGLE_OPTION_SCRIPT: LazyLock<redis::Script> =
+static REDIS_SINGLE_OPTION_SCRIPT: LazyLock<redis::Script> =
     LazyLock::new(|| redis::Script::new(SINGLE_OPTION_SCRIPT));
 
-const REDIS_MULTI_OPTION_SCRIPT: LazyLock<redis::Script> =
+static REDIS_MULTI_OPTION_SCRIPT: LazyLock<redis::Script> =
     LazyLock::new(|| redis::Script::new(MULTI_OPTION_SCRIPT));
 
 #[derive(Debug, Clone, sqlx::Type)]
@@ -192,11 +192,12 @@ pub struct ConsumerService {
 
 impl ConsumerService {
     pub async fn new(jetstream: jetstream::Context, db_pool: sqlx::PgPool) -> Self {
+        let config = settings();
         Self {
             db_pool,
             jetstream,
-            dlq_subject: settings().dlq_subject.clone(),
-            max_retries: settings().max_retry_attempts,
+            dlq_subject: config.dlq.dlq_subject.clone(),
+            max_retries: config.dlq.max_retry_attempts,
         }
     }
 
@@ -228,6 +229,7 @@ impl ConsumerService {
             self.retry_message(msg, acker).await;
         } else {
             self.send_to_dlq(msg, &error.to_string()).await;
+            self.ack_message(&acker).await;
         }
     }
 
@@ -377,7 +379,7 @@ impl ConsumerService {
                 let excluded = excluded.first().unwrap().to_string();
 
                 let _: () = REDIS_SINGLE_OPTION_SCRIPT
-                    .arg(&ballot_info.topic_id.to_string())
+                    .arg(ballot_info.topic_id.to_string())
                     .arg(&selected)
                     .arg(&excluded)
                     .arg(multiplier)
@@ -398,7 +400,7 @@ impl ConsumerService {
                     .join(",");
 
                 let _: () = REDIS_MULTI_OPTION_SCRIPT
-                    .arg(&ballot_info.topic_id.to_string())
+                    .arg(ballot_info.topic_id.to_string())
                     .arg(selected_str)
                     .arg(excluded_str)
                     .arg(multiplier)

@@ -1,10 +1,10 @@
 pub mod config;
 pub mod error;
 pub mod metrics;
+pub mod models;
 pub mod services;
 pub mod signal;
 pub mod snow_flake;
-pub mod models;
 
 pub mod vote {
     tonic::include_proto!("vote");
@@ -48,10 +48,10 @@ pub async fn get_redis_conn() -> Result<PooledConnection<'static, RedisConnectio
 }
 
 // 初始化函数
-pub async fn init_redis(settings: &AppConfig) -> Result<(), AppError> {
-    let manager = RedisConnectionManager::new(settings.redis_url.clone())?;
+pub async fn init_redis(config: &AppConfig) -> Result<(), AppError> {
+    let manager = RedisConnectionManager::new(config.redis.redis_url.clone())?;
     let pool = Pool::builder()
-        .max_size(settings.max_redis_connections)
+        .max_size(config.redis.max_connections)
         .build(manager)
         .await?;
 
@@ -60,24 +60,21 @@ pub async fn init_redis(settings: &AppConfig) -> Result<(), AppError> {
         .map_err(|_| AppError::RedisPoolInitError)
 }
 
-pub async fn init_db(settings: &AppConfig) -> Result<sqlx::PgPool, AppError> {
+pub async fn init_db(config: &AppConfig) -> Result<sqlx::PgPool, AppError> {
     let pool = PgPoolOptions::new()
-        .max_connections(settings.max_db_connections)
-        .connect(&settings.database_url)
+        .max_connections(config.database.max_connections)
+        .connect(&config.database.database_url)
         .await?;
 
     sqlx::migrate!().run(&pool).await?;
     Ok(pool)
 }
 
-pub async fn init_dlq(
-    jetstream: &jetstream::Context,
-    settings: &AppConfig,
-) -> Result<(), AppError> {
+pub async fn init_dlq(jetstream: &jetstream::Context, config: &AppConfig) -> Result<(), AppError> {
     jetstream
         .get_or_create_stream(jetstream::stream::Config {
             name: "DLQ".to_string(),
-            subjects: vec![settings.dlq_subject.clone()],
+            subjects: vec![config.dlq.dlq_subject.clone()],
             retention: jetstream::stream::RetentionPolicy::Limits,
             ..Default::default()
         })

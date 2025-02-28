@@ -5,7 +5,9 @@ use ark_vote::{
     error::AppError,
     init_db, init_dlq, init_redis,
     services::{ConsumerService, VotingService},
-    signal, vote,
+    signal,
+    snow_flake::Snowflake,
+    vote,
 };
 use async_nats::jetstream::{
     self,
@@ -31,7 +33,7 @@ async fn main() -> Result<(), AppError> {
     let db_pool = init_db(config).await?;
     init_redis(config).await?;
 
-    let nats_client = async_nats::connect(&config.nats_url).await?;
+    let nats_client = async_nats::connect(&config.nats.nats_url).await?;
     let jetstream = jetstream::new(nats_client.clone());
     init_dlq(&jetstream, config).await?;
 
@@ -43,14 +45,18 @@ async fn main() -> Result<(), AppError> {
         .ok();
 
     let mut shutdown_rx = signal::spawn_handler();
+    let snowflake = Snowflake::new(config.snowflake.worker_id, config.snowflake.datacenter_id)?;
 
     // 启动gRPC服务
     std::thread::Builder::new()
         .name("voting-grpc-server".to_string())
         .spawn({
-            let service = VotingService::new(config).await?;
+            let jetstream = jetstream.clone();
+            let db_pool = db_pool.clone();
+
+            let service = VotingService::new(jetstream, db_pool, snowflake).await?;
             let mut shutdown_rx = shutdown_rx.clone();
-            let grpc_addr = config.server_addr.parse().unwrap();
+            let grpc_addr = config.grpc.grpc_addr.parse().unwrap();
 
             move || {
                 let _ = tokio::runtime::Builder::new_multi_thread()
@@ -90,7 +96,7 @@ async fn main() -> Result<(), AppError> {
             ..Default::default()
         })
         .await?;
-    let consumer_src = ConsumerService::new(jetstream.clone(), db_pool.clone()).await;
+    let consumer_src = ConsumerService::new(jetstream, db_pool).await;
 
     let mut shutdown_rx_clone = shutdown_rx.clone();
     tokio::spawn(async move {
