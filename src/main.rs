@@ -1,13 +1,7 @@
 use std::time::Duration;
 
 use ark_vote::{
-    config::settings,
-    error::AppError,
-    init_db, init_dlq, init_redis,
-    services::{ConsumerService, VotingService},
-    signal,
-    snow_flake::Snowflake,
-    vote,
+    config::settings, error::AppError, init_db, init_dlq, init_redis, services::{ConsumerService, VotingService}, signal, snow_flake::Snowflake, vote
 };
 use async_nats::jetstream::{
     self,
@@ -35,14 +29,23 @@ async fn main() -> Result<(), AppError> {
 
     let nats_client = async_nats::connect(&config.nats.nats_url).await?;
     let jetstream = jetstream::new(nats_client.clone());
-    init_dlq(&jetstream, config).await?;
 
     // FIXME: 为了方便调试，每次启动都删除stream
-    jetstream
-        .delete_stream("ARKVOTE")
-        .await
-        .map_err(|e| error!("Error deleting stream: {}", e))
-        .ok();
+    {
+        jetstream
+            .delete_stream("ARKVOTE")
+            .await
+            .map_err(|e| error!("Error deleting stream: {}", e))
+            .ok();
+
+        jetstream
+            .delete_stream("ARKVOTE_DLQ")
+            .await
+            .map_err(|e| error!("Error deleting stream: {}", e))
+            .ok();
+    }
+
+    init_dlq(&jetstream, config).await?;
 
     let mut shutdown_rx = signal::spawn_handler();
     let snowflake = Snowflake::new(config.snowflake.worker_id, config.snowflake.datacenter_id)?;
@@ -87,7 +90,6 @@ async fn main() -> Result<(), AppError> {
             ..Default::default()
         })
         .await?;
-    info!("created the stream");
 
     let consumer = stream
         .create_consumer(jetstream::consumer::pull::Config {

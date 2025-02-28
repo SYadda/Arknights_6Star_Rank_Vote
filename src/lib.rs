@@ -73,9 +73,9 @@ pub async fn init_db(config: &AppConfig) -> Result<sqlx::PgPool, AppError> {
 pub async fn init_dlq(jetstream: &jetstream::Context, config: &AppConfig) -> Result<(), AppError> {
     jetstream
         .get_or_create_stream(jetstream::stream::Config {
-            name: "DLQ".to_string(),
+            name: "ARKVOTE_DLQ".to_string(),
             subjects: vec![config.dlq.dlq_subject.clone()],
-            retention: jetstream::stream::RetentionPolicy::Limits,
+            retention: jetstream::stream::RetentionPolicy::Interest,
             ..Default::default()
         })
         .await?;
