@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package vote;
 
+option go_package = "./proto;proto";
+
 message Identity {
     string fingerprint = 1;    // 浏览器指纹
     string ip = 2;             // ip

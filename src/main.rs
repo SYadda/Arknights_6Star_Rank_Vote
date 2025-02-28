@@ -12,9 +12,13 @@ use async_nats::jetstream::{
     stream::{self},
 };
 use futures::StreamExt;
+use mimalloc::MiMalloc;
 use tokio::{self};
 use tonic::transport::Server;
 use tracing::{Level, error, info};
+
+#[global_allocator]
+static GLOBAL: MiMalloc = MiMalloc;
 
 #[tokio::main]
 async fn main() -> Result<(), AppError> {
@@ -30,6 +34,13 @@ async fn main() -> Result<(), AppError> {
     let nats_client = async_nats::connect(&config.nats_url).await?;
     let jetstream = jetstream::new(nats_client.clone());
     init_dlq(&jetstream, config).await?;
+
+    // FIXME: 为了方便调试，每次启动都删除stream
+    jetstream
+        .delete_stream("ARKVOTE")
+        .await
+        .map_err(|e| error!("Error deleting stream: {}", e))
+        .ok();
 
     let mut shutdown_rx = signal::spawn_handler();
 
@@ -84,33 +95,33 @@ async fn main() -> Result<(), AppError> {
     let mut shutdown_rx_clone = shutdown_rx.clone();
     tokio::spawn(async move {
         loop {
-            let mut messages = match consumer.fetch().max_messages(100).messages().await {
-                Ok(msgs) => msgs,
-                Err(e) => {
-                    error!("Error fetching messages: {}", e);
-                    tokio::time::sleep(Duration::from_secs(1)).await;
-                    continue;
-                }
-            };
-
-            while let Some(message) = messages.next().await {
-                let (message, acker) = message.unwrap().split();
-
-                consumer_src.handle_message(message, acker).await;
-            }
-
-            // 处理关闭信号
             tokio::select! {
                 _ = shutdown_rx_clone.changed() => {
                     info!("Received shutdown signal");
                     break;
                 }
-                _ = tokio::time::sleep(Duration::from_millis(100)) => {}
-            };
+                result = consumer.fetch().max_messages(100).messages() => {
+                    let mut messages = match result {
+                        Ok(msgs) => msgs,
+                        Err(e) => {
+                            error!("Error fetching messages: {}", e);
+                            tokio::time::sleep(Duration::from_secs(1)).await;
+                            continue;
+                        }
+                    };
+
+                    while let Some(message) = messages.next().await {
+                        let (message, acker) = message.unwrap().split();
+                        consumer_src.handle_message(message, acker).await;
+                    }
+                }
+            }
         }
     });
 
     shutdown_rx.changed().await.unwrap();
+
+    info!("Shutting down...");
 
     Ok(())
 }

@@ -97,6 +97,6 @@ impl From<AppError> for tonic::Status {
 
 impl AppError {
     pub fn is_retriable(&self) -> bool {
-        !matches!(self, Self::BallotNotFound(_) | Self::InvalidBallotStatus(_))
+        matches!(self, Self::InvalidBallotStatus(_))
     }
 }

@@ -219,8 +219,6 @@ impl vote::voting_service_server::VotingService for VotingService {
             updated_at: chrono::Utc::now(),
         };
 
-        info!("Creating topic: {:?}", topic);
-
         let id = sqlx::query(
             r#"
             INSERT INTO topics (name, description, type, style, status, start_at, finish_at, created_at, updated_at)

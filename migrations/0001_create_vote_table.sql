@@ -21,6 +21,13 @@ CREATE TABLE users (
 CREATE INDEX idx_users_uuid ON users(uuid);
 CREATE INDEX idx_users_username ON users(username);
 
+CREATE TYPE ballot_status AS ENUM (
+    'Created',
+    'Processed',
+    'Invalid',
+    'Discarded' 
+);
+
 CREATE TABLE votes (
     id SERIAL PRIMARY KEY,
     user_id UUID REFERENCES users(id),
@@ -34,7 +41,8 @@ CREATE TABLE votes (
     options INTEGER[] NOT NULL,
     selected_options INTEGER[] NOT NULL,
     excluded_options INTEGER[] NOT NULL,
-    status SMALLINT NOT NULL,
+    status ballot_status NOT NULL,
+    multiplier INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

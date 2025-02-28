@@ -17,7 +17,7 @@ pub struct AppConfig {
     pub database_url: String,
     pub redis_url: String,
     pub nats_url: String,
-    pub max_ip_limit: i64,
+    pub max_ip_limit: i32,
     pub server_addr: String,
     pub worker_id: i64,
     pub datacenter_id: i64,

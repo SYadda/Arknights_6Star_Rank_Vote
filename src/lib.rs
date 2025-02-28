@@ -29,8 +29,8 @@ const OPERATOR_IDS: [i32; 106] = [
     4065, 4072, 4080, 4082, 4087, 4088, 4098, 4116, 4117, 4121, 4123, 4132, 4133, 4134, 4138, 4141,
     4145, 4146,
 ];
-const BASE_MULTIPLIER: i64 = 100;
-const LOW_MULTIPLIER: i64 = 1;
+const BASE_MULTIPLIER: i32 = 100;
+const LOW_MULTIPLIER: i32 = 1;
 
 static REDIS_POOL: OnceLock<ConnectionPool> = OnceLock::new();
 

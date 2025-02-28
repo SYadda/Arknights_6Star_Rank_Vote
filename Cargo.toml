@@ -4,17 +4,18 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
+mimalloc = "0.1.43"
 rand = "0.9.0"
 tokio = { version = "1.43.0", features = ["full"] }
 bb8 = "0.9.0"
 bb8-redis = "0.21.0"
 tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
-serde = { version = "1.0.218", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
 anyhow = "1.0.96"
-serde_json = "1.0.139"
+serde_json = "1"
 redis = { version = "0.29.0", features = ["script"] }
-uuid = { version = "1.14", features = ["v4"] }
+uuid = { version = "1.15", features = ["v4"] }
 hex = "0.4.3"
 async-nats = "0.39.0"
 futures = "0.3.31"
@@ -27,7 +28,7 @@ prometheus = "0.13.4"
 config = { version = "0.15.8", features = ["toml"] }
 parking_lot = "0.12.3"
 notify = "8.0.0"
-chrono = "0.4.39"
+chrono = "0.4"
 
 [build-dependencies]
 tonic-build = "*"
